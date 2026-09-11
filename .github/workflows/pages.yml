@@ -1,0 +1,71 @@
+name: Publish the ordering calculator
+
+# GitHub Pages, built from source on every push to main. The published site is
+# apps/eoq/out, the folder `next build` writes.
+#
+# The build is handed two settings the repository deliberately does not hold:
+# where the site is mounted, and the address it advertises to social crawlers.
+# Both belong to a deployment rather than to the source, and a second tool
+# published from this repository would pass its own.
+
+on:
+  push:
+    branches: [main]
+  # So a publish can be re-run from the Actions tab without an empty commit.
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One publish at a time, and never cancel one halfway: a cancelled deployment
+# can leave the site serving a half-uploaded artefact.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          # The version the repository pins, rather than one repeated here.
+          node-version-file: .node-version
+          cache: npm
+
+      # `npm install` rather than `npm ci`: the lockfile and the manifests have
+      # drifted apart, and ci refuses rather than reconciling. Once the working
+      # tree settles and one `npm install` is committed, this can become ci,
+      # which is faster and reproducible.
+      - run: npm install --no-audit --no-fund
+
+      - run: npm run build --workspace @sct/eoq
+        env:
+          NEXT_PUBLIC_BASE_PATH: /eoq
+          NEXT_PUBLIC_SITE_URL: https://supplychain-tools.github.io/eoq
+
+      # Belt and braces. The artefact upload below does not run the site
+      # through Jekyll, but a repository served straight from a branch would,
+      # and Jekyll skips every folder whose name starts with an underscore —
+      # which is where Next puts the entire stylesheet and script bundle.
+      - run: touch apps/eoq/out/.nojekyll
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: apps/eoq/out
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

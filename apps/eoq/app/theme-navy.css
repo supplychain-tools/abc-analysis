@@ -1,0 +1,59 @@
+/* ==================================================================
+   Theme: navy, blue and amber.
+
+   An experiment, switched by the one @import in globals.css. The other
+   file beside this, theme-kraft.css, is revision 3 as built. Neither
+   file contains a single rule: a theme here is a set of values, and if
+   it ever needs a rule to work, the rule belongs in globals.css where
+   both themes can be judged against it.
+
+   Roles, which is the part that matters more than the hues:
+     blue    identity, structure, and data
+     amber   a threshold worth attention, and only that
+     red     a fault
+     white   surfaces
+   ================================================================== */
+
+:root {
+  --ground: #f4f6f8;
+  --surface: #ffffff;
+  --surface-2: #f1f5f9;
+  --line: #d9e0e8;
+  /* Two values measured rather than taken as given.
+
+     --line-strong draws the edge of every input and every table head. The
+     slate-400 this started from, #94A3B8, measures 2.60:1 against white, and
+     WCAG 1.4.11 asks 3:1 of the boundary of a control you have to find. This
+     is 3.61:1.
+
+     --text-2 sets units and labels at 11px, including inside the --surface-2
+     stripes of the tables. #64748B measures 4.76:1 on white but 4.35:1 on the
+     stripe, which is under the 4.5:1 floor for text this size. This is 5.26:1
+     on the stripe and 5.75:1 on white, and is within a hair of the same hue. */
+  --line-strong: #7a8899;
+  --text: #172033;
+  --text-2: #5b6779;
+
+  --accent: #2563eb;
+  --on-accent: #ffffff;
+
+  /* A fault, and nothing else. */
+  --signal: #dc2626;
+
+  /* The optimum, wherever it is marked: Q* on the cost curve, the optimum row
+     of the penalty table. Blue, because an optimum is data, not a warning. */
+  --mark: #2563eb;
+  /* Blue-100, not blue-50. The lighter tint was tried and is indistinguishable
+     from the --surface-2 stripe the table already alternates with, so the
+     optimum row read as an ordinary even row. */
+  --mark-soft: #dbeafe;
+
+  /* A threshold a reader is meant to notice: the safety stock the cycle is
+     designed never to break. This is the only amber on the page. */
+  --threshold: #f5b700;
+
+  --trace: #1e3a5f;
+  --trace-2: #64748b;
+  --trace-b: #0f766e;
+  --grid: #e2e8f0;
+}

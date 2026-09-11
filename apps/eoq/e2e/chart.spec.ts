@@ -1,5 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
 
+import { TAB, openTab } from './tabs';
+
 /**
  * The cost curve. What matters here is not that pixels landed somewhere, but
  * that the chart says the right thing: the crossing sits at Q*, and the
@@ -8,13 +10,19 @@ import { expect, test, type Page } from '@playwright/test';
 
 const CLASSIC = '/?d=10000&s=50&h=2&y=365&hm=u&lang=en';
 
+/** Load a case and open the view this file is about. */
+async function open(page: Page, url: string): Promise<void> {
+  await page.goto(url);
+  await openTab(page, TAB.chart);
+}
+
 async function figure(page: Page, name: string): Promise<string> {
   const text = await page.locator(`[data-testid="${name}"]:visible`).textContent();
   return (text ?? '').replace(/\s/g, ' ').trim();
 }
 
 test('draws the three classic traces', async ({ page }) => {
-  await page.goto(CLASSIC);
+  await open(page, CLASSIC);
 
   await expect(page.getByTestId('trace-ordering')).toBeVisible();
   await expect(page.getByTestId('trace-holding')).toBeVisible();
@@ -22,7 +30,7 @@ test('draws the three classic traces', async ({ page }) => {
 });
 
 test('opens its readout at the optimum, where the penalty is nil', async ({ page }) => {
-  await page.goto(CLASSIC);
+  await open(page, CLASSIC);
 
   await expect.poll(() => figure(page, 'readout-quantity')).toBe('707');
   await expect.poll(() => figure(page, 'readout-cost')).toBe('1,414.21');
@@ -30,7 +38,7 @@ test('opens its readout at the optimum, where the penalty is nil', async ({ page
 });
 
 test('reads out cost at any quantity from the keyboard', async ({ page }) => {
-  await page.goto(CLASSIC);
+  await open(page, CLASSIC);
   await expect.poll(() => figure(page, 'readout-quantity')).toBe('707');
 
   const plot = page.getByRole('slider');
@@ -47,7 +55,7 @@ test('reads out cost at any quantity from the keyboard', async ({ page }) => {
 });
 
 test('reads out cost where the pointer is', async ({ page }) => {
-  await page.goto(CLASSIC);
+  await open(page, CLASSIC);
   const plot = page.getByRole('slider');
   const box = await plot.boundingBox();
   expect(box).not.toBeNull();
@@ -62,7 +70,7 @@ test('reads out cost where the pointer is', async ({ page }) => {
 });
 
 test('publishes the curve as a table for anyone not reading the picture', async ({ page }) => {
-  await page.goto(CLASSIC);
+  await open(page, CLASSIC);
 
   const table = page.getByRole('table', { name: 'Cost curve values' });
   await expect(table).toBeAttached();

@@ -324,20 +324,24 @@ export function CostCurve({ input, eoq }: CostCurveProps) {
                   x2={optimumX}
                   y1={geometry.y(eoq.relevantCostCore)}
                   y2={geometry.plotBottom}
-                  stroke="var(--signal)"
-                  strokeWidth={1}
+                  stroke="var(--mark)"
+                  strokeWidth={2}
                 />
                 <circle
                   cx={optimumX}
                   cy={geometry.y(eoq.relevantCostCore / 2)}
                   r={3.5}
-                  fill="var(--signal)"
+                  fill="var(--mark)"
+                  stroke="var(--text)"
+                  strokeWidth={1}
                 />
                 <circle
                   cx={optimumX}
                   cy={geometry.y(eoq.relevantCostCore)}
-                  r={3.5}
-                  fill="var(--signal)"
+                  r={4}
+                  fill="var(--mark)"
+                  stroke="var(--text)"
+                  strokeWidth={1}
                 />
                 {/* Above the curve at its minimum, not on the axis row: the
                     scale keeps every tick, and the mark sits in the empty

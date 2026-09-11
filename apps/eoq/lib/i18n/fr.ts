@@ -35,6 +35,14 @@ export const fr: Dictionary = {
     penalty: 'Coût d’une quantité de commande erronée',
   },
 
+  tabs: {
+    overview: 'Commande et cycle',
+    chart: 'Courbe de coût',
+    sensitivity: 'Sensibilité',
+    /** Names the tab list for anyone not seeing it. */
+    label: 'Vues',
+  },
+
   fields: {
     annualDemand: { symbol: 'D', label: 'Demande annuelle' },
     orderCost: { symbol: 'S', label: 'Coût de passation par commande' },
@@ -150,6 +158,7 @@ export const fr: Dictionary = {
     skipToResults: 'Aller aux résultats',
     inputRail: 'Données saisies',
     resultsRegion: 'Résultats',
+    tabs: 'Vues',
     chartRegion: 'Courbe de coût',
   },
 };

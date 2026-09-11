@@ -145,20 +145,19 @@ test('carries the inputs in the URL so a result can be shared', async ({ page })
   await expect(page.getByLabel('Annual demand', { exact: true })).toHaveValue('31,500');
 });
 
-test('keeps the answer in view on a 360px screen', async ({ page }, testInfo) => {
+test('puts the fields before the answer on a 360px screen', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'mobile', 'viewport-specific');
 
   await page.goto(VERIFICATION_CASE);
 
-  // The answer is the first thing on the page, before any input.
-  await expect(page.getByTestId('result-quantity')).toBeInViewport();
-  await expect(page.getByTestId('pinned-quantity')).toHaveCount(0);
-
-  // Scroll past it to the inputs: the pinned copy takes over, so the answer is
-  // still on screen while the fields that produce it are being edited.
-  await page.getByLabel('Order in multiples of', { exact: true }).scrollIntoViewIfNeeded();
-  await expect(page.getByTestId('pinned-quantity')).toBeInViewport();
+  // One column, so the order has to mean something: the fields come first and
+  // what they produce follows. There is no pinned copy holding the answer on
+  // screen any more, so the answer really is below the fold on opening.
+  await expect(page.getByLabel('Annual demand', { exact: true })).toBeInViewport();
   await expect(page.getByTestId('result-quantity')).not.toBeInViewport();
+
+  await page.getByTestId('result-quantity').scrollIntoViewIfNeeded();
+  await expect(page.getByTestId('result-quantity')).toBeInViewport();
 });
 
 test('never scrolls the page sideways at 360px', async ({ page }, testInfo) => {

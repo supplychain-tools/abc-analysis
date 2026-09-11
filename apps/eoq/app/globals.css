@@ -8,3 +8,360 @@
 
 /* The design system this tool shares with the rest of the family. */
 @import '../../../packages/shared/styles.css';
+
+/* The palette, and the only line to change to swap it. theme-kraft.css is
+   revision 3 as built — concrete, kraft and hi-vis; theme-navy.css is the
+   navy-blue-amber experiment. Both define the same token set and nothing
+   else, so every rule below is written once and judged under either. */
+@import './theme-navy.css';
+
+/* ==================================================================
+   Revision 3, this tool only. See docs/design-plan-v3.md.
+
+   packages/shared is untouched, so abc and make-or-buy keep revision
+   2's appearance. Everything below is an override layered on top of
+   the shared stylesheet: it lands after it, at the same specificity,
+   and wins on order.
+
+   Two things change. The palette leaves the navy-grey-red convention
+   revision 2 flagged in its own self-critique, for the floor the work
+   happens on: concrete, kraft, and a hi-vis marking colour that never
+   carries type. And the answer stops being one of six identical
+   bordered cards and becomes the equation that produces it.
+   ================================================================== */
+
+:root {
+  /* Two radii, and the difference between them says which is which: a sheet is
+     a surface the work sits on, a control is a thing you put your hand on. */
+  --radius-panel: 10px;
+  --radius-control: 6px;
+
+  color-scheme: light;
+}
+
+/* ---- Sheets --------------------------------------------------------
+   Containment is by tone now, not by outline: the ground is thirteen
+   points of luminance below the sheet rather than six, so it does the
+   separating on its own. Six identical bordered cards at 6px radius
+   were the strongest remaining tell in the built page.
+   ------------------------------------------------------------------ */
+
+.panel {
+  border: 0;
+  border-radius: var(--radius-panel);
+}
+
+/* Sections that are one continuous reading share one sheet, divided by
+   hairlines rather than by more boxes. The column sets gap-0; this draws the
+   rule between neighbours. */
+.sheet-stack > .panel + .panel {
+  border-top: 1px solid var(--line);
+}
+
+/* The stack is one sheet, so the corners belong to the stack and not to each
+   section in it. Rounding the panels individually would round every internal
+   join and let the ground show through the notches between them; clipping at
+   the stack rounds the four outer corners only, and takes the wide table's
+   scroller with it. */
+.sheet-stack {
+  border-radius: var(--radius-panel);
+  overflow: hidden;
+}
+
+.sheet-stack > .panel {
+  border-radius: 0;
+}
+
+.panel-head {
+  padding: 11px 16px;
+}
+
+.panel-body {
+  padding: 16px;
+}
+
+/* A diagram needs room between its name and itself; a paragraph does not.
+   Only the panels that hold one get the extra. */
+.panel-head + .panel-body:has(svg[role='img']) {
+  padding-top: 20px;
+  padding-bottom: 18px;
+}
+
+/* ---- Views ---------------------------------------------------------
+   The output column is split into three, and the tab strip sits on the
+   ground above the sheet rather than inside it: a tab is a thing you
+   choose the sheet with, so it cannot be part of the sheet it chooses.
+   ------------------------------------------------------------------ */
+
+.tablist {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 10px;
+}
+
+.tablist > [role='tab'] {
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-control);
+  color: var(--text-2);
+  padding: 6px 12px;
+  min-height: 32px;
+  cursor: pointer;
+  transition:
+    background-color 160ms ease,
+    color 160ms ease;
+}
+
+.tablist > [role='tab']:hover {
+  color: var(--text);
+  background: var(--surface);
+}
+
+.tablist > [role='tab'][aria-selected='true'] {
+  background: var(--surface);
+  border-color: var(--line);
+  color: var(--text);
+}
+
+/* The panel takes no focus ring of its own: it is focusable only so that a
+   reader arriving from the tab by keyboard lands inside it, and a ring around
+   a whole sheet reads as an error rather than a position. */
+.tabpanel:focus {
+  outline: none;
+}
+
+.tabpanel:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ---- Headline metrics ----------------------------------------------
+   The three figures that follow the answer, each in its own box. They
+   were three label-and-figure pairs floating in a row, which read as a
+   wall of text rather than as three separate readings.
+   ------------------------------------------------------------------ */
+
+.kpi {
+  background: var(--surface-2);
+  border-radius: var(--radius-control);
+  padding: 10px 12px;
+}
+
+/* ---- Type ----------------------------------------------------------
+   Fira Sans for words, Spline Sans Mono for figures. The division is
+   unchanged from revision 2 and load-bearing: mono means this is a
+   number, the text face means this is a word.
+   ------------------------------------------------------------------ */
+
+body {
+  font-size: 13px;
+}
+
+.t-figure-lg {
+  font-size: clamp(19px, 2.1vw, 22px);
+  letter-spacing: -0.005em;
+}
+
+.t-label {
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.008em;
+}
+
+/* ---- The answer line ------------------------------------------------
+   Q* = the quantity, and the only place boldness is spent.
+
+   √(2DS/H) was drawn here between two equals signs, radical and all,
+   and is gone: it stood between a reader and the one figure they came
+   for. What is left is the naming, which is not decoration — the star
+   is what separates the optimum from any other order quantity.
+   ------------------------------------------------------------------ */
+
+.equation {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.14em 0.42em;
+  font-family: var(--font-mono);
+  font-size: clamp(26px, 3.6vw, 46px);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  letter-spacing: -0.01em;
+}
+
+/* A variable is set in italic, as it is set in print. The mono has no italic,
+   so the symbols take the text face, which does. */
+.equation .symbol {
+  font-family: var(--font-text), system-ui, sans-serif;
+  font-style: italic;
+  font-weight: 600;
+}
+
+/* The star that separates the optimum from any other order quantity. Set
+   upright and small: it qualifies the variable, it is not part of its name. */
+.equation .star {
+  font-style: normal;
+  font-size: 0.52em;
+  font-weight: 700;
+  vertical-align: 0.62em;
+  margin-left: 0.02em;
+}
+
+.equation .op {
+  font-weight: 400;
+  color: var(--text-2);
+}
+
+/* ---- The answer ----------------------------------------------------
+   Size and the accent, and nothing behind it.
+
+   A hi-vis band was drawn under the figure, wiping in once as the
+   equation resolved, and it is gone. What is left marks the answer by
+   being the largest thing on the page and the only figure in the accent
+   — a fill under it was a third marking on top of two that already
+   worked. The page now has no motion at all that a reader did not ask
+   for, which is the right end state rather than a loss.
+   ------------------------------------------------------------------ */
+
+.answer {
+  color: var(--accent);
+  white-space: nowrap;
+}
+
+/* ---- Controls -------------------------------------------------------
+   The ink is the accent, so a primary control is a filled black one and
+   a selected segment is the same fill.
+   ------------------------------------------------------------------ */
+
+.field-input {
+  border-color: var(--line-strong);
+  background: var(--surface);
+}
+
+/* The focus ring itself is the shared sheet's 2px outline in --accent; this
+   is the field's own edge agreeing with it rather than a second ring. */
+.field-input:focus {
+  border-color: var(--accent);
+}
+
+.btn {
+  border-color: var(--line-strong);
+}
+
+/* A segmented control in the rail runs the full width of the column, and its
+   options divide that width between them.
+
+   It is an inline-flex box, and a grid item stretches by default, so the box
+   was pulled to the column width while its two labels kept their own: the
+   choice sat in the left half and the right half was an empty outlined
+   rectangle with nothing in it. Filling the width also lines the control up
+   with the field boxes above and below it, which is the rail's one rule —
+   every box shares one left and one right edge.
+
+   Scoped to the rail on purpose: the language toggle in the header is the same
+   control and must go on hugging its two labels. */
+form .seg {
+  display: flex;
+  width: 100%;
+}
+
+/* `1 1 auto`, not `1 1 0`: equal halves would give "Taux sur le coût unitaire"
+   the same room as "Montant par unité" and wrap the longer one onto a second
+   line. Growing from each label's own width shares the free space out and
+   keeps both on one line wherever there is room for them. */
+form .seg > label {
+  flex: 1 1 auto;
+  text-align: center;
+}
+
+/* ---- Tables ---------------------------------------------------------
+   The optimum row carries the marking colour, the same one the answer
+   carries, because it is the same fact in another shape. Marked on the
+   edge and by weight, never by setting the figures in it.
+   ------------------------------------------------------------------ */
+
+table.banded > tbody > tr[data-optimum='true'] {
+  background: var(--mark-soft);
+  box-shadow: inset 3px 0 0 0 var(--mark);
+}
+
+table.banded > tbody > tr[data-best='true'] {
+  box-shadow: inset 3px 0 0 0 var(--mark);
+}
+
+/* ---- Charts ---------------------------------------------------------
+   Q* is a landmark, not a fault, so it leaves the red it borrowed in
+   revision 2 and takes the marking colour. The label stays ink: the
+   marking colour is geometry here, and the words beside it are the
+   thing being read. */
+
+.chart-mark {
+  fill: var(--text);
+}
+
+/* ---- Print ----------------------------------------------------------
+   Neither marked colour survives a monochrome printer, so the accent
+   flattens to black and the answer line shrinks to something a sheet of
+   A4 can hold.
+   ------------------------------------------------------------------ */
+
+@media print {
+  :root {
+    --mark: #000000;
+    --mark-soft: transparent;
+    --threshold: #000000;
+    --accent: #000000;
+  }
+
+  /* main carries the grid itself now, so the shared sheet's `main .grid` rule
+     no longer reaches it. */
+  main {
+    gap: 6px !important;
+  }
+
+  /* Panels flatten to rules on paper. Media queries add no specificity, so the
+     screen radius above, which comes later in the file, has to be undone here
+     rather than left to the shared sheet. */
+  .panel,
+  .sheet-stack,
+  .kpi {
+    border-radius: 0;
+    overflow: visible;
+  }
+
+  .kpi {
+    background: transparent;
+    padding: 0;
+  }
+
+  /* A sheet of paper has no tabs. Every view prints, in order, whichever one
+     happened to be open on screen — the panels are all in the document, which
+     is why they are hidden rather than unmounted. */
+  .tabpanel[hidden] {
+    display: block !important;
+  }
+
+  .panel-head + .panel-body:has(svg[role='img']) {
+    padding-block: 3px;
+  }
+
+  .equation {
+    font-size: 16pt;
+  }
+
+  /* The shared sheet flattens both marked rows to a black rule on the left.
+     Media queries add no specificity, so the screen rules above, which come
+     later in the file, would otherwise win here and print a shadow. */
+  table.banded > tbody > tr[data-optimum='true'],
+  table.banded > tbody > tr[data-best='true'] {
+    background: transparent;
+    box-shadow: none;
+    border-left: 2.5pt solid #000000;
+  }
+
+  .sheet-stack > .panel + .panel {
+    border-top: 1px solid var(--line);
+  }
+}

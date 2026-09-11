@@ -4,44 +4,54 @@
 <meta charset="utf-8">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700&family=Overpass+Mono:wght@400;600;700&display=block">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,400;0,600;0,700;1,600&family=Chivo+Mono:wght@400;600;700&display=block">
 <style>
   :root {
-    --ground: #eef1f4; --surface: #fff; --line: #dce1e6; --line-strong: #b7c0c9;
-    --text: #0f151b; --text-2: #586470; --accent: #14456b; --signal: #b3261e;
-    --mono: 'Overpass Mono', monospace; --sans: 'Archivo', system-ui, sans-serif;
+    --ground: #d9d6ce; --surface: #fbfaf6; --line: #c6c1b5; --line-strong: #8a8578;
+    --text: #23211c; --text-2: #5e594e; --accent: #23211c; --mark: #f2c302; --signal: #a62a17;
+    --mono: 'Chivo Mono', monospace; --sans: 'Fira Sans', system-ui, sans-serif;
   }
   * { box-sizing: border-box; margin: 0; }
   body { width: 1200px; height: 630px; background: var(--ground); font-family: var(--sans); color: var(--text); }
-  .sheet { position: absolute; inset: 40px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; display: flex; flex-direction: column; }
-  .head { padding: 34px 44px 0; }
-  .eyebrow { font-family: var(--mono); font-size: 19px; letter-spacing: 0.14em; color: var(--text-2); }
-  h1 { font-size: 54px; font-weight: 700; letter-spacing: -0.022em; line-height: 1.02; margin-top: 14px; }
-  .sub { font-size: 23px; color: var(--text-2); margin-top: 12px; }
-  .plot { flex: 1; padding: 4px 44px 18px; }
+  .sheet { position: absolute; inset: 40px; background: var(--surface); display: flex; flex-direction: column; }
+  .head { padding: 26px 44px 0; }
+  .eyebrow { font-size: 19px; font-weight: 600; color: var(--text-2); }
+  h1 { font-family: var(--mono); font-size: 58px; font-weight: 700; letter-spacing: -0.02em;
+       line-height: 1; margin-top: 16px; display: flex; align-items: center; gap: 16px; }
+  h1 .sym { font-family: var(--sans); font-style: italic; font-weight: 600; }
+  h1 .op { font-weight: 400; color: var(--text-2); }
+  h1 .star { font-style: normal; font-size: 0.52em; vertical-align: 0.62em; }
+  .band { position: relative; padding: 0 0.14em; white-space: nowrap; }
+  .band::before { content: ''; position: absolute; inset: 0.1em -0.04em 0.04em; background: var(--mark); }
+  .band span { position: relative; }
+  .sub { font-size: 22px; color: var(--text-2); margin-top: 10px; }
+  .plot { flex: 1; min-height: 0; padding: 4px 44px 10px; }
   svg { width: 100%; height: 100%; display: block; }
   .tick { font-family: var(--mono); font-size: 15px; fill: var(--text-2); }
-  .mark { font-family: var(--mono); font-size: 21px; font-weight: 700; fill: var(--signal);
+  .mark { font-family: var(--mono); font-size: 21px; font-weight: 700; fill: var(--text);
           paint-order: stroke; stroke: var(--surface); stroke-width: 6px; stroke-linejoin: round; }
   .trace-label { font-family: var(--mono); font-size: 16px; fill: var(--text-2); }
-  .foot { display: flex; gap: 44px; padding: 0 44px 30px; align-items: baseline; }
-  .foot .k { font-family: var(--mono); font-size: 15px; letter-spacing: 0.08em; color: var(--text-2); }
+  .foot { display: flex; gap: 44px; padding: 0 44px 26px; align-items: baseline; flex: none; }
+  .foot .k { font-size: 16px; font-weight: 600; color: var(--text-2); }
   .foot .v { font-family: var(--mono); font-size: 30px; font-weight: 700; margin-top: 4px; }
-  .foot .v.q { color: var(--signal); }
+  .foot .v.q { color: var(--text); }
 </style>
 </head>
 <body>
   <div class="sheet">
     <div class="head">
-      <div class="eyebrow">SUPPLY CHAIN TOOLS</div>
-      <h1>Quantité économique de commande</h1>
+      <div class="eyebrow">Quantité économique de commande</div>
+      <h1>
+        <span class="sym">Q<span class="star">*</span></span>
+        <span class="op">=</span>
+        <span class="band"><span id="qhero"></span></span>
+      </h1>
       <p class="sub">Le coût de passation et le coût de possession s’égalisent en Q*.</p>
     </div>
     <div class="plot"><svg id="chart" viewBox="0 0 1080 250" preserveAspectRatio="none"></svg></div>
     <div class="foot">
-      <div><div class="k">Q*</div><div class="v q" id="q"></div></div>
-      <div><div class="k">COMMANDES / AN</div><div class="v" id="n"></div></div>
-      <div><div class="k">COÛT TOTAL PERTINENT</div><div class="v" id="c"></div></div>
+      <div><div class="k">Commandes par an</div><div class="v" id="n"></div></div>
+      <div><div class="k">Coût total pertinent</div><div class="v" id="c"></div></div>
     </div>
   </div>
 
@@ -89,13 +99,13 @@
   add('text', { x: R + 8, y: sy(holding(qMax)) + 6, class: 'trace-label' }, 'possession');
 
   const yStar = sy(total(qStar));
-  add('line', { x1: sx(qStar), x2: sx(qStar), y1: yStar, y2: B, stroke: 'var(--signal)', 'stroke-width': 2 });
-  add('circle', { cx: sx(qStar), cy: yStar, r: 8, fill: 'var(--signal)' });
-  add('circle', { cx: sx(qStar), cy: sy(holding(qStar)), r: 6, fill: 'var(--signal)' });
+  add('line', { x1: sx(qStar), x2: sx(qStar), y1: yStar, y2: B, stroke: 'var(--mark)', 'stroke-width': 4 });
+  add('circle', { cx: sx(qStar), cy: yStar, r: 8, fill: 'var(--mark)', stroke: 'var(--text)', 'stroke-width': 2 });
+  add('circle', { cx: sx(qStar), cy: sy(holding(qStar)), r: 6, fill: 'var(--mark)', stroke: 'var(--text)', 'stroke-width': 2 });
   add('text', { x: sx(qStar), y: yStar - 18, 'text-anchor': 'middle', class: 'mark' }, 'Q*');
 
   const fr = (v, d) => v.toLocaleString('fr-FR', { minimumFractionDigits: d, maximumFractionDigits: d });
-  document.getElementById('q').textContent = fr(qStar, 1);
+  document.getElementById('qhero').textContent = fr(qStar, 1) + ' unités';
   document.getElementById('n').textContent = fr(D / qStar, 1);
   document.getElementById('c').textContent = fr(total(qStar), 2) + ' MAD';
   document.documentElement.dataset.drawn = 'true';

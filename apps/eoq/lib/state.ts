@@ -25,6 +25,16 @@ export interface ToolState {
   safetyStock: string;
 }
 
+/**
+ * A clear field, and clear means clear.
+ *
+ * The working year used to open on 365, which made two things untrue at once:
+ * the tool did not start empty, and "clear all fields" left a field filled. It
+ * was then offered as the field's placeholder, and that was no better: a grey
+ * 365 inside a field the tool is simultaneously outlining in red for being
+ * empty reads as a value the page is refusing to accept. The field is blank,
+ * like every other required field, and says so the same way.
+ */
 export const BLANK_STATE: ToolState = {
   annualDemand: '',
   orderCost: '',
@@ -32,7 +42,7 @@ export const BLANK_STATE: ToolState = {
   holdingCostPerUnit: '',
   holdingRate: '',
   unitCost: '',
-  daysPerYear: '365',
+  daysPerYear: '',
   roundingMultiple: '',
 
   safetyStock: '',

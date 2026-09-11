@@ -3,11 +3,12 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 
 import { AnswerPanel } from '@/components/AnswerPanel';
+import { Equation } from '@/components/Equation';
+import { Tabs } from '@/components/Tabs';
 import { AppShell } from '@sct/shared/ui/AppShell';
 import { CostCurve } from '@/components/CostCurve';
 import { InventoryProfile } from '@/components/InventoryProfile';
 import { InputRail } from '@/components/InputRail';
-import { PinnedAnswer } from '@/components/PinnedAnswer';
 import { CostPenaltyTable } from '@/components/CostPenaltyTable';
 import { SettingsProvider } from '@/components/Settings';
 import { derive } from '@/lib/derive';
@@ -185,53 +186,96 @@ export default function Page() {
         }
       />
 
-      <PinnedAnswer eoq={derived.eoq} />
+      {/* Two columns, and the division is the whole point: what you type is on
+          the left, what it produces is on the right, in reading order.
 
-      <main className="mx-auto max-w-[1440px] px-4 pb-16 pt-4 sm:px-6">
-        <div className="grid items-start gap-4 lg:grid-cols-[340px_minmax(0,1fr)]">
-          <form
-            aria-label={t.a11y.inputRail}
-            className="panel no-print order-2 p-4 lg:order-1"
-            onSubmit={(event) => {
-              event.preventDefault();
-              setRevealErrors(true);
-            }}
-          >
-            <InputRail
-              state={state}
-              patch={patch}
-              issues={derived.issues}
-              revealErrors={revealErrors}
-            />
-          </form>
+          The equation used to span both columns above them. It looked better
+          on a page that already had an answer and was wrong on every other
+          one: the tool opens on empty fields, so a reader met a full-width
+          masthead over a column with nothing in it. The equation is output —
+          it belongs at the head of the column the output is in, and it is the
+          first thing the reader's own numbers reach.
 
-          <div id="results" className="order-1 grid min-w-0 gap-4 lg:order-2">
-            <AnswerPanel
-              eoq={derived.eoq}
-              practical={derived.practical}
-              missingLabels={missingLabels}
-            />
+          Narrow: one column, no order classes needed. The rail comes first in
+          the source and the reading follows it, which is the order the work
+          runs in. While the fields are on screen the pinned summary carries
+          Q* at the top of the viewport, so the figure moves as it is typed. */}
+      <main className="mx-auto grid max-w-[1440px] items-start gap-4 px-4 pb-16 pt-4 sm:px-6 lg:grid-cols-[340px_minmax(0,1fr)]">
+        <form
+          aria-label={t.a11y.inputRail}
+          className="panel no-print p-4"
+          onSubmit={(event) => {
+            event.preventDefault();
+            setRevealErrors(true);
+          }}
+        >
+          <InputRail
+            state={state}
+            patch={patch}
+            issues={derived.issues}
+            revealErrors={revealErrors}
+          />
+        </form>
 
-            {derived.eoq === null || profileInput === null ? null : (
-              <InventoryProfile
-                orderQuantity={derived.eoq.quantity}
-                demandRate={profileInput.demandRate}
-                safetyStock={profileInput.safetyStock}
-                periodLabel={profileInput.periodLabel}
-              />
-            )}
+        {/* The reading, split into views.
 
-            {derived.eoq === null || derived.eoqInput === null ? null : (
-              <CostCurve input={derived.eoqInput} eoq={derived.eoq} />
-            )}
+            All four panels on one column is a long page on a phone and a long
+            scroll on a desktop, and only the first screen of it answers the
+            question most readers came with. The tabs put the answer and the
+            cycle first and keep the two analyses one click away.
 
-            {derived.penaltyRows.length === 0 ? null : (
-              <CostPenaltyTable penaltyRows={derived.penaltyRows} />
-            )}
-
+            The cost is real and worth knowing: the four panels are four views
+            of the same change, and a reader who alters a field can no longer
+            watch the curve and the table move with the answer. That is what
+            tabs trade away. Print is not part of the trade — the sheet still
+            carries all of it. */}
+        {derived.eoq === null ? (
+          <div id="results" className="sheet-stack grid min-w-0 gap-0">
+            <Equation eoq={derived.eoq} missingLabels={missingLabels} />
           </div>
-        </div>
-
+        ) : (
+          <div id="results" className="min-w-0">
+            <Tabs
+              label={t.a11y.tabs}
+              tabs={[
+                {
+                  id: 'overview',
+                  label: t.tabs.overview,
+                  content: (
+                    <>
+                      <Equation eoq={derived.eoq} missingLabels={missingLabels} />
+                      <AnswerPanel eoq={derived.eoq} practical={derived.practical} />
+                      {profileInput === null ? null : (
+                        <InventoryProfile
+                          orderQuantity={derived.eoq.quantity}
+                          demandRate={profileInput.demandRate}
+                          safetyStock={profileInput.safetyStock}
+                          periodLabel={profileInput.periodLabel}
+                        />
+                      )}
+                    </>
+                  ),
+                },
+                {
+                  id: 'chart',
+                  label: t.tabs.chart,
+                  content:
+                    derived.eoqInput === null ? null : (
+                      <CostCurve input={derived.eoqInput} eoq={derived.eoq} />
+                    ),
+                },
+                {
+                  id: 'sensitivity',
+                  label: t.tabs.sensitivity,
+                  content:
+                    derived.penaltyRows.length === 0 ? null : (
+                      <CostPenaltyTable penaltyRows={derived.penaltyRows} />
+                    ),
+                },
+              ]}
+            />
+          </div>
+        )}
       </main>
     </SettingsProvider>
   );

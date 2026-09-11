@@ -1,5 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
 
+import { TAB, openTab } from './tabs';
+
 /**
  * Labels in the diagrams must not land on top of each other.
  *
@@ -74,15 +76,22 @@ for (const [name, url] of Object.entries(CASES)) {
   test(`keeps every diagram label readable: ${name}`, async ({ page }) => {
     await page.goto(url);
     await ready(page);
-    await page.waitForTimeout(400);
 
-    expect(await collisions(page)).toEqual([]);
+    // One diagram per view now, so the check runs once per view. A hidden
+    // panel measures zero and is filtered out of `collisions`, which would
+    // quietly reduce this to whichever view happened to be open.
+    for (const view of [TAB.overview, TAB.chart]) {
+      await openTab(page, view);
+      await page.waitForTimeout(400);
+      expect(await collisions(page), `${view}`).toEqual([]);
+    }
   });
 }
 
 test('keeps the scale complete and marks Q* above the curve', async ({ page }) => {
   // Q* is exactly 10 000 here, which is where a tick falls.
   await page.goto('/?d=1000000&s=50&h=1&y=365&hm=u&lang=en');
+  await openTab(page, TAB.chart);
   await ready(page);
 
   // Scoped to the cost curve: the sawtooth has ticks of its own.

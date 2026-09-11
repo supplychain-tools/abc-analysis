@@ -9,78 +9,46 @@ import { useSettings } from './Settings';
 export interface AnswerPanelProps {
   eoq: EoqResult | null;
   practical: PracticalQuantity | null;
-  missingLabels: string[];
 }
 
-/** The id the pinned summary watches to know whether the answer is on screen. */
-export const ANSWER_PANEL_ID = 'answer-panel';
-
-function Stat({
-  label,
-  children,
-}: {
-  label: string;
-  children: React.ReactNode;
-}) {
+/** One headline metric, in its own box. */
+function Stat({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div className="min-w-0">
+    <div className="kpi min-w-0">
       <dt className="t-micro text-[color:var(--text-2)]">{label}</dt>
-      <dd className="t-figure-lg num mt-0.5">{children}</dd>
+      <dd className="t-figure-lg num mt-1">{children}</dd>
+    </div>
+  );
+}
+
+/** One line of the secondary block: a name, and the figure it names. */
+function Row({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div className="flex min-w-0 items-baseline justify-between gap-4 border-b border-[color:var(--line)] py-1.5 last:border-b-0">
+      <dt className="t-micro text-[color:var(--text-2)]">{label}</dt>
+      <dd className="t-body num">{children}</dd>
     </div>
   );
 }
 
 /**
- * The answer, and the figures that support it.
+ * What follows from the answer, once the equation above has given it.
  *
- * Q* is why someone opened the page, so it is set at display size and given the
- * panel to itself. Orders a year, the cycle in days and the annual cost are
- * supporting detail: they sit beneath a rule at a smaller size, not beside it as
- * equals. Four figures of the same size in four equal cells is a dashboard
- * pattern, and a dashboard is what you read when you do not have a question.
- *
- * Under them, the identity that proves the quantity is the optimum: at Q* the
- * ordering cost equals the holding cost. That line is a check the reader can do
- * by eye, not an ornament.
+ * Q* left this panel in revision 3 and became the masthead. What stays here is
+ * the supporting detail — how often that means ordering, how many days a cycle
+ * runs, what it costs — set at one size below the equation and at the head of
+ * the column that carries the rest of the reading.
  */
-export function AnswerPanel({ eoq, practical, missingLabels }: AnswerPanelProps) {
+export function AnswerPanel({ eoq, practical }: AnswerPanelProps) {
   const { locale, currency, t } = useSettings();
   const symbol = currencySymbol(currency, locale);
 
-  if (eoq === null) {
-    return (
-      <section id={ANSWER_PANEL_ID} className="panel" aria-label={t.a11y.resultsRegion}>
-        <div className="panel-body">
-          <p className="t-body" data-testid="empty-state">
-            {t.empty.headline}
-          </p>
-          {missingLabels.length > 0 ? (
-            <p className="note t-micro mt-1.5 text-[color:var(--text-2)]">
-              {t.empty.needs} {missingLabels.join(', ')}
-            </p>
-          ) : null}
-        </div>
-      </section>
-    );
-  }
+  if (eoq === null) return null;
 
   return (
-    <section id={ANSWER_PANEL_ID} className="panel" aria-label={t.a11y.resultsRegion}>
-      <div className="panel-head">
-        <h2 className="t-label">{t.results.quantity}</h2>
-      </div>
-
+    <section className="panel" aria-label={t.sections.results}>
       <div className="panel-body">
-        <p className="t-display num">
-          <Measure
-            value={eoq.quantity}
-            decimals={1}
-            unit={t.units.units}
-            width={6}
-            testId="result-quantity"
-          />
-        </p>
-        <dl className="mt-3 grid grid-cols-2 gap-x-6 gap-y-3 border-t border-[color:var(--line)] pt-3 sm:grid-cols-3">
+        <dl className="grid grid-cols-2 gap-3 sm:grid-cols-3">
           <Stat label={t.results.ordersPerYear}>
             <Measure
               value={eoq.ordersPerYear}
@@ -110,39 +78,33 @@ export function AnswerPanel({ eoq, practical, missingLabels }: AnswerPanelProps)
           </Stat>
         </dl>
 
-        <dl className="mt-3 flex flex-wrap gap-x-6 gap-y-1 border-t border-[color:var(--line)] pt-2.5">
-          <div className="flex items-baseline gap-1.5">
-            <dt className="t-micro text-[color:var(--text-2)]">{t.results.averageInventory}</dt>
-            <dd className="t-body num">
-              <Figure value={eoq.averageInventory} decimals={1} />
-            </dd>
-          </div>
-          <div className="flex items-baseline gap-1.5">
-            <dt className="t-micro text-[color:var(--text-2)]">{t.results.closedForm}</dt>
-            <dd className="t-body num">
-              <Figure value={eoq.relevantCostClosedForm} decimals={2} />
-            </dd>
-          </div>
+        {/* Four figures that were a wrapped sentence of label-value pairs, set
+            as a list now: two columns where there is room, each figure against
+            the right edge of its own column, so the eye reads down the names or
+            down the numbers rather than along a paragraph of both. */}
+        <dl className="mt-4 grid gap-x-8 sm:grid-cols-2">
+          <Row label={t.results.averageInventory}>
+            <Figure value={eoq.averageInventory} decimals={1} />
+          </Row>
+          <Row label={t.results.closedForm}>
+            <Figure value={eoq.relevantCostClosedForm} decimals={2} />
+          </Row>
           {eoq.purchaseCost === null ? null : (
-            <div className="flex items-baseline gap-1.5">
-              <dt className="t-micro text-[color:var(--text-2)]">{t.results.purchaseCost}</dt>
-              <dd className="t-body num">
-                <Figure value={eoq.purchaseCost} decimals={2} />
-              </dd>
-            </div>
+            <Row label={t.results.purchaseCost}>
+              <Figure value={eoq.purchaseCost} decimals={2} />
+            </Row>
           )}
           {eoq.totalCost === null ? null : (
-            <div className="flex items-baseline gap-1.5">
-              <dt className="t-micro text-[color:var(--text-2)]">{t.results.totalCost}</dt>
-              <dd className="t-body num num-total">
+            <Row label={t.results.totalCost}>
+              <span className="num-total">
                 <Figure value={eoq.totalCost} decimals={2} />
-              </dd>
-            </div>
+              </span>
+            </Row>
           )}
         </dl>
 
         {practical === null ? null : (
-          <p className="t-micro mt-3 flex flex-wrap items-baseline gap-x-5 gap-y-1 border-t border-[color:var(--line)] pt-2.5 text-[color:var(--text-2)]">
+          <p className="t-micro mt-4 flex flex-wrap items-baseline gap-x-5 gap-y-1 border-t border-[color:var(--line)] pt-3 text-[color:var(--text-2)]">
             <span className="flex items-baseline gap-1.5">
               {t.results.practicalQuantity}
               <Figure

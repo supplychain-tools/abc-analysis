@@ -1,5 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
 
+import { TAB, openTab } from './tabs';
+
 /**
  * Structural accessibility, checked against the rendered page rather than
  * against intentions: every control named, every diagram named, focus visible,
@@ -64,14 +66,21 @@ test('names every diagram, and offers each as a table', async ({ page }) => {
   await page.goto(FULL);
   await ready(page);
 
-  const diagrams = page.locator('svg[role="img"]');
-  await expect(diagrams).toHaveCount(2);
-  for (let index = 0; index < 2; index += 1) {
-    await expect(diagrams.nth(index)).toHaveAttribute('aria-label', /\w/);
-  }
+  // One diagram per view, so the check runs once per view. A hidden panel is
+  // still in the document but out of the accessibility tree, which is what a
+  // hidden panel should be and why this cannot be asserted in one pass.
+  const views = [
+    { tab: TAB.overview, table: 'Inventory level at each event' },
+    { tab: TAB.chart, table: 'Cost curve values' },
+  ];
 
-  await expect(page.getByRole('table', { name: 'Cost curve values' })).toBeAttached();
-  await expect(page.getByRole('table', { name: 'Inventory level at each event' })).toBeAttached();
+  for (const view of views) {
+    await openTab(page, view.tab);
+    const diagram = page.locator('svg[role="img"]:visible');
+    await expect(diagram, view.table).toHaveCount(1);
+    await expect(diagram, view.table).toHaveAttribute('aria-label', /\w/);
+    await expect(page.getByRole('table', { name: view.table })).toBeAttached();
+  }
 });
 
 test('has one first-level heading and no gaps in the levels below it', async ({ page }) => {
@@ -123,6 +132,7 @@ test('shows a visible focus ring on everything reachable', async ({ page }) => {
 test('reaches the chart readout by keyboard', async ({ page }) => {
   await page.goto(FULL);
   await ready(page);
+  await openTab(page, TAB.chart);
 
   const plot = page.getByRole('slider');
   await plot.focus();

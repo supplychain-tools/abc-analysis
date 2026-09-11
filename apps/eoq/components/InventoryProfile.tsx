@@ -194,8 +194,8 @@ export function InventoryProfile({
                 x2={view.plotRight}
                 y1={view.y(safetyStock)}
                 y2={view.y(safetyStock)}
-                stroke="var(--trace-2)"
-                strokeWidth={1}
+                stroke="var(--threshold)"
+                strokeWidth={1.5}
                 strokeDasharray="2 3"
               />
               <text

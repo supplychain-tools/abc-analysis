@@ -32,6 +32,14 @@ export const en = {
     penalty: 'Cost of ordering the wrong quantity',
   },
 
+  tabs: {
+    overview: 'Order and cycle',
+    chart: 'Cost curve',
+    sensitivity: 'Sensitivity',
+    /** Names the tab list for anyone not seeing it. */
+    label: 'Views',
+  },
+
   fields: {
     annualDemand: { symbol: 'D', label: 'Annual demand' },
     orderCost: { symbol: 'S', label: 'Cost per order' },
@@ -145,6 +153,7 @@ export const en = {
     skipToResults: 'Skip to results',
     inputRail: 'Inputs',
     resultsRegion: 'Results',
+    tabs: 'Views',
     chartRegion: 'Cost curve',
   },
 };

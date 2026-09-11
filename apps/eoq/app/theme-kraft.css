@@ -1,0 +1,40 @@
+/* ==================================================================
+   Theme: concrete, kraft and hi-vis. Revision 3 as built.
+
+   Switched by the one @import in globals.css. See theme-navy.css for
+   the other, and docs/design-plan-v3.md §2 for why these values.
+
+   Roles:
+     ink     identity and structure; there is no brand hue
+     hi-vis  the optimum, marked the way a floor is marked
+     red     a fault
+   ================================================================== */
+
+:root {
+  --ground: #d9d6ce;
+  --surface: #fbfaf6;
+  --surface-2: #f1eee6;
+  --line: #c6c1b5;
+  --line-strong: #8a8578;
+  --text: #23211c;
+  --text-2: #5e594e;
+
+  /* No brand hue. A calculator does not need a corporate blue to say which
+     control is primary; the ink says it. */
+  --accent: #23211c;
+  --on-accent: #fbfaf6;
+
+  --signal: #a62a17;
+
+  --mark: #f2c302;
+  --mark-soft: color-mix(in srgb, #f2c302 16%, var(--surface));
+
+  /* Kraft kept the buffer line quiet rather than amber: on this palette an
+     amber rule would be the same colour as the marked answer. */
+  --threshold: var(--text-2);
+
+  --trace: var(--text);
+  --trace-2: var(--text-2);
+  --trace-b: #1b5f57;
+  --grid: color-mix(in srgb, var(--line) 65%, transparent);
+}

@@ -5,7 +5,7 @@
  */
 export const en = {
   meta: {
-    title: 'Inventory ordering calculator',
+    title: 'Economic order quantity',
     description:
       'How much to order at a time, and what ordering off the optimum costs. Calculated in the browser.',
   },

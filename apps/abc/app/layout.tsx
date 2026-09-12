@@ -54,11 +54,23 @@ export const metadata: Metadata = {
     title: fr.meta.title,
     description: fr.meta.description,
     url: '/',
+    images: [
+      {
+        url: '/og.png',
+        width: 1200,
+        height: 630,
+        alt: 'Un diagramme de Pareto : quelques articles portent 80 % de la valeur de consommation annuelle, le reste forme une longue traîne.',
+      },
+    ],
   },
+  /* A large card rather than the small square one. Without an image declared
+     at all, which is what this carried until now, LinkedIn and the rest print
+     a bare link with no picture. */
   twitter: {
-    card: 'summary',
+    card: 'summary_large_image',
     title: fr.meta.title,
     description: fr.meta.description,
+    images: ['/og.png'],
   },
 };
 

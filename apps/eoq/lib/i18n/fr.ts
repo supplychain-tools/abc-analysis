@@ -8,7 +8,7 @@ import type { Dictionary } from './en';
  */
 export const fr: Dictionary = {
   meta: {
-    title: 'Calculateur de commande de stock',
+    title: 'Quantité économique de commande',
     description:
       'Combien commander à la fois, et ce que coûte une commande hors optimum. Calculé dans le navigateur.',
   },

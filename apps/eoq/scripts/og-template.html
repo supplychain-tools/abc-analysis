@@ -8,18 +8,23 @@
 <style>
   /* The social preview.
 
-     Sized 1200 by 630 and read at about 550 wide in a LinkedIn feed, and
-     smaller than that on a phone. Everything here is scaled for that
-     reduction rather than for the file: nothing under 26px, no hairlines, no
-     axis ticks. A chart drawn at the weights the site uses turns to grey fuzz
-     at less than half size.
+     Designed against what the network actually prints around it. LinkedIn
+     puts the image at the full width of the post and, underneath it on a grey
+     strip, the og:title in bold and the domain in small grey. The
+     og:description is not shown in the feed.
 
-     It carries no worked figures. An unexplained 1 596,9 tells a reader
-     scrolling past nothing at all; what the tool is, and the shape of the
-     answer it finds, tell them whether to stop. */
+     Two consequences, and they are why this card looks the way it does. The
+     address is not repeated here, because LinkedIn prints it a few pixels
+     below; a card that repeats it spends a line saying what the reader is
+     already being told. And the picture has to carry the meaning on its own,
+     because the sentence explaining it may never be displayed.
+
+     Read at about 550 wide in a desktop feed and 350 on a phone, so nothing
+     is under 26px, there are no hairlines, and the chart is drawn at weights
+     that survive being halved. */
   :root {
     --ground: #f4f6f8; --surface: #ffffff; --line: #d9e0e8; --line-strong: #7a8899;
-    --text: #172033; --text-2: #5b6779; --accent: #2563eb; --mark: #2563eb;
+    --text: #172033; --text-2: #5b6779; --accent: #2563eb;
     --trace: #1e3a5f;
     --mono: 'Chivo Mono', monospace; --sans: 'Fira Sans', system-ui, sans-serif;
   }
@@ -29,31 +34,26 @@
     font-family: var(--sans); color: var(--text);
   }
   .sheet {
-    position: absolute; inset: 36px; background: var(--surface); border-radius: 14px;
+    position: absolute; inset: 34px; background: var(--surface); border-radius: 16px;
     display: flex; flex-direction: column; overflow: hidden;
   }
-  .head { padding: 34px 52px 0; flex: none; }
-  .family { font-size: 26px; font-weight: 600; color: var(--accent); letter-spacing: 0.01em; }
+  .head { padding: 38px 56px 0; flex: none; }
+  .family { font-size: 26px; font-weight: 600; color: var(--accent); }
   h1 {
-    font-size: 58px; font-weight: 700; letter-spacing: -0.022em; line-height: 1.03;
-    margin-top: 14px; max-width: 22ch;
+    font-size: 62px; font-weight: 700; letter-spacing: -0.024em; line-height: 1.02;
+    margin-top: 14px; max-width: 20ch;
   }
-  .sub { font-size: 28px; line-height: 1.3; color: var(--text-2); margin-top: 12px; max-width: 46ch; }
-  /* The curve has to keep its U. Starved of height it flattens into three
-     parallel lines and stops saying anything at all. */
-  .plot { flex: 1; min-height: 220px; padding: 14px 52px 4px; }
+  .sub { font-size: 30px; line-height: 1.25; color: var(--text-2); margin-top: 16px; }
+  /* The picture gets the room. It is the half of the card that says something
+     the title does not, and a starved curve flattens into parallel lines. */
+  .plot { flex: 1; min-height: 250px; padding: 18px 56px 34px; }
   svg { width: 100%; height: 100%; display: block; }
-  .trace-label { font-family: var(--sans); font-size: 24px; font-weight: 600; fill: var(--text-2); }
+  .axis { font-size: 26px; font-weight: 600; fill: var(--text-2); }
+  .trace-label { font-size: 26px; font-weight: 700; }
   .mark {
-    font-family: var(--mono); font-size: 30px; font-weight: 700; fill: var(--text);
-    paint-order: stroke; stroke: var(--surface); stroke-width: 8px; stroke-linejoin: round;
+    font-family: var(--mono); font-size: 32px; font-weight: 700; fill: var(--accent);
+    paint-order: stroke; stroke: var(--surface); stroke-width: 9px; stroke-linejoin: round;
   }
-  .foot {
-    display: flex; justify-content: space-between; align-items: baseline;
-    margin: 0 52px; padding: 16px 0 28px; border-top: 2px solid var(--line); flex: none;
-  }
-  .foot .where { font-family: var(--mono); font-size: 26px; color: var(--text); }
-  .foot .langs { font-size: 26px; font-weight: 600; color: var(--text-2); }
 </style>
 </head>
 <body>
@@ -61,20 +61,15 @@
     <div class="head">
       <div class="family">Supply Chain Tools</div>
       <h1>Quantité économique de commande</h1>
-      <p class="sub">Combien commander à la fois, et ce que coûte une commande hors optimum.</p>
+      <p class="sub">Combien commander à la fois pour que le coût annuel soit le plus bas.</p>
     </div>
-
-    <div class="plot"><svg id="chart" viewBox="0 0 1080 230" preserveAspectRatio="none"></svg></div>
-
-    <div class="foot">
-      <span class="where">supplychain-tools.github.io/eoq</span>
-      <span class="langs">Français et anglais</span>
-    </div>
+    <div class="plot"><svg id="chart" viewBox="0 0 1088 248" preserveAspectRatio="none"></svg></div>
   </div>
 
 <script>
   /* The curve is drawn from the model rather than sketched, so the minimum is
-     where the arithmetic puts it. The figures behind it are never printed. */
+     where the arithmetic puts it. The figures behind it are never printed:
+     an unexplained 1 596,9 tells a reader scrolling past nothing at all. */
   const D = 24000, S = 450, H = 8.47;
   const qStar = Math.sqrt((2 * D * S) / H);
   const ordering = (q) => (D / q) * S;
@@ -84,10 +79,10 @@
   /* Domain chosen around Q*, not from zero: the interesting part of the curve
      is its flat bottom, and starting at zero spends most of the width on an
      asymptote nobody orders at. */
-  const qMin = qStar / 3, qMax = qStar * 2.2;
-  const yMax = Math.max(total(qMin), total(qMax)) * 1.06;
+  const qMin = qStar / 3, qMax = qStar * 2.15;
+  const yMax = Math.max(total(qMin), total(qMax)) * 1.04;
 
-  const W = 1080, HT = 230, L = 8, R = W - 180, T = 34, B = HT - 12;
+  const W = 1088, HT = 248, L = 34, R = W - 168, T = 52, B = HT - 40;
   const sx = (q) => L + ((q - qMin) / (qMax - qMin)) * (R - L);
   const sy = (v) => B - (v / yMax) * (B - T);
   const path = (f) => {
@@ -109,18 +104,27 @@
     return el;
   };
 
-  add('line', { x1: L, x2: R, y1: B, y2: B, stroke: 'var(--line-strong)', 'stroke-width': 2 });
-  add('path', { d: path(ordering), fill: 'none', stroke: 'var(--text-2)', 'stroke-width': 3.5, 'stroke-dasharray': '10 8' });
-  add('path', { d: path(holding), fill: 'none', stroke: 'var(--text-2)', 'stroke-width': 3.5 });
-  add('path', { d: path(total), fill: 'none', stroke: 'var(--trace)', 'stroke-width': 6 });
+  /* The two axes, named in words. A reader who never clicks should still come
+     away knowing what is plotted against what. */
+  add('line', { x1: L, x2: R, y1: B, y2: B, stroke: 'var(--line-strong)', 'stroke-width': 2.5 });
+  add('line', { x1: L, x2: L, y1: T - 6, y2: B, stroke: 'var(--line-strong)', 'stroke-width': 2.5 });
+  /* Named above the axis on one line rather than beside it: two stacked words
+     in a left margin collide with the curve where it is steepest. */
+  add('text', { x: L, y: T - 18, class: 'axis' }, 'coût annuel');
+  add('text', { x: R, y: B + 32, 'text-anchor': 'end', class: 'axis' }, 'quantité commandée');
 
-  add('text', { x: R + 14, y: sy(ordering(qMax)) + 8, class: 'trace-label' }, 'passation');
-  add('text', { x: R + 14, y: sy(holding(qMax)) + 8, class: 'trace-label' }, 'possession');
+  add('path', { d: path(ordering), fill: 'none', stroke: 'var(--text-2)', 'stroke-width': 3.5, 'stroke-dasharray': '11 9' });
+  add('path', { d: path(holding), fill: 'none', stroke: 'var(--text-2)', 'stroke-width': 3.5 });
+  add('path', { d: path(total), fill: 'none', stroke: 'var(--trace)', 'stroke-width': 7 });
+
+  add('text', { x: R + 12, y: sy(ordering(qMax)) + 8, class: 'trace-label', fill: 'var(--text-2)' }, 'passation');
+  add('text', { x: R + 12, y: sy(holding(qMax)) + 8, class: 'trace-label', fill: 'var(--text-2)' }, 'possession');
+  add('text', { x: R + 12, y: sy(total(qMax)) - 14, class: 'trace-label', fill: 'var(--trace)' }, 'total');
 
   const yStar = sy(total(qStar));
-  add('line', { x1: sx(qStar), x2: sx(qStar), y1: yStar, y2: B, stroke: 'var(--mark)', 'stroke-width': 5 });
-  add('circle', { cx: sx(qStar), cy: yStar, r: 11, fill: 'var(--mark)', stroke: 'var(--surface)', 'stroke-width': 3 });
-  add('text', { x: sx(qStar), y: yStar - 22, 'text-anchor': 'middle', class: 'mark' }, 'Q*');
+  add('line', { x1: sx(qStar), x2: sx(qStar), y1: yStar, y2: B, stroke: 'var(--accent)', 'stroke-width': 5 });
+  add('circle', { cx: sx(qStar), cy: yStar, r: 12, fill: 'var(--accent)', stroke: 'var(--surface)', 'stroke-width': 4 });
+  add('text', { x: sx(qStar) + 18, y: yStar - 16, class: 'mark' }, 'Q*');
 
   document.documentElement.dataset.drawn = 'true';
 </script>

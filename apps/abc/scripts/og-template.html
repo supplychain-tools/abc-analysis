@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;600;700&family=Chivo+Mono:wght@400;700&display=block">
+<style>
+  /* The social preview, built to the same rules as the ordering calculator's:
+     same header, same proportions, the tool's own emblem underneath. The two
+     cards have to read as a pair, because the two sites are one family.
+
+     Designed against what the network prints around it. LinkedIn puts the
+     image at the full width of the post and, underneath it, the og:title in
+     bold and the domain in small grey; the og:description is not shown in the
+     feed. So the address is not repeated here, and the picture carries the
+     meaning on its own.
+
+     Read at about 550 wide on a desktop feed and 350 on a phone: nothing
+     under 26px, no hairlines, no axis ticks. */
+  :root {
+    --ground: #f4f6f8; --surface: #ffffff; --line: #d9e0e8; --line-strong: #7a8899;
+    --text: #172033; --text-2: #5b6779; --accent: #2563eb;
+    --rank-1: #2563eb; --rank-2: #85a9f3; --rank-3: #7a8899;
+    --threshold: #f5b700; --trace: #1e3a5f;
+    --mono: 'Chivo Mono', monospace; --sans: 'Fira Sans', system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  body {
+    width: 1200px; height: 630px; background: var(--ground);
+    font-family: var(--sans); color: var(--text);
+  }
+  .sheet {
+    position: absolute; inset: 34px; background: var(--surface); border-radius: 16px;
+    display: flex; flex-direction: column; overflow: hidden;
+  }
+  .head { padding: 38px 56px 0; flex: none; }
+  .family { font-size: 26px; font-weight: 600; color: var(--accent); }
+  h1 {
+    font-size: 62px; font-weight: 700; letter-spacing: -0.024em; line-height: 1.02;
+    margin-top: 14px; max-width: 20ch;
+  }
+  .sub { font-size: 30px; line-height: 1.25; color: var(--text-2); margin-top: 16px; }
+  .plot { flex: 1; min-height: 250px; padding: 18px 56px 34px; }
+  svg { width: 100%; height: 100%; display: block; }
+  .axis { font-size: 26px; font-weight: 600; fill: var(--text-2); }
+  .band { font-family: var(--mono); font-size: 30px; font-weight: 700; }
+  .cut {
+    font-size: 26px; font-weight: 700; fill: var(--text);
+    paint-order: stroke; stroke: var(--surface); stroke-width: 8px; stroke-linejoin: round;
+  }
+</style>
+</head>
+<body>
+  <div class="sheet">
+    <div class="head">
+      <div class="family">Supply Chain Tools</div>
+      <h1>Analyse ABC des stocks</h1>
+      <p class="sub">Les quelques articles qui portent l’essentiel de la valeur, et les nombreux qui n’en portent presque pas.</p>
+    </div>
+    <div class="plot"><svg id="chart" viewBox="0 0 1088 248" preserveAspectRatio="none"></svg></div>
+  </div>
+
+<script>
+  /* A consumption-value profile shaped the way a real stock list is: a short
+     head worth most of the money, a long tail worth very little. Drawn from a
+     decaying series rather than sketched, so the cumulative curve is the curve
+     those bars actually produce. */
+  const N = 34;
+  const values = Array.from({ length: N }, (_, i) => Math.pow(0.80, i) * 100 + 1.2);
+  const totalValue = values.reduce((a, b) => a + b, 0);
+
+  let running = 0;
+  const cumulative = values.map((v) => { running += v; return (running / totalValue) * 100; });
+
+  const A_CUT = 80, B_CUT = 95;
+  const bandOf = (i) => (cumulative[i] <= A_CUT ? 'A' : cumulative[i] <= B_CUT ? 'B' : 'C');
+  const FILL = { A: 'var(--rank-1)', B: 'var(--rank-2)', C: 'var(--rank-3)' };
+
+  const W = 1088, HT = 248, L = 34, R = W - 96, T = 40, B = HT - 40;
+  const bw = (R - L) / N;
+  const maxValue = Math.max(...values);
+  const yBar = (v) => B - (v / maxValue) * (B - T);
+  const yCum = (pct) => B - (pct / 100) * (B - T);
+
+  const ns = 'http://www.w3.org/2000/svg';
+  const svg = document.getElementById('chart');
+  const add = (tag, attrs, text) => {
+    const el = document.createElementNS(ns, tag);
+    for (const [k, v] of Object.entries(attrs)) el.setAttribute(k, v);
+    if (text !== undefined) el.textContent = text;
+    svg.appendChild(el);
+    return el;
+  };
+
+  add('line', { x1: L, x2: R, y1: B, y2: B, stroke: 'var(--line-strong)', 'stroke-width': 2.5 });
+
+  values.forEach((v, i) => {
+    const x = L + i * bw;
+    add('rect', { x: x + 1.5, y: yBar(v), width: bw - 3, height: B - yBar(v), fill: FILL[bandOf(i)] });
+  });
+
+  /* The 80% line: the cut that makes the A class, and the only amber on the
+     card. It is a threshold, which is the one thing amber means here. */
+  add('line', {
+    x1: L, x2: R, y1: yCum(A_CUT), y2: yCum(A_CUT),
+    stroke: 'var(--threshold)', 'stroke-width': 4, 'stroke-dasharray': '10 8',
+  });
+  add('text', { x: R + 10, y: yCum(A_CUT) + 9, class: 'axis', fill: 'var(--text)' }, '80 %');
+
+  const cumPath = cumulative
+    .map((pct, i) => (i === 0 ? 'M' : 'L') + (L + i * bw + bw / 2).toFixed(1) + ' ' + yCum(pct).toFixed(1))
+    .join(' ');
+  add('path', { d: cumPath, fill: 'none', stroke: 'var(--trace)', 'stroke-width': 6 });
+
+  /* Each band named under the run of bars it covers, in ink rather than in
+     its own fill: --rank-2 measures 2.4:1 against white and cannot carry a
+     letter. The bars hold the colour, the position holds the mapping. */
+  const lastOf = (band) => values.reduce((acc, _, i) => (bandOf(i) === band ? i : acc), -1);
+  const firstOf = (band) => values.findIndex((_, i) => bandOf(i) === band);
+  for (const band of ['A', 'B', 'C']) {
+    const from = firstOf(band), to = lastOf(band);
+    if (from < 0) continue;
+    const mid = L + ((from + to) / 2 + 0.5) * bw;
+    add('text', { x: mid, y: B + 32, 'text-anchor': 'middle', class: 'band', fill: 'var(--text)' }, band);
+  }
+
+  add('text', { x: L, y: T - 16, class: 'axis' }, 'valeur de consommation annuelle');
+
+  document.documentElement.dataset.drawn = 'true';
+</script>
+</body>
+</html>

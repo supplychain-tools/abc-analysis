@@ -1,12 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Q*">
-  <!-- Q* in white on the ink, drawn rather than typed: a favicon is rendered
+  <!-- Q* in white on the navy, drawn rather than typed: a favicon is rendered
        without the page's webfonts, so <text> would fall back to whatever
        sans-serif the reader's system happens to hold. These are strokes, so it
        is the same mark on every machine.
 
        The tail starts inside the bowl and crosses it. Stopping short of the
        ring made the letter read as a magnifying glass at small sizes. -->
-  <rect width="32" height="32" fill="#23211c"/>
+  <rect width="32" height="32" fill="#172033"/>
   <g fill="none" stroke="#ffffff" stroke-width="3.1" stroke-linecap="round">
     <circle cx="13.6" cy="16.4" r="8"/>
     <path d="M14.6 19.6 L21.8 27"/>

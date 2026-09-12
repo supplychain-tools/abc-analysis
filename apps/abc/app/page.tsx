@@ -19,7 +19,6 @@ import { SettingsProvider, useSettings } from '@/components/Settings';
 import type { CurrencyCode, Locale } from '@sct/shared/lib/format';
 import { AppShell } from '@sct/shared/ui/AppShell';
 import { SETTINGS_STORAGE_KEY } from '@sct/shared/ui/settings';
-import { FAMILY, siblingsOf } from '@sct/tools';
 
 /**
  * Layout effects run after the DOM is committed but before the browser paints,
@@ -127,11 +126,20 @@ export default function AbcPage() {
     setRows((current) => [...current, blankRow()]);
   }, []);
 
+  /* Filling the table and emptying it are the two things done to the whole
+     document rather than to any one row, which is what the shell's action slot
+     is for. They sat over the table itself, which put them inside the thing
+     they act on and left them to scroll away with it.
+
+     Both quiet, following the sibling tool. The example button used to fill
+     solid while the table was empty, to point at the one useful thing on an
+     untouched page; a filled button in a header is loud in every state that
+     follows, and the empty panel already says what the example does and why. */
   const actions = (
     <>
       <button
         type="button"
-        className={`t-micro ${analysis.isEmpty ? 'btn btn-primary' : 'btn'}`}
+        className="btn btn-quiet t-micro"
         data-testid="load-example"
         onClick={() => setRows(exampleRows(locale))}
       >
@@ -154,38 +162,45 @@ export default function AbcPage() {
         {t.a11y.skipToTable}
       </a>
 
+      {/* The header names this tool and nothing else.
+
+          The shell takes an optional family name and an optional list of
+          sibling tools, and both are withheld here on purpose: a reader who
+          arrives at this page came for an ABC analysis, and a row of links out
+          of it is an invitation to leave before they have done the one thing
+          the page is for. The shell is built for exactly this — a tool that
+          stands on its own carries a single name rather than a path. */}
       <AppShell
         labels={{
-          family: FAMILY,
           tool: t.app.tool,
           language: t.app.language,
           currency: t.app.currency,
-          siblings: t.app.siblings,
         }}
-        siblings={siblingsOf('abc', locale)}
         onLocaleChange={changeLocale}
         onCurrencyChange={setCurrency}
+        actions={actions}
       />
 
-      <main className="mx-auto max-w-[1200px] px-4 pb-16 pt-4 sm:px-6">
+      <main className="mx-auto max-w-[1440px] px-4 pb-16 pt-4 sm:px-6">
+        {/* The table first, across the page, and the reading under it.
+
+            The sibling calculator puts its input in a rail down the left and
+            its output beside it, and that was tried here and abandoned. It
+            works there because six fields fit in a narrow column. The input
+            here is a table of thirty rows and seven columns: pushed into half
+            the page it is a table read through a slot, and the diagram beside
+            it is a Pareto chart of thirty bars squeezed into four hundred
+            pixels. Both halves lose, to keep a convention.
+
+            So this tool takes the width for the thing that needs it. You fill
+            the table, then you look under it: what each class holds on the
+            left, the curve it came from on the right. */}
         <div className="grid gap-4">
-          <section>
-            <h2 className="t-figure-lg font-sans">{t.intro.title}</h2>
-            <p className="note t-body mt-1 text-[color:var(--text-2)]">{t.intro.lead}</p>
-          </section>
+          <ItemTable rows={rows} analysis={analysis} onEdit={edit} onRemove={remove} onAdd={add} />
 
-          {analysis.isEmpty ? <EmptyState /> : <ParetoChart analysis={analysis} />}
+          {analysis.isEmpty ? <EmptyState /> : <ClassSummary bands={analysis.bands} />}
 
-          {analysis.isEmpty ? null : <ClassSummary bands={analysis.bands} />}
-
-          <ItemTable
-            rows={rows}
-            analysis={analysis}
-            onEdit={edit}
-            onRemove={remove}
-            onAdd={add}
-            actions={actions}
-          />
+          {analysis.isEmpty ? null : <ParetoChart analysis={analysis} />}
         </div>
       </main>
     </SettingsProvider>
@@ -207,7 +222,6 @@ function EmptyState() {
       <div className="panel-body py-8">
         <p className="t-figure font-sans">{t.empty.title}</p>
         <p className="note t-body mt-2 text-[color:var(--text-2)]">{t.empty.message}</p>
-        <p className="note t-micro mt-1 text-[color:var(--text-2)]">{t.empty.exampleHint}</p>
       </div>
     </section>
   );

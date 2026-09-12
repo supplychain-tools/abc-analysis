@@ -104,7 +104,7 @@ function bandFor(cumulativeShare: number): AbcClass {
 }
 
 /**
- * Descending by annual value, ties broken by name.
+ * Descending by annual value, ties broken by name — except at zero.
  *
  * The tiebreak is what makes the order deterministic rather than merely
  * repeatable: two items of equal value can land on opposite sides of a
@@ -113,9 +113,24 @@ function bandFor(cumulativeShare: number): AbcClass {
  * depended on the reader's language would classify the same data differently
  * in French and in English. Rows equal on both keys keep their input order,
  * which the specification has guaranteed of Array.prototype.sort since ES2019.
+ *
+ * Rows worth nothing are the exception, and leaving them to the name tiebreak
+ * made the table unusable to type into. A row is worth nothing until both a
+ * usage and a unit cost are in it, which is to say for the whole time somebody
+ * is filling it in — and every such row is tied with every other, so the order
+ * fell to the names. Typing the first letter into an empty row sorted it
+ * against the blanks around it and moved it away under the cursor, before it
+ * meant anything at all.
+ *
+ * So at zero the tiebreak is withheld and the input order stands. Nothing is
+ * lost by it: the name tiebreak exists to decide which of two equal items
+ * falls on which side of a threshold, and items worth nothing are not
+ * classified — they sit below every classified row, in the order they were
+ * typed, until they are worth something and the value sorts them properly.
  */
 function byValueThenName(a: ClassifiedItem, b: ClassifiedItem): number {
   if (b.annualValue !== a.annualValue) return b.annualValue - a.annualValue;
+  if (a.annualValue === 0) return 0;
   if (a.name < b.name) return -1;
   if (a.name > b.name) return 1;
   return 0;

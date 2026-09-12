@@ -14,8 +14,6 @@ export interface ItemTableProps {
   onEdit: (id: string, patch: Partial<Omit<ItemRow, 'id'>>) => void;
   onRemove: (id: string) => void;
   onAdd: () => void;
-  /** Above the table, where they can be found before the table is read. */
-  actions: React.ReactNode;
 }
 
 /**
@@ -26,11 +24,20 @@ export interface ItemTableProps {
  * and re-classifies the whole list, so there is nothing to submit and no
  * button to press: what the table shows is what the numbers in it mean.
  *
+ * Rows are shown in ranked order, richest first, so the cumulative column
+ * reads down the table as the running total it is and the classes arrive in
+ * one block each.
+ *
+ * A row still being filled in never moves: a row is worth nothing until it has
+ * both a usage and a cost, and classify() holds every such row in input order
+ * rather than sorting it by name. That is what stopped the table jumping under
+ * the cursor at the first letter typed. See byValueThenName in lib/classify.
+ *
  * Rows are keyed by a stable id, not by position or name. That is what lets
- * the sort move a row under the cursor without React tearing down the input
- * being typed into, and it is why duplicate names cost nothing.
+ * the sort move a finished row without React tearing down the input being
+ * typed into, and it is why duplicate names cost nothing.
  */
-export function ItemTable({ rows, analysis, onEdit, onRemove, onAdd, actions }: ItemTableProps) {
+export function ItemTable({ rows, analysis, onEdit, onRemove, onAdd }: ItemTableProps) {
   const { locale, currency, t } = useSettings();
   const symbol = currencySymbol(currency, locale);
 
@@ -56,7 +63,6 @@ export function ItemTable({ rows, analysis, onEdit, onRemove, onAdd, actions }: 
     <section id="items" className="panel">
       <div className="panel-head">
         <h2 className="t-label">{t.sections.table}</h2>
-        <div className="no-print flex flex-wrap items-center gap-2">{actions}</div>
       </div>
 
       <div className="table-scroll px-4 py-2">

@@ -66,6 +66,9 @@ test('puts the whole worked example one button away', async ({ page }) => {
 test('sorts by annual value descending, not by unit price', async ({ page }) => {
   await withExample(page);
 
+  // The sample is not stored by value: the 12 oz cups are second in the list
+  // and third by what they are worth, so a ranked table is the only way they
+  // land third.
   await expect(nameInputs(page).nth(0)).toHaveValue('Espresso beans, house blend');
   await expect(nameInputs(page).nth(2)).toHaveValue('Takeaway cups, 12 oz');
 
@@ -101,7 +104,34 @@ test('recomputes on every keystroke, with no button to press', async ({ page }) 
 
   await expect(total).toContainText('473,486.00');
   await expect(page.locator('[data-testid="band-A-count"]')).not.toContainText('5');
+
   await expect(nameInputs(page).nth(0)).toHaveValue('Whole milk');
+});
+
+test('never moves a row that has not been filled in yet', async ({ page }) => {
+  await page.goto(PAGE);
+  await ready(page);
+
+  // Six blank rows. Every one of them is worth nothing, so they were all tied
+  // and the order fell to the name tiebreak: typing the first letter into the
+  // top row sorted it against five empty names and sent it to the bottom,
+  // carrying the cursor with it. A row worth nothing now keeps its place.
+  for (let i = 0; i < 5; i += 1) await page.locator('[data-testid="add-row"]').click();
+  await expect(page.locator('[data-testid="item-row"]')).toHaveCount(6);
+
+  const first = nameInputs(page).nth(0);
+  await first.click();
+  await first.fill('Zinc');
+
+  await expect(nameInputs(page).nth(0)).toHaveValue('Zinc');
+  await expect(first).toBeFocused();
+
+  // A usage on its own is still not a value, so it still does not move.
+  const usage = page.locator('[data-testid="item-row"]').nth(0).locator('input[id^="usage-"]');
+  await usage.click();
+  await usage.fill('40');
+  await expect(nameInputs(page).nth(0)).toHaveValue('Zinc');
+  await expect(usage).toBeFocused();
 });
 
 test('keeps the caret in the cell when the sort moves the row', async ({ page }) => {
@@ -246,15 +276,16 @@ test('reads its figures in French and switches without losing them', async ({ pa
   await expect(page.locator('[data-testid="band-A-count"]')).toContainText('5');
 });
 
-test('offers the family link, pointing at the sibling site', async ({ page }) => {
+test('names itself and offers no way out of the page', async ({ page }) => {
   await page.goto(PAGE);
   await ready(page);
 
-  // Following it would leave this site, and the sibling is not on this port.
-  // What belongs to this suite is that the link is offered and aimed correctly.
-  const link = page.getByRole('link', { name: 'Inventory ordering' });
-  await expect(link).toBeVisible();
-  await expect(link).toHaveAttribute('href', /^https?:\/\/.+/);
+  // The header carried the family name and a link to each sibling tool, and
+  // both were taken out: a reader who opened this page came for an ABC
+  // analysis, and a row of links out of it is an invitation to leave before
+  // they have done the one thing the page is for.
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('ABC inventory analysis');
+  await expect(page.locator('header a')).toHaveCount(0);
 });
 
 /* ---- The house rules the sibling tool is held to ------------------- */

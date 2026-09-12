@@ -16,21 +16,61 @@
    ================================================================== */
 
 :root {
-  --ground: #eef1f4;
+  /* ==================================================================
+     The palette: navy, blue and amber.
+
+     Roles, which matter more than the hues themselves:
+       blue    identity, structure, and data
+       amber   a threshold worth attention, and only that
+       red     a fault
+       white   surfaces
+
+     Raised here from the ordering calculator, where it was built and
+     judged, so that every tool in the family reads one set of values.
+     The two files it came from are kept at apps/eoq/app/theme-*.css as
+     a record of the comparison, and are imported by nothing.
+     ================================================================== */
+  --ground: #f4f6f8;
   --surface: #ffffff;
-  --surface-2: #f5f7f9;
-  --line: #dce1e6;
-  --line-strong: #b7c0c9;
-  --text: #0f151b;
-  --text-2: #586470;
-  --accent: #14456b;
+  --surface-2: #f1f5f9;
+  --line: #d9e0e8;
+
+  /* Two values measured rather than taken as given.
+
+     --line-strong draws the edge of every input and every table head. The
+     slate-400 this started from, #94A3B8, measures 2.60:1 against white, and
+     WCAG 1.4.11 asks 3:1 of the boundary of a control you have to find. This
+     is 3.61:1.
+
+     --text-2 sets units and labels at 11px, including inside the --surface-2
+     stripes of the tables. #64748B measures 4.76:1 on white but 4.35:1 on the
+     stripe, which is under the 4.5:1 floor for text this size. This is 5.26:1
+     on the stripe and 5.75:1 on white, and is within a hair of the same hue. */
+  --line-strong: #7a8899;
+  --text: #172033;
+  --text-2: #5b6779;
+
+  --accent: #2563eb;
   --on-accent: #ffffff;
-  --signal: #b3261e;
+
+  /* A fault, and nothing else. */
+  --signal: #dc2626;
+
+  /* The optimum, wherever a tool marks one. Blue, because an optimum is data,
+     not a warning. */
+  --mark: #2563eb;
+  /* Blue-100, not blue-50. The lighter tint was tried and is indistinguishable
+     from the --surface-2 stripe the tables already alternate with, so the
+     marked row read as an ordinary even row. */
+  --mark-soft: #dbeafe;
+
+  /* A threshold a reader is meant to notice. The only amber on a page. */
+  --threshold: #f5b700;
 
   /* Chart traces: text at two weights, plus the one marked colour. */
-  --trace: var(--text);
-  --trace-2: var(--text-2);
-  --grid: color-mix(in srgb, var(--line) 70%, transparent);
+  --trace: #1e3a5f;
+  --trace-2: #64748b;
+  --grid: #e2e8f0;
 
   /* An ordinal ramp, for a classification whose bands are ranked rather than
      merely different. One hue thinning towards the neutral end, so the order
@@ -303,11 +343,17 @@ p {
    Two names for one appearance, on purpose: each diagram keeps its own handle
    even though the ink is the same. */
 .chart-mark,
+/* The figure beside a threshold line. Set in ink, not in the threshold's own
+   colour: --threshold is a hi-vis marking hue, which is what makes it work as
+   a line across a plot and what makes it fail as 10px type — it measures under
+   2:1 on --surface. The line carries the marking, the label carries the
+   reading, and they sit at the same height so the pairing needs no colour to
+   be made. The sibling tool marks its optimum the same way. */
 .chart-threshold {
   font-family: var(--font-mono);
   font-size: 10px;
   font-weight: 700;
-  fill: var(--signal);
+  fill: var(--text);
   paint-order: stroke;
   stroke: var(--surface);
   stroke-width: 3px;

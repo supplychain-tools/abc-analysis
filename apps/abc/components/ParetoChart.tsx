@@ -197,8 +197,14 @@ export function ParetoChart({ analysis }: ParetoChartProps) {
             })}
           </g>
 
-          {/* The two marked lines. Red is the ink of a threshold in this
-              family, and a threshold is exactly what these are. */}
+          {/* The two marked lines: where A ends and where B ends.
+
+              These were red, from a time when the family had no colour for a
+              threshold and red was the only marked ink available. It has one
+              now, and red has narrowed to meaning a fault — it is the colour a
+              rejected entry is flagged in. A class boundary is not a fault, it
+              is the landmark the whole chart is read against, so it takes the
+              amber the palette reserves for exactly that. */}
           {[CLASS_A_THRESHOLD, CLASS_B_THRESHOLD].map((threshold) => (
             <g key={`th-${threshold}`}>
               <line
@@ -206,7 +212,7 @@ export function ParetoChart({ analysis }: ParetoChartProps) {
                 x2={geometry.plotRight}
                 y1={geometry.yCumulative(threshold)}
                 y2={geometry.yCumulative(threshold)}
-                stroke="var(--signal)"
+                stroke="var(--threshold)"
                 strokeWidth={1}
                 strokeDasharray="4 3"
                 data-testid="threshold-line"

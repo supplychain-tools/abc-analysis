@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Archivo, Overpass_Mono } from 'next/font/google';
+import { Archivo, Roboto_Mono } from 'next/font/google';
 
 import { FAMILY } from '@sct/tools';
 
@@ -8,12 +8,21 @@ import { fr } from '@/lib/i18n/fr';
 import './globals.css';
 
 /**
- * Two families, doing two different jobs. The same pair the sibling tool
- * loads, because the division is the design system's and not this page's:
- * mono carries every figure, Archivo carries every word, and neither ever
- * does the other's job.
+ * Two families, doing two different jobs: mono carries every figure, Archivo
+ * carries every word, and neither ever does the other's job. The division is
+ * the design system's, not this page's.
+ *
+ * The mono is Roboto Mono rather than the Overpass Mono the sibling tool
+ * loads, for one reason: Overpass Mono draws a dot inside its zero and offers
+ * no alternate that removes it — not the `zero` feature, not a stylistic set.
+ * A dotted zero is a programmer's convention, for telling 0 from O in a
+ * typeface where they collide. Nothing on this page is code, every figure is a
+ * quantity or an amount of money, and the mark reads as a decimal point that
+ * has landed in the wrong place. Of the faces tested with a plain zero — Noto
+ * Sans Mono, DM Mono and Inconsolata all slash theirs, Space Mono dots it —
+ * this was the one that left it alone.
  */
-const mono = Overpass_Mono({
+const mono = Roboto_Mono({
   subsets: ['latin'],
   weight: ['400', '600', '700'],
   variable: '--font-figure',

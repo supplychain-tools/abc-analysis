@@ -1,12 +1,17 @@
-name: Publish the ordering calculator
+name: Publish the ABC analyser
 
 # GitHub Pages, built from source on every push to main. The published site is
-# apps/eoq/out, the folder `next build` writes.
+# apps/abc/out, the folder `next build` writes.
+#
+# A second file rather than a second job in pages.yml, because the two tools
+# are published to two repositories and a deployment belongs to the repository
+# it lands in. This one runs where the abc repository is checked out; the
+# ordering calculator's workflow runs where its own is. Neither knows about the
+# other, and adding a third tool means adding a third file.
 #
 # The build is handed two settings the repository deliberately does not hold:
 # where the site is mounted, and the address it advertises to social crawlers.
-# Both belong to a deployment rather than to the source, and a second tool
-# published from this repository would pass its own.
+# Both belong to a deployment rather than to the source.
 
 on:
   push:
@@ -32,7 +37,7 @@ jobs:
     # stops each from publishing in the other's place: the file is present
     # everywhere, and runs in exactly one place. The deploy job needs this one,
     # so skipping here skips the publish entirely.
-    if: github.repository == 'supplychain-tools/eoq'
+    if: github.repository == 'supplychain-tools/abc-analysis'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -49,22 +54,22 @@ jobs:
       # which is faster and reproducible.
       - run: npm install --no-audit --no-fund
 
-      - run: npm run build --workspace @sct/eoq
+      - run: npm run build --workspace @sct/abc
         env:
-          NEXT_PUBLIC_BASE_PATH: /eoq
-          NEXT_PUBLIC_SITE_URL: https://supplychain-tools.github.io/eoq
+          NEXT_PUBLIC_BASE_PATH: /abc-analysis
+          NEXT_PUBLIC_SITE_URL: https://supplychain-tools.github.io/abc-analysis
 
       # Belt and braces. The artefact upload below does not run the site
       # through Jekyll, but a repository served straight from a branch would,
       # and Jekyll skips every folder whose name starts with an underscore —
       # which is where Next puts the entire stylesheet and script bundle.
-      - run: touch apps/eoq/out/.nojekyll
+      - run: touch apps/abc/out/.nojekyll
 
       - uses: actions/configure-pages@v5
 
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: apps/eoq/out
+          path: apps/abc/out
 
   deploy:
     needs: build

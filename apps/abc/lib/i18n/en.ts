@@ -15,21 +15,16 @@ export const en = {
   },
 
   app: {
-    tool: 'ABC analysis',
+    /* The tool's full name, and the only place it is written on the page. It
+       used to be shortened here because a standing heading underneath carried
+       the long form; that heading is gone, so the header carries the name. */
+    tool: 'ABC inventory analysis',
     language: 'Language',
     currency: 'Currency',
-    siblings: 'Tools',
-  },
-
-  intro: {
-    title: 'ABC inventory analysis',
-    lead: 'ABC analysis ranks every stocked item by its annual consumption value, then splits the ranked list into three classes.',
   },
 
   sections: {
     chart: 'Pareto chart',
-    /** The summary panel carries no visible heading. This names its table for
-        anyone reading by screen reader, which still needs a handle on it. */
     summary: 'Classes',
     table: 'Items',
   },
@@ -57,6 +52,9 @@ export const en = {
   },
 
   summary: {
+    ofItems: 'of items',
+    ofValue: 'of the value',
+
     columns: {
       abcClass: 'Class',
       itemCount: 'Items',
@@ -81,7 +79,6 @@ export const en = {
     title: 'Nothing to analyse yet',
     message:
       'Type an item name, the number of units used in a year, and the cost of one unit. The chart and the classes appear as you type.',
-    exampleHint: 'Load example fills the table with a year of café supplies.',
   },
 
   units: {

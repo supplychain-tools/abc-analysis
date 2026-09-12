@@ -8,3 +8,239 @@
 
 /* The design system this tool shares with the rest of the family. */
 @import '../../../packages/shared/styles.css';
+
+/* ==================================================================
+   Revision 3, this tool only.
+
+   The palette is shared and needs nothing here. What is left is shape:
+   the ordering calculator moved to softer sheets and to grouping what
+   reads as one passage into a single sheet divided by hairlines, and
+   this tool was left behind at revision 2's six-point boxes.
+
+   These rules are a copy of the ones in apps/eoq/app/globals.css and
+   are knowingly duplicated. They belong in packages/shared once the
+   third tool is settled and saved; putting them there today would
+   change its appearance mid-edit.
+   ================================================================== */
+
+:root {
+  /* Two radii, and the difference between them says which is which: a sheet is
+     a surface the work sits on, a control is a thing you put your hand on. */
+  --radius-panel: 10px;
+  --radius-control: 6px;
+}
+
+/* ---- Sheets --------------------------------------------------------
+   Containment is by tone, not by outline: the ground sits far enough
+   below the sheet to do the separating on its own.
+   ------------------------------------------------------------------ */
+
+.panel {
+  border: 0;
+  border-radius: var(--radius-panel);
+}
+
+/* Sections that are one continuous reading share one sheet, divided by
+   hairlines rather than by more boxes. The column sets gap-0; this draws the
+   rule between neighbours. */
+.sheet-stack > .panel + .panel {
+  border-top: 1px solid var(--line);
+}
+
+/* The stack is one sheet, so the corners belong to the stack and not to each
+   section in it. Rounding the panels individually would round every internal
+   join and let the ground show through the notches between them; clipping at
+   the stack rounds the four outer corners only, and takes a wide table's
+   scroller with it. */
+.sheet-stack {
+  border-radius: var(--radius-panel);
+  overflow: hidden;
+}
+
+.sheet-stack > .panel {
+  border-radius: 0;
+}
+
+.panel-head {
+  padding: 11px 16px;
+}
+
+.panel-body {
+  padding: 16px;
+}
+
+/* A diagram needs room between its name and itself; a paragraph does not. */
+.panel-head + .panel-body:has(svg[role='img']) {
+  padding-top: 20px;
+  padding-bottom: 18px;
+}
+
+/* ---- Controls -------------------------------------------------------
+   The field's own edge agreeing with the shared focus ring, rather than
+   a second ring drawn beside it.
+   ------------------------------------------------------------------ */
+
+.field-input {
+  border-color: var(--line-strong);
+  background: var(--surface);
+}
+
+.field-input:focus {
+  border-color: var(--accent);
+}
+
+.btn {
+  border-color: var(--line-strong);
+}
+
+/* ---- Print ----------------------------------------------------------
+   Panels flatten to rules on paper. Media queries add no specificity, so
+   the screen radii above, which come later in the file, have to be undone
+   here rather than left to the shared sheet.
+   ------------------------------------------------------------------ */
+
+@media print {
+  :root {
+    --threshold: #000000;
+    --accent: #000000;
+  }
+
+  .panel,
+  .sheet-stack {
+    border-radius: 0;
+    overflow: visible;
+  }
+
+  .panel-head + .panel-body:has(svg[role='img']) {
+    padding-block: 3px;
+  }
+}
+
+/* ---- Type ----------------------------------------------------------
+   The sibling tool's scale, which is a step down from the shared one:
+   this family is read at desk distance off a table of figures, not
+   across a room. Fira Sans for words, Spline Sans Mono for figures, and
+   the division is load-bearing — mono means this is a number.
+   ------------------------------------------------------------------ */
+
+body {
+  font-size: 13px;
+}
+
+.t-figure-lg {
+  font-size: clamp(19px, 2.1vw, 22px);
+  letter-spacing: -0.005em;
+}
+
+.t-label {
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.008em;
+}
+
+/* ---- The answer line ------------------------------------------------
+   The finding, set the way the sibling tool sets Q*: the figures large,
+   in the mono, in the accent, and the words that bind them small and
+   quiet. There the line is an equation with one unknown. Here it is a
+   sentence with two figures in it, because the finding is a comparison
+   and half of it is not a finding — a share of the value means nothing
+   without the share of the list that carries it.
+   ------------------------------------------------------------------ */
+
+.equation {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.14em 0.42em;
+  font-family: var(--font-mono);
+  font-size: clamp(22px, 3vw, 34px);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+}
+
+/* The word that binds the two figures. Set in the text face at reading
+   size: it is a word, and the figures on either side are the reading. */
+.equation .op {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--text-2);
+}
+
+/* The two figures, and the only place the accent is spent on type. */
+.answer {
+  color: var(--accent);
+  white-space: nowrap;
+}
+
+/* The unit beside a figure this size would be a caption at .68em. */
+.equation .unit {
+  font-size: 0.4em;
+}
+
+/* ---- Headline metrics ----------------------------------------------
+   The figures that follow the answer, each in its own box, so they read
+   as three separate readings rather than a wall of label-value pairs.
+   ------------------------------------------------------------------ */
+
+.kpi {
+  background: var(--surface-2);
+  border-radius: var(--radius-control);
+  padding: 10px 12px;
+}
+
+/* ---- A two-column list of figures ----------------------------------
+   The rule under a row is a leader carrying the eye from the name to the
+   number, so the rows of the last line carry none.
+
+   `:last-child` alone is wrong here: in two columns it clears only the
+   right-hand cell and leaves a hairline stopping halfway across.
+   ------------------------------------------------------------------ */
+
+.figure-list > * {
+  border-bottom: 1px solid var(--line);
+}
+
+.figure-list > :last-child {
+  border-bottom: 0;
+}
+
+/* Matches the sm breakpoint the grid switches to two columns at. */
+@media (min-width: 640px) {
+  .figure-list > :nth-last-child(-n + 2) {
+    border-bottom: 0;
+  }
+}
+
+/* ---- A class, as a card --------------------------------------------
+   Contained by tone rather than by an outline, like every other box in
+   this family: the ground it sits on does the separating.
+   ------------------------------------------------------------------ */
+
+.class-card {
+  background: var(--surface-2);
+  border-radius: var(--radius-control);
+  padding: 12px 14px;
+}
+
+/* The rule is not decoration and not a divider between equals. Above it is
+   what a class costs to look after — lines to watch, and what fraction of the
+   list that is. Below it is what the class returns. Reading down a card
+   crosses it once, and crossing it is where the whole effect is: in A the
+   small half is on top, in C it is underneath. */
+.class-card-return {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+}
+
+/* The words that follow a figure here name what the figure is a share of, so
+   they sit at reading size rather than at the caption size a unit takes when
+   it is a symbol like MAD or %. */
+.class-card-cost .unit,
+.class-card-return .unit {
+  font-size: 0.85em;
+}
+

@@ -9,19 +9,18 @@
 /* The design system this tool shares with the rest of the family. */
 @import '../../../packages/shared/styles.css';
 
-/* The palette, and the only line to change to swap it. theme-kraft.css is
-   revision 3 as built — concrete, kraft and hi-vis; theme-navy.css is the
-   navy-blue-amber experiment. Both define the same token set and nothing
-   else, so every rule below is written once and judged under either. */
-@import './theme-navy.css';
+/* The palette is no longer imported here. Navy-blue-amber won the comparison
+   and was raised into packages/shared/styles.css, so all three tools read one
+   set of values. theme-navy.css and theme-kraft.css stay beside this file as a
+   record of what was compared; nothing imports either. */
 
 /* ==================================================================
    Revision 3, this tool only. See docs/design-plan-v3.md.
 
-   packages/shared is untouched, so abc and make-or-buy keep revision
-   2's appearance. Everything below is an override layered on top of
-   the shared stylesheet: it lands after it, at the same specificity,
-   and wins on order.
+   The palette now lives in packages/shared, so every tool in the family
+   shares it. Everything below is an override layered on top of the
+   shared stylesheet — shape and spacing peculiar to this tool. It lands
+   after it, at the same specificity, and wins on order.
 
    Two things change. The palette leaves the navy-grey-red convention
    revision 2 flagged in its own self-critique, for the floor the work

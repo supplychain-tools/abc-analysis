@@ -12,15 +12,9 @@ export const fr: AbcDictionary = {
   },
 
   app: {
-    tool: 'Analyse ABC',
+    tool: 'Analyse ABC des stocks',
     language: 'Langue',
     currency: 'Devise',
-    siblings: 'Outils',
-  },
-
-  intro: {
-    title: 'Analyse ABC des stocks',
-    lead: "L'analyse ABC classe chaque article stocké par sa valeur de consommation annuelle, puis répartit la liste classée en trois classes.",
   },
 
   sections: {
@@ -52,6 +46,9 @@ export const fr: AbcDictionary = {
   },
 
   summary: {
+    ofItems: 'des articles',
+    ofValue: 'de la valeur',
+
     columns: {
       abcClass: 'Classe',
       itemCount: 'Articles',
@@ -77,7 +74,6 @@ export const fr: AbcDictionary = {
     title: 'Rien à analyser pour le moment',
     message:
       "Saisissez le nom d'un article, la quantité consommée en un an et le coût d'une unité. Le diagramme et les classes apparaissent au fur et à mesure.",
-    exampleHint: "Charger l'exemple remplit le tableau avec une année de fournitures de café.",
   },
 
   units: {

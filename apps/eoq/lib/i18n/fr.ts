@@ -10,7 +10,7 @@ export const fr: Dictionary = {
   meta: {
     title: 'Calculateur de commande de stock',
     description:
-      'Quantité économique de commande, stock de sécurité et coût d’une commande hors optimum, calculés dans le navigateur.',
+      'Combien commander à la fois, et ce que coûte une commande hors optimum. Calculé dans le navigateur.',
   },
 
   app: {

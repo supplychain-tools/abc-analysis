@@ -4,58 +4,77 @@
 <meta charset="utf-8">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,400;0,600;0,700;1,600&family=Chivo+Mono:wght@400;600;700&display=block">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;600;700&family=Chivo+Mono:wght@400;700&display=block">
 <style>
+  /* The social preview.
+
+     Sized 1200 by 630 and read at about 550 wide in a LinkedIn feed, and
+     smaller than that on a phone. Everything here is scaled for that
+     reduction rather than for the file: nothing under 26px, no hairlines, no
+     axis ticks. A chart drawn at the weights the site uses turns to grey fuzz
+     at less than half size.
+
+     It carries no worked figures. An unexplained 1 596,9 tells a reader
+     scrolling past nothing at all; what the tool is, and the shape of the
+     answer it finds, tell them whether to stop. */
   :root {
-    --ground: #d9d6ce; --surface: #fbfaf6; --line: #c6c1b5; --line-strong: #8a8578;
-    --text: #23211c; --text-2: #5e594e; --accent: #23211c; --mark: #f2c302; --signal: #a62a17;
+    --ground: #f4f6f8; --surface: #ffffff; --line: #d9e0e8; --line-strong: #7a8899;
+    --text: #172033; --text-2: #5b6779; --accent: #2563eb; --mark: #2563eb;
+    --trace: #1e3a5f;
     --mono: 'Chivo Mono', monospace; --sans: 'Fira Sans', system-ui, sans-serif;
   }
   * { box-sizing: border-box; margin: 0; }
-  body { width: 1200px; height: 630px; background: var(--ground); font-family: var(--sans); color: var(--text); }
-  .sheet { position: absolute; inset: 40px; background: var(--surface); display: flex; flex-direction: column; }
-  .head { padding: 26px 44px 0; }
-  .eyebrow { font-size: 19px; font-weight: 600; color: var(--text-2); }
-  h1 { font-family: var(--mono); font-size: 58px; font-weight: 700; letter-spacing: -0.02em;
-       line-height: 1; margin-top: 16px; display: flex; align-items: center; gap: 16px; }
-  h1 .sym { font-family: var(--sans); font-style: italic; font-weight: 600; }
-  h1 .op { font-weight: 400; color: var(--text-2); }
-  h1 .star { font-style: normal; font-size: 0.52em; vertical-align: 0.62em; }
-  .band { position: relative; padding: 0 0.14em; white-space: nowrap; }
-  .band::before { content: ''; position: absolute; inset: 0.1em -0.04em 0.04em; background: var(--mark); }
-  .band span { position: relative; }
-  .sub { font-size: 22px; color: var(--text-2); margin-top: 10px; }
-  .plot { flex: 1; min-height: 0; padding: 4px 44px 10px; }
+  body {
+    width: 1200px; height: 630px; background: var(--ground);
+    font-family: var(--sans); color: var(--text);
+  }
+  .sheet {
+    position: absolute; inset: 36px; background: var(--surface); border-radius: 14px;
+    display: flex; flex-direction: column; overflow: hidden;
+  }
+  .head { padding: 34px 52px 0; flex: none; }
+  .family { font-size: 26px; font-weight: 600; color: var(--accent); letter-spacing: 0.01em; }
+  h1 {
+    font-size: 58px; font-weight: 700; letter-spacing: -0.022em; line-height: 1.03;
+    margin-top: 14px; max-width: 22ch;
+  }
+  .sub { font-size: 28px; line-height: 1.3; color: var(--text-2); margin-top: 12px; max-width: 46ch; }
+  /* The curve has to keep its U. Starved of height it flattens into three
+     parallel lines and stops saying anything at all. */
+  .plot { flex: 1; min-height: 220px; padding: 14px 52px 4px; }
   svg { width: 100%; height: 100%; display: block; }
-  .tick { font-family: var(--mono); font-size: 15px; fill: var(--text-2); }
-  .mark { font-family: var(--mono); font-size: 21px; font-weight: 700; fill: var(--text);
-          paint-order: stroke; stroke: var(--surface); stroke-width: 6px; stroke-linejoin: round; }
-  .trace-label { font-family: var(--mono); font-size: 16px; fill: var(--text-2); }
-  .foot { display: flex; gap: 44px; padding: 0 44px 26px; align-items: baseline; flex: none; }
-  .foot .k { font-size: 16px; font-weight: 600; color: var(--text-2); }
-  .foot .v { font-family: var(--mono); font-size: 30px; font-weight: 700; margin-top: 4px; }
-  .foot .v.q { color: var(--text); }
+  .trace-label { font-family: var(--sans); font-size: 24px; font-weight: 600; fill: var(--text-2); }
+  .mark {
+    font-family: var(--mono); font-size: 30px; font-weight: 700; fill: var(--text);
+    paint-order: stroke; stroke: var(--surface); stroke-width: 8px; stroke-linejoin: round;
+  }
+  .foot {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin: 0 52px; padding: 16px 0 28px; border-top: 2px solid var(--line); flex: none;
+  }
+  .foot .where { font-family: var(--mono); font-size: 26px; color: var(--text); }
+  .foot .langs { font-size: 26px; font-weight: 600; color: var(--text-2); }
 </style>
 </head>
 <body>
   <div class="sheet">
     <div class="head">
-      <div class="eyebrow">Quantité économique de commande</div>
-      <h1>
-        <span class="sym">Q<span class="star">*</span></span>
-        <span class="op">=</span>
-        <span class="band"><span id="qhero"></span></span>
-      </h1>
-      <p class="sub">Le coût de passation et le coût de possession s’égalisent en Q*.</p>
+      <div class="family">Supply Chain Tools</div>
+      <h1>Quantité économique de commande</h1>
+      <p class="sub">Combien commander à la fois, et ce que coûte une commande hors optimum.</p>
     </div>
-    <div class="plot"><svg id="chart" viewBox="0 0 1080 250" preserveAspectRatio="none"></svg></div>
+
+    <div class="plot"><svg id="chart" viewBox="0 0 1080 230" preserveAspectRatio="none"></svg></div>
+
     <div class="foot">
-      <div><div class="k">Commandes par an</div><div class="v" id="n"></div></div>
-      <div><div class="k">Coût total pertinent</div><div class="v" id="c"></div></div>
+      <span class="where">supplychain-tools.github.io/eoq</span>
+      <span class="langs">Français et anglais</span>
     </div>
   </div>
 
 <script>
+  /* The curve is drawn from the model rather than sketched, so the minimum is
+     where the arithmetic puts it. The figures behind it are never printed. */
   const D = 24000, S = 450, H = 8.47;
   const qStar = Math.sqrt((2 * D * S) / H);
   const ordering = (q) => (D / q) * S;
@@ -68,7 +87,7 @@
   const qMin = qStar / 3, qMax = qStar * 2.2;
   const yMax = Math.max(total(qMin), total(qMax)) * 1.06;
 
-  const W = 1080, HT = 250, L = 8, R = W - 108, T = 26, B = HT - 30;
+  const W = 1080, HT = 230, L = 8, R = W - 180, T = 34, B = HT - 12;
   const sx = (q) => L + ((q - qMin) / (qMax - qMin)) * (R - L);
   const sy = (v) => B - (v / yMax) * (B - T);
   const path = (f) => {
@@ -90,24 +109,19 @@
     return el;
   };
 
-  add('line', { x1: L, x2: R, y1: B, y2: B, stroke: 'var(--line-strong)', 'stroke-width': 1.5 });
-  add('path', { d: path(ordering), fill: 'none', stroke: 'var(--text-2)', 'stroke-width': 2.5, 'stroke-dasharray': '7 6' });
-  add('path', { d: path(holding), fill: 'none', stroke: 'var(--text-2)', 'stroke-width': 2.5 });
-  add('path', { d: path(total), fill: 'none', stroke: 'var(--text)', 'stroke-width': 4 });
+  add('line', { x1: L, x2: R, y1: B, y2: B, stroke: 'var(--line-strong)', 'stroke-width': 2 });
+  add('path', { d: path(ordering), fill: 'none', stroke: 'var(--text-2)', 'stroke-width': 3.5, 'stroke-dasharray': '10 8' });
+  add('path', { d: path(holding), fill: 'none', stroke: 'var(--text-2)', 'stroke-width': 3.5 });
+  add('path', { d: path(total), fill: 'none', stroke: 'var(--trace)', 'stroke-width': 6 });
 
-  add('text', { x: R + 8, y: sy(ordering(qMax)) + 6, class: 'trace-label' }, 'passation');
-  add('text', { x: R + 8, y: sy(holding(qMax)) + 6, class: 'trace-label' }, 'possession');
+  add('text', { x: R + 14, y: sy(ordering(qMax)) + 8, class: 'trace-label' }, 'passation');
+  add('text', { x: R + 14, y: sy(holding(qMax)) + 8, class: 'trace-label' }, 'possession');
 
   const yStar = sy(total(qStar));
-  add('line', { x1: sx(qStar), x2: sx(qStar), y1: yStar, y2: B, stroke: 'var(--mark)', 'stroke-width': 4 });
-  add('circle', { cx: sx(qStar), cy: yStar, r: 8, fill: 'var(--mark)', stroke: 'var(--text)', 'stroke-width': 2 });
-  add('circle', { cx: sx(qStar), cy: sy(holding(qStar)), r: 6, fill: 'var(--mark)', stroke: 'var(--text)', 'stroke-width': 2 });
-  add('text', { x: sx(qStar), y: yStar - 18, 'text-anchor': 'middle', class: 'mark' }, 'Q*');
+  add('line', { x1: sx(qStar), x2: sx(qStar), y1: yStar, y2: B, stroke: 'var(--mark)', 'stroke-width': 5 });
+  add('circle', { cx: sx(qStar), cy: yStar, r: 11, fill: 'var(--mark)', stroke: 'var(--surface)', 'stroke-width': 3 });
+  add('text', { x: sx(qStar), y: yStar - 22, 'text-anchor': 'middle', class: 'mark' }, 'Q*');
 
-  const fr = (v, d) => v.toLocaleString('fr-FR', { minimumFractionDigits: d, maximumFractionDigits: d });
-  document.getElementById('qhero').textContent = fr(qStar, 1) + ' unités';
-  document.getElementById('n').textContent = fr(D / qStar, 1);
-  document.getElementById('c').textContent = fr(total(qStar), 2) + ' MAD';
   document.documentElement.dataset.drawn = 'true';
 </script>
 </body>

@@ -7,7 +7,7 @@ export const en = {
   meta: {
     title: 'Inventory ordering calculator',
     description:
-      'Economic order quantity, safety stock and the cost of ordering off the optimum, calculated in the browser.',
+      'How much to order at a time, and what ordering off the optimum costs. Calculated in the browser.',
   },
 
   app: {

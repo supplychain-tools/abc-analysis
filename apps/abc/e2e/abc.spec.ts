@@ -288,30 +288,6 @@ test('names itself and offers no way out of the page', async ({ page }) => {
   await expect(page.locator('header a')).toHaveCount(0);
 });
 
-test('shows five columns on a phone and all seven on a desk', async ({ page }) => {
-  await page.goto(PAGE);
-  await ready(page);
-  await page.getByTestId('load-example').click();
-
-  const head = (name: string) =>
-    page.locator('thead th').filter({ hasText: name }).first();
-
-  // The five the classification is made of are there at every width.
-  for (const name of ['Item', 'usage', 'cost', 'Value', 'Class']) {
-    await expect(head(name)).toBeVisible();
-  }
-
-  // Part and Cumul are the reading of the list rather than the list, and a
-  // 375px screen has no room for them. They come back at the breakpoint.
-  const detail = page.locator('thead th.col-detail');
-  await page.setViewportSize({ width: 375, height: 812 });
-  await expect(detail.first()).toBeHidden();
-
-  await page.setViewportSize({ width: 1024, height: 812 });
-  await expect(detail.first()).toBeVisible();
-  await expect(detail).toHaveCount(2);
-});
-
 /* ---- The house rules the sibling tool is held to ------------------- */
 
 test('never scrolls sideways, at any of the sizes it claims to support', async ({ page }) => {

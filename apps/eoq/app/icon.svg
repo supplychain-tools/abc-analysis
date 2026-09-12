@@ -1,12 +1,20 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Q*">
-  <!-- Q* in white on the navy, drawn rather than typed: a favicon is rendered
+  <!-- Q* in white on the accent blue.
+
+       Not the navy the text is set in, and not a near-black: against a tab
+       strip the site has to be recognised in sixteen pixels, and what the eye
+       carries away from the page is the blue of the language toggle and the
+       selected segment, not the ink. A dark square also disappears into a dark
+       browser theme.
+
+       Drawn rather than typed, because a favicon is rendered
        without the page's webfonts, so <text> would fall back to whatever
        sans-serif the reader's system happens to hold. These are strokes, so it
        is the same mark on every machine.
 
        The tail starts inside the bowl and crosses it. Stopping short of the
        ring made the letter read as a magnifying glass at small sizes. -->
-  <rect width="32" height="32" fill="#172033"/>
+  <rect width="32" height="32" fill="#2563eb"/>
   <g fill="none" stroke="#ffffff" stroke-width="3.1" stroke-linecap="round">
     <circle cx="13.6" cy="16.4" r="8"/>
     <path d="M14.6 19.6 L21.8 27"/>

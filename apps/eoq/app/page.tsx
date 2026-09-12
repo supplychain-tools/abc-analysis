@@ -244,7 +244,7 @@ export default function Page() {
                   content: (
                     <>
                       <Equation eoq={derived.eoq} missingLabels={missingLabels} />
-                      <AnswerPanel eoq={derived.eoq} practical={derived.practical} />
+                      <AnswerPanel eoq={derived.eoq} />
                       {profileInput === null ? null : (
                         <InventoryProfile
                           orderQuantity={derived.eoq.quantity}

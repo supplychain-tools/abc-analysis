@@ -25,7 +25,6 @@ export const en = {
   sections: {
     demandAndCost: 'Demand and cost',
     workingYear: 'Working year',
-    casePack: 'Case pack',
     safetyStock: 'Safety stock',
     results: 'Results',
     chart: 'Cost curve',
@@ -47,7 +46,6 @@ export const en = {
     holdingRate: { symbol: 'i', label: 'Holding rate' },
     unitCost: { symbol: 'C', label: 'Unit purchase cost' },
     daysPerYear: { symbol: '', label: 'Working days per year' },
-    roundingMultiple: { symbol: '', label: 'Order in multiples of' },
     safetyStock: { symbol: 'SS', label: 'Safety stock carried' },
   },
 
@@ -69,8 +67,6 @@ export const en = {
     totalCost: 'Total annual cost',
     averageInventory: 'Average inventory',
     safetyStock: 'Safety stock',
-    practicalQuantity: 'Rounded order quantity',
-    penalty: 'Cost of rounding',
     closedForm: 'TRC',
     orderWhole: 'Order in whole units: round up to',
     beforeRounding: 'before rounding',

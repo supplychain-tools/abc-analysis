@@ -6,8 +6,6 @@ import {
   economicOrderQuantity,
   evaluateAtQuantity,
   holdingCostFromRate,
-  practicalQuantity,
-  roundUpToMultiple,
   sampleInventoryProfile,
   solveEoq,
   totalRelevantCost,
@@ -153,48 +151,6 @@ describe('safety stock in the cost totals', () => {
     expect(withSafetyStock.relevantCostCore).toBeCloseTo(1414.2135624, 6);
     expect(withSafetyStock.relevantCost).toBeCloseTo(1414.2135624 + 80, 6);
     expect(withSafetyStock.quantity).toBeCloseTo(solveEoq(input()).quantity, 10);
-  });
-});
-
-/* ================================================================== */
-/* Practical order quantity                                           */
-/* ================================================================== */
-
-describe('rounding to a case pack', () => {
-  it('rounds up, never down', () => {
-    expect(roundUpToMultiple(707.1067812, 100)).toBe(800);
-    expect(roundUpToMultiple(707.1067812, 50)).toBe(750);
-    expect(roundUpToMultiple(707.1067812, 1)).toBe(708);
-  });
-
-  it('leaves a quantity that already sits on the multiple alone', () => {
-    expect(roundUpToMultiple(700, 100)).toBe(700);
-    expect(roundUpToMultiple(2400, 12)).toBe(2400);
-  });
-
-  it('prices the penalty of a 100-unit pallet at 0.8%', () => {
-    const result = practicalQuantity(input(), 100);
-    expect(result).not.toBeNull();
-    expect(result?.quantity).toBe(800);
-    expect(result?.relevantCostCore).toBeCloseTo(1425, 6);
-    expect(result?.penalty).toBeCloseTo(10.7864376, 5);
-    expect(result?.penaltyPercent).toBeCloseTo(0.7627, 3);
-    expect(result?.alreadyOnMultiple).toBe(false);
-  });
-
-  it('reports no penalty when Q* already lands on the multiple', () => {
-    // D = 9800 puts Q* at exactly 700, which is a whole number of 70s.
-    const result = practicalQuantity(
-      input({ annualDemand: 9800, orderCost: 50, holdingCostPerUnit: 2 }),
-      70,
-    );
-    expect(result?.quantity).toBe(700);
-    expect(result?.alreadyOnMultiple).toBe(true);
-    expect(result?.penalty).toBeCloseTo(0, 8);
-  });
-
-  it('declines a multiple of zero rather than dividing by it', () => {
-    expect(practicalQuantity(input(), 0)).toBeNull();
   });
 });
 

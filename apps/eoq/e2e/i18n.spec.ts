@@ -153,7 +153,6 @@ test('uses the French supply chain vocabulary throughout', async ({ page }) => {
     'Coût de possession',
     'Stock de sécurité',
     'Quantité économique de commande',
-    'Conditionnement',
   ]) {
     await expect(shown(page, term)).toBeVisible();
   }

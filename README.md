@@ -6,7 +6,7 @@ static site.
 
 | App        | What it does                                                                                          |
 | ---------- | ----------------------------------------------------------------------------------------------------- |
-| `apps/eoq` | **Inventory ordering.** Economic order quantity, the cost of ordering off it, case pack rounding, and what a safety stock costs to hold |
+| `apps/eoq` | **Inventory ordering.** Economic order quantity, the cost of ordering off it, and what a safety stock costs to hold |
 | `apps/abc` | **ABC analysis.** Ranks stocked items by annual consumption value and cuts the ranked list into A, B and C |
 | `apps/make-or-buy` | **Make or buy.** Costs a year of producing a component in-house against a year of buying it, and finds the break-even volume |
 
@@ -141,8 +141,8 @@ to inherit them from the workspace root fails instead on
 
 ```
 apps/eoq/
-  lib/eoq.ts        the models: EOQ, case pack rounding, the cost penalty,
-                    curve sampling, the stock profile. Plain numbers in and out.
+  lib/eoq.ts        the models: EOQ, the cost penalty, curve sampling, the
+                    stock profile. Plain numbers in and out.
   lib/validate.ts   input rules, reported as typed codes
   lib/derive.ts     the bridge: raw strings to checked numbers to results
   lib/state.ts      the input model, and how it travels in a URL
@@ -208,8 +208,6 @@ internationalisation library:
   the tool prices it. It shifts the total cost by `SS x H` and leaves Q\*
   untouched, which is why it can be a plain input rather than a service level
   and a demand variance.
-- The case pack multiple rounds Q\* **up**, and the extra annual cost of
-  ordering the rounded quantity is stated rather than left implicit.
 - The cost curve is flat near its minimum: `TRC(Q)/TRC(Q*) = (Q/Q* + Q*/Q)/2`.
   Ordering 20% off the optimum costs about 2% more, which is the point of the
   penalty table and the reason precision here is worth less than it looks.

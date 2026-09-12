@@ -132,18 +132,6 @@ export function InputRail({
         />
       </RailSection>
 
-      <RailSection title={t.sections.casePack}>
-        <Field
-          id="rounding-multiple"
-          label={t.fields.roundingMultiple.label}
-          unit={t.units.units}
-          value={state.roundingMultiple}
-          onChange={(value) => patch({ roundingMultiple: value })}
-          error={message('roundingMultiple')}
-          revealErrors={revealErrors}
-        />
-      </RailSection>
-
       <RailSection title={t.sections.safetyStock}>
         <Field
           id="safety-stock"

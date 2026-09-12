@@ -19,7 +19,6 @@ export interface ToolState {
   holdingRate: string;
   unitCost: string;
   daysPerYear: string;
-  roundingMultiple: string;
 
   /** Entered directly: the buffer the buyer has decided to carry. */
   safetyStock: string;
@@ -43,7 +42,6 @@ export const BLANK_STATE: ToolState = {
   holdingRate: '',
   unitCost: '',
   daysPerYear: '',
-  roundingMultiple: '',
 
   safetyStock: '',
 };
@@ -63,7 +61,6 @@ export const EXAMPLE_STATE: ToolState = {
   holdingRate: '22',
   unitCost: '38.50',
   daysPerYear: '300',
-  roundingMultiple: '120',
 
   safetyStock: '275',
 };
@@ -84,7 +81,6 @@ const KEYS = {
   holdingRate: 'i',
   unitCost: 'c',
   daysPerYear: 'y',
-  roundingMultiple: 'm',
   safetyStock: 'ss',
 } as const;
 
@@ -149,7 +145,6 @@ export function reformatState(state: ToolState, from: Locale, to: Locale): ToolS
     holdingRate: convert(state.holdingRate),
     unitCost: convert(state.unitCost),
     daysPerYear: convert(state.daysPerYear),
-    roundingMultiple: convert(state.roundingMultiple),
     safetyStock: convert(state.safetyStock),
   };
 }

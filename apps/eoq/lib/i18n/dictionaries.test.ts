@@ -35,7 +35,6 @@ const SHARED_BY_DESIGN = new Set([
   'fields.holdingRate.symbol',
   'fields.unitCost.symbol',
   'fields.daysPerYear.symbol',
-  'fields.roundingMultiple.symbol',
   'fields.safetyStock.symbol',
   'holdingMode.derived',
   // Cognates: the French word is the English word.
@@ -55,16 +54,13 @@ describe('the two dictionaries', () => {
   });
 
   /**
-   * Two fields are practical settings rather than model variables, so they
-   * carry no symbol and the stripe down the rail stays honest about which
+   * The working year is a practical setting rather than a model variable, so
+   * it carries no symbol and the stripe down the rail stays honest about which
    * inputs are which. Deliberately empty, and asserted as such.
    */
-  const DELIBERATELY_EMPTY = new Set([
-    'fields.daysPerYear.symbol',
-    'fields.roundingMultiple.symbol',
-  ]);
+  const DELIBERATELY_EMPTY = new Set(['fields.daysPerYear.symbol']);
 
-  it('leaves blank only the two symbols that are meant to be blank', () => {
+  it('leaves blank only the symbol that is meant to be blank', () => {
     for (const [path, value] of [...english, ...french]) {
       if (DELIBERATELY_EMPTY.has(path)) {
         expect(value, `${path} should be empty`).toBe('');
@@ -101,7 +97,6 @@ describe('the two dictionaries', () => {
     expect(fr.fields.orderCost.label).toBe('Coût de passation par commande');
     expect(fr.fields.holdingCostPerUnit.label).toBe('Coût de possession unitaire');
     expect(fr.results.safetyStock).toBe('Stock de sécurité');
-    expect(fr.sections.casePack).toBe('Conditionnement');
     expect(fr.fields.safetyStock.label).toContain('Stock de sécurité');
   });
 

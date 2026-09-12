@@ -1,6 +1,6 @@
 'use client';
 
-import type { EoqResult, PracticalQuantity } from '@/lib/eoq';
+import type { EoqResult } from '@/lib/eoq';
 import { currencySymbol } from '@sct/shared/lib/format';
 
 import { Figure, Measure } from '@sct/shared/ui/Figure';
@@ -8,7 +8,6 @@ import { useSettings } from './Settings';
 
 export interface AnswerPanelProps {
   eoq: EoqResult | null;
-  practical: PracticalQuantity | null;
 }
 
 /** One headline metric, in its own box. */
@@ -39,7 +38,7 @@ function Row({ label, children }: { label: string; children: React.ReactNode }) 
  * runs, what it costs — set at one size below the equation and at the head of
  * the column that carries the rest of the reading.
  */
-export function AnswerPanel({ eoq, practical }: AnswerPanelProps) {
+export function AnswerPanel({ eoq }: AnswerPanelProps) {
   const { locale, currency, t } = useSettings();
   const symbol = currencySymbol(currency, locale);
 
@@ -103,32 +102,6 @@ export function AnswerPanel({ eoq, practical }: AnswerPanelProps) {
           )}
         </dl>
 
-        {practical === null ? null : (
-          <p className="t-micro mt-4 flex flex-wrap items-baseline gap-x-5 gap-y-1 border-t border-[color:var(--line)] pt-3 text-[color:var(--text-2)]">
-            <span className="flex items-baseline gap-1.5">
-              {t.results.practicalQuantity}
-              <Figure
-                value={practical.quantity}
-                decimals={0}
-                className="text-[color:var(--text)]"
-                testId="result-practical"
-              />
-              <span className="unit">{t.units.units}</span>
-            </span>
-            <span className="flex items-baseline gap-1.5">
-              {t.results.penalty}
-              <Figure value={practical.penalty} decimals={2} className="text-[color:var(--text)]" />
-              <span className="unit">{symbol}</span>
-              <Figure
-                value={practical.penaltyPercent}
-                decimals={2}
-                className="text-[color:var(--text)]"
-                testId="result-penalty-percent"
-              />
-              <span className="unit">%</span>
-            </span>
-          </p>
-        )}
       </div>
     </section>
   );

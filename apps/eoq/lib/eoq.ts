@@ -165,51 +165,6 @@ export function solveEoq(input: EoqInput): EoqResult {
 }
 
 /* ------------------------------------------------------------------ */
-/* Practical order quantity: rounding to a case pack / pallet / MOQ     */
-/* ------------------------------------------------------------------ */
-
-export interface PracticalQuantity {
-  multiple: number;
-  /** Q* rounded up to the next whole multiple. */
-  quantity: number;
-  relevantCostCore: number;
-  optimalRelevantCostCore: number;
-  /** Extra annual cost of ordering the rounded quantity instead of Q*. */
-  penalty: number;
-  /** Same penalty as a percentage of the optimum. */
-  penaltyPercent: number;
-  /** True when Q* already sits on the multiple. */
-  alreadyOnMultiple: boolean;
-}
-
-/** Round up, tolerating the float noise that makes 700 / 100 land at 6.9999999. */
-export function roundUpToMultiple(value: number, multiple: number): number {
-  if (!(multiple > 0)) return value;
-  return Math.ceil(value / multiple - 1e-9) * multiple;
-}
-
-export function practicalQuantity(input: EoqInput, multiple: number): PracticalQuantity | null {
-  if (!(multiple > 0)) return null;
-
-  const { annualDemand, orderCost, holdingCostPerUnit } = input;
-  const optimum = economicOrderQuantity(annualDemand, orderCost, holdingCostPerUnit);
-  const rounded = roundUpToMultiple(optimum, multiple);
-
-  const optimalCost = totalRelevantCost(annualDemand, orderCost, holdingCostPerUnit, optimum);
-  const roundedCost = totalRelevantCost(annualDemand, orderCost, holdingCostPerUnit, rounded);
-
-  return {
-    multiple,
-    quantity: rounded,
-    relevantCostCore: roundedCost,
-    optimalRelevantCostCore: optimalCost,
-    penalty: roundedCost - optimalCost,
-    penaltyPercent: (roundedCost / optimalCost - 1) * 100,
-    alreadyOnMultiple: Math.abs(rounded - optimum) < 1e-9,
-  };
-}
-
-/* ------------------------------------------------------------------ */
 /* Cost penalty                                                         */
 /* ------------------------------------------------------------------ */
 

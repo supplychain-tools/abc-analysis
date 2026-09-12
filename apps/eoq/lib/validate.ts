@@ -16,7 +16,6 @@ export type FieldName =
   | 'holdingRate'
   | 'unitCost'
   | 'daysPerYear'
-  | 'roundingMultiple'
   | 'safetyStock';
 
 export type IssueCode =

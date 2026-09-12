@@ -9,7 +9,7 @@ import { TAB, openTab } from './tabs';
  */
 
 const FULL =
-  '/?d=24000&s=450&i=22&c=38.5&y=300&m=120&hm=r&ss=275&lang=en';
+  '/?d=24000&s=450&i=22&c=38.5&y=300&hm=r&ss=275&lang=en';
 
 async function ready(page: Page): Promise<void> {
   // A generous budget, because this is not waiting on the application. The

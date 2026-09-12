@@ -9,12 +9,10 @@
 import {
   costPenaltyTable,
   holdingCostFromRate,
-  practicalQuantity,
   solveEoq,
   type CostPenaltyRow,
   type EoqInput,
   type EoqResult,
-  type PracticalQuantity,
 } from './eoq';
 import type { Locale } from '@sct/shared/lib/format';
 import type { ToolState } from './state';
@@ -34,7 +32,6 @@ export interface Derived {
 
   eoqInput: EoqInput | null;
   eoq: EoqResult | null;
-  practical: PracticalQuantity | null;
   penaltyRows: CostPenaltyRow[];
 }
 
@@ -54,7 +51,6 @@ export function fieldSpecs(state: ToolState): Record<FieldName, FieldSpec> {
     // The rate mode derives H from C, so the unit cost stops being optional.
     unitCost: { rule: 'positive', required: byRate },
     daysPerYear: { rule: 'positive', required: true },
-    roundingMultiple: { rule: 'positive', required: false },
     safetyStock: { rule: 'nonNegative', required: false },
   };
 }
@@ -66,7 +62,6 @@ const RAW: Record<FieldName, (state: ToolState) => string> = {
   holdingRate: (s) => s.holdingRate,
   unitCost: (s) => s.unitCost,
   daysPerYear: (s) => s.daysPerYear,
-  roundingMultiple: (s) => s.roundingMultiple,
   safetyStock: (s) => s.safetyStock,
 };
 
@@ -99,7 +94,6 @@ export function derive(state: ToolState, locale: Locale): Derived {
 
   let eoqInput: EoqInput | null = null;
   let eoq: EoqResult | null = null;
-  let practical: PracticalQuantity | null = null;
   let penaltyRows: CostPenaltyRow[] = [];
 
   if (
@@ -117,9 +111,6 @@ export function derive(state: ToolState, locale: Locale): Derived {
       safetyStock: values.safetyStock ?? 0,
     };
     eoq = solveEoq(eoqInput);
-    if (values.roundingMultiple !== undefined) {
-      practical = practicalQuantity(eoqInput, values.roundingMultiple);
-    }
     penaltyRows = costPenaltyTable(annualDemand, orderCost, holdingCostPerUnit);
   }
 
@@ -131,7 +122,6 @@ export function derive(state: ToolState, locale: Locale): Derived {
     unitCost,
     eoqInput,
     eoq,
-    practical,
     penaltyRows,
   };
 }

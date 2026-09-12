@@ -28,7 +28,6 @@ export const fr: Dictionary = {
   sections: {
     demandAndCost: 'Demande et coûts',
     workingYear: 'Année de travail',
-    casePack: 'Conditionnement',
     safetyStock: 'Stock de sécurité',
     results: 'Résultats',
     chart: 'Courbe de coût',
@@ -50,7 +49,6 @@ export const fr: Dictionary = {
     holdingRate: { symbol: 'i', label: 'Taux de possession' },
     unitCost: { symbol: 'C', label: 'Coût d’achat unitaire' },
     daysPerYear: { symbol: '', label: 'Jours ouvrés par an' },
-    roundingMultiple: { symbol: '', label: 'Commander par multiples de' },
     safetyStock: { symbol: 'SS', label: 'Stock de sécurité conservé' },
   },
 
@@ -72,8 +70,6 @@ export const fr: Dictionary = {
     totalCost: 'Coût annuel total',
     averageInventory: 'Stock moyen',
     safetyStock: 'Stock de sécurité',
-    practicalQuantity: 'Quantité arrondie',
-    penalty: 'Coût de l’arrondi',
     closedForm: 'CTP',
     orderWhole: 'Commander en unités entières : arrondir à',
     beforeRounding: 'avant arrondi',

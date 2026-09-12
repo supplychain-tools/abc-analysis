@@ -136,6 +136,31 @@
   outline-offset: 2px;
 }
 
+/* ---- A two-column list of figures ----------------------------------
+   The rule under a row is a leader carrying the eye from the name to the
+   number, so the rows of the last line carry none.
+
+   `:last-child` alone is wrong here and was: in two columns it clears
+   only the right-hand cell, leaving a hairline that stops halfway
+   across the block. It read as correct while the list was followed by
+   another line, and became visible the moment that line was removed.
+   ------------------------------------------------------------------ */
+
+.figure-list > * {
+  border-bottom: 1px solid var(--line);
+}
+
+.figure-list > :last-child {
+  border-bottom: 0;
+}
+
+/* Matches the sm breakpoint the grid switches to two columns at. */
+@media (min-width: 640px) {
+  .figure-list > :nth-last-child(-n + 2) {
+    border-bottom: 0;
+  }
+}
+
 /* ---- Headline metrics ----------------------------------------------
    The three figures that follow the answer, each in its own box. They
    were three label-and-figure pairs floating in a row, which read as a

@@ -23,7 +23,7 @@ function Stat({ label, children }: { label: string; children: React.ReactNode })
 /** One line of the secondary block: a name, and the figure it names. */
 function Row({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div className="flex min-w-0 items-baseline justify-between gap-4 border-b border-[color:var(--line)] py-1.5 last:border-b-0">
+    <div className="flex min-w-0 items-baseline justify-between gap-4 py-1.5">
       <dt className="t-micro text-[color:var(--text-2)]">{label}</dt>
       <dd className="t-body num">{children}</dd>
     </div>
@@ -81,7 +81,7 @@ export function AnswerPanel({ eoq }: AnswerPanelProps) {
             as a list now: two columns where there is room, each figure against
             the right edge of its own column, so the eye reads down the names or
             down the numbers rather than along a paragraph of both. */}
-        <dl className="mt-4 grid gap-x-8 sm:grid-cols-2">
+        <dl className="figure-list mt-4 grid gap-x-8 sm:grid-cols-2">
           <Row label={t.results.averageInventory}>
             <Figure value={eoq.averageInventory} decimals={1} />
           </Row>

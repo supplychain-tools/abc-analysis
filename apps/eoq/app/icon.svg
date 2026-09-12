@@ -1,5 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Q*">
-  <!-- Q* in white on the accent blue.
+  <!-- Q* in white on the accent blue, one step down.
+
+       #2563EB read too bright at tab size; this is the same blue darker, so
+       it still says the same thing as the language toggle on the page. The
+       corners are eased the way an application icon's are, rather than left
+       as a hard block.
 
        Not the navy the text is set in, and not a near-black: against a tab
        strip the site has to be recognised in sixteen pixels, and what the eye
@@ -14,7 +19,7 @@
 
        The tail starts inside the bowl and crosses it. Stopping short of the
        ring made the letter read as a magnifying glass at small sizes. -->
-  <rect width="32" height="32" fill="#2563eb"/>
+  <rect width="32" height="32" rx="7" fill="#1d4ed8"/>
   <g fill="none" stroke="#ffffff" stroke-width="3.1" stroke-linecap="round">
     <circle cx="13.6" cy="16.4" r="8"/>
     <path d="M14.6 19.6 L21.8 27"/>

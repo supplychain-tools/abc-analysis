@@ -40,6 +40,14 @@ export const fr: AbcDictionary = {
       cumulativeShare: 'Cumul',
       abcClass: 'Classe',
     },
+    // Heads for a narrow screen, where the full ones would set each column's
+    // width by their own length rather than by the figures beneath them.
+    short: {
+      annualUsage: 'Conso.',
+      unitCost: 'Coût u.',
+      annualValue: 'Valeur',
+    },
+
     total: 'Total',
     namePlaceholder: "Nom de l'article",
     rowCount: (count: number) => (count === 1 ? '1 article' : `${count} articles`),

@@ -244,3 +244,77 @@ body {
   font-size: 0.85em;
 }
 
+
+/* ---- The table on a phone ------------------------------------------
+   At 375px the seven columns cannot all be read, so two of them go. What
+   stays is the classification itself: the article, the two figures typed
+   into it, the annual value they make, and the class that follows from it.
+   What goes is Part and Cumul — those are the reading of the list rather
+   than the list, and the diagram below the table says the same thing in a
+   form a narrow screen can actually hold.
+
+   Hidden, not scrolled sideways: a column you have to swipe to is a column
+   you do not read. Print is paper, not a phone, and keeps all seven.
+   ------------------------------------------------------------------ */
+
+.col-detail {
+  display: none;
+}
+
+/* The breakpoint the rest of this page changes shape at. */
+@media (min-width: 640px) {
+  .col-detail {
+    display: table-cell;
+  }
+}
+
+@media print {
+  .col-detail {
+    display: table-cell;
+  }
+}
+
+/* The five remaining columns still have to fit 375px between them, so the
+   gutters come in. They go back out at the breakpoint, where the table has
+   room to breathe again. */
+@media (max-width: 639px) {
+  .table-scroll table.banded :is(th, td) {
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+
+  /* The heads are the widest thing in the table — "Consommation annuelle"
+     over a five-character number — and they are set on one line everywhere
+     else. Here they wrap, and the column takes the width of its figures
+     instead of the width of its title. The figures themselves stay on one
+     line: a number broken across two is not a number. */
+  .table-scroll table.banded thead th {
+    white-space: normal;
+    /* And a long head breaks inside a word rather than setting the column's
+       width by its longest one: "Consommation" is wider than any figure that
+       will ever sit under it. Hyphenation first where the browser has the
+       dictionary for it, a hard break where it does not. */
+    hyphens: auto;
+  }
+
+  /* The unit under each head goes too. The currency is named once in the
+     page head and again on the class cards, and a count of units per year
+     does not need saying twice when the column is called Conso. */
+  .table-scroll table.banded thead th .unit {
+    display: none;
+  }
+
+  /* The class chip and the × are the two narrowest columns and neither is
+     read across, so their gutters go down to a hairline. */
+  .table-scroll table.banded :is(th, td):nth-last-child(-n + 2) {
+    padding-left: 3px;
+    padding-right: 3px;
+  }
+
+  /* The × keeps its 44px touch target from the height; only its side
+     padding goes, and the column with it. */
+  .table-scroll table.banded td:last-child .btn {
+    padding-left: 2px;
+    padding-right: 2px;
+  }
+}

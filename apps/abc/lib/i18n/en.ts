@@ -46,6 +46,14 @@ export const en = {
       cumulativeShare: 'Cumulative',
       abcClass: 'Class',
     },
+    // Heads for a narrow screen, where the full ones would set each column's
+    // width by their own length rather than by the figures beneath them.
+    short: {
+      annualUsage: 'Usage',
+      unitCost: 'Unit cost',
+      annualValue: 'Value',
+    },
+
     total: 'Total',
     namePlaceholder: 'Item name',
     rowCount: (count: number) => (count === 1 ? '1 item' : `${count} items`),

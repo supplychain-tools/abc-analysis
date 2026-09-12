@@ -33,6 +33,10 @@ export interface ItemTableProps {
  * rather than sorting it by name. That is what stopped the table jumping under
  * the cursor at the first letter typed. See byValueThenName in lib/classify.
  *
+ * On a narrow screen the table drops Part and Cumul and keeps the five
+ * columns the classification is actually made of. See .col-detail in
+ * app/globals.css.
+ *
  * Rows are keyed by a stable id, not by position or name. That is what lets
  * the sort move a finished row without React tearing down the input being
  * typed into, and it is why duplicate names cost nothing.
@@ -70,22 +74,28 @@ export function ItemTable({ rows, analysis, onEdit, onRemove, onAdd }: ItemTable
           <caption className="sr-only">{t.sections.table}</caption>
           <thead>
             <tr>
-              <th scope="col" className="min-w-[16rem]">
+              <th scope="col" className="min-w-[3.5rem] sm:min-w-[16rem]">
                 {t.table.columns.name}
               </th>
               <th scope="col" className="n">
-                {t.table.columns.annualUsage} <span className="unit">{t.units.perYear}</span>
+                <span className="sm:hidden">{t.table.short.annualUsage}</span>
+                <span className="hidden sm:inline">{t.table.columns.annualUsage}</span>{' '}
+                <span className="unit">{t.units.perYear}</span>
               </th>
               <th scope="col" className="n">
-                {t.table.columns.unitCost} <span className="unit">{symbol}</span>
+                <span className="sm:hidden">{t.table.short.unitCost}</span>
+                <span className="hidden sm:inline">{t.table.columns.unitCost}</span>{' '}
+                <span className="unit">{symbol}</span>
               </th>
               <th scope="col" className="n">
-                {t.table.columns.annualValue} <span className="unit">{symbol}</span>
+                <span className="sm:hidden">{t.table.short.annualValue}</span>
+                <span className="hidden sm:inline">{t.table.columns.annualValue}</span>{' '}
+                <span className="unit">{symbol}</span>
               </th>
-              <th scope="col" className="n">
+              <th scope="col" className="n col-detail">
                 {t.table.columns.valueShare} <span className="unit">%</span>
               </th>
-              <th scope="col" className="n">
+              <th scope="col" className="n col-detail">
                 {t.table.columns.cumulativeShare} <span className="unit">%</span>
               </th>
               <th scope="col">{t.table.columns.abcClass}</th>
@@ -108,7 +118,7 @@ export function ItemTable({ rows, analysis, onEdit, onRemove, onAdd }: ItemTable
                     </label>
                     <input
                       id={`name-${item.id}`}
-                      className="field-input field-text t-body min-w-[16rem]"
+                      className="field-input field-text t-body min-w-[3.5rem] sm:min-w-[16rem]"
                       type="text"
                       autoComplete="off"
                       spellCheck={false}
@@ -124,7 +134,7 @@ export function ItemTable({ rows, analysis, onEdit, onRemove, onAdd }: ItemTable
                     </label>
                     <input
                       id={`usage-${item.id}`}
-                      className="field-input t-body w-[7.5rem]"
+                      className="field-input t-body min-w-[4.25rem] sm:w-[7.5rem]"
                       type="text"
                       inputMode="decimal"
                       autoComplete="off"
@@ -141,7 +151,7 @@ export function ItemTable({ rows, analysis, onEdit, onRemove, onAdd }: ItemTable
                     </label>
                     <input
                       id={`cost-${item.id}`}
-                      className="field-input t-body w-[6.5rem]"
+                      className="field-input t-body min-w-[3.25rem] sm:w-[6.5rem]"
                       type="text"
                       inputMode="decimal"
                       autoComplete="off"
@@ -152,13 +162,21 @@ export function ItemTable({ rows, analysis, onEdit, onRemove, onAdd }: ItemTable
                     />
                   </td>
 
+                  {/* Whole MAD on a phone. Centimes are two characters the
+                      narrow table cannot spare, and no classification has
+                      ever turned on them. */}
                   <td className="n" data-testid="cell-value">
-                    <Figure value={analysis.isEmpty ? null : item.annualValue} decimals={2} />
+                    <span className="sm:hidden">
+                      <Figure value={analysis.isEmpty ? null : item.annualValue} decimals={0} />
+                    </span>
+                    <span className="hidden sm:inline">
+                      <Figure value={analysis.isEmpty ? null : item.annualValue} decimals={2} />
+                    </span>
                   </td>
-                  <td className="n" data-testid="cell-share">
+                  <td className="n col-detail" data-testid="cell-share">
                     <Figure value={analysis.isEmpty ? null : item.valueShare} decimals={1} />
                   </td>
-                  <td className="n" data-testid="cell-cumulative">
+                  <td className="n col-detail" data-testid="cell-cumulative">
                     <Figure value={analysis.isEmpty ? null : item.cumulativeShare} decimals={1} />
                   </td>
                   <td data-testid="cell-class">
@@ -196,12 +214,17 @@ export function ItemTable({ rows, analysis, onEdit, onRemove, onAdd }: ItemTable
                 className="n num-total border-t border-[color:var(--line-strong)] pt-1.5"
                 data-testid="total-value"
               >
-                <Figure value={analysis.isEmpty ? null : analysis.totalValue} decimals={2} />
+                <span className="sm:hidden">
+                  <Figure value={analysis.isEmpty ? null : analysis.totalValue} decimals={0} />
+                </span>
+                <span className="hidden sm:inline">
+                  <Figure value={analysis.isEmpty ? null : analysis.totalValue} decimals={2} />
+                </span>
               </td>
-              <td className="n num-total border-t border-[color:var(--line-strong)] pt-1.5">
+              <td className="n num-total col-detail border-t border-[color:var(--line-strong)] pt-1.5">
                 <Figure value={analysis.isEmpty ? null : 100} decimals={1} />
               </td>
-              <td className="border-t border-[color:var(--line-strong)] pt-1.5" />
+              <td className="col-detail border-t border-[color:var(--line-strong)] pt-1.5" />
               <td className="border-t border-[color:var(--line-strong)] pt-1.5" />
               <td className="no-print border-t border-[color:var(--line-strong)] pt-1.5" />
             </tr>

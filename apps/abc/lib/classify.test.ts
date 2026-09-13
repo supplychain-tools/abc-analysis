@@ -249,31 +249,31 @@ describe('band summary', () => {
 describe('the café sample', () => {
   const analysis = classify(SAMPLE_ITEMS);
 
-  it('has twenty rows and a total of 641 004', () => {
-    expect(SAMPLE_ITEMS).toHaveLength(20);
-    expect(analysis.totalValue).toBeCloseTo(641_004, 6);
+  it('has eighteen rows and a total of 633 164', () => {
+    expect(SAMPLE_ITEMS).toHaveLength(18);
+    expect(analysis.totalValue).toBeCloseTo(633_164, 6);
   });
 
-  it('puts four items, a fifth of the list, over three quarters of the money', () => {
+  it('puts four items, under a quarter of the list, over three quarters of the money', () => {
     const [a] = analysis.bands;
 
-    // 489 400 out of 641 004, summed off the sorted list by hand.
+    // 489 400 out of 633 164, summed off the sorted list by hand.
     expect(a.itemCount).toBe(4);
     expect(a.totalValue).toBe(489_400);
-    expect(a.itemShare).toBeCloseTo(20, 5);
-    expect(a.valueShare).toBeCloseTo(76.348978, 5);
+    expect(a.itemShare).toBeCloseTo(22.222222, 5);
+    expect(a.valueShare).toBeCloseTo(77.29435, 5);
   });
 
-  it('splits the tail eight to B and eight to C', () => {
+  it('splits the tail seven to B and seven to C', () => {
     const [, b, c] = analysis.bands;
 
-    // 113 914 and 37 690 out of 641 004, summed off the sorted list by hand.
-    expect(b.itemCount).toBe(8);
-    expect(b.totalValue).toBe(113_914);
-    expect(b.valueShare).toBeCloseTo(17.771184, 5);
-    expect(c.itemCount).toBe(8);
-    expect(c.totalValue).toBe(37_690);
-    expect(c.valueShare).toBeCloseTo(5.879839, 5);
+    // 106 984 and 36 780 out of 633 164, summed off the sorted list by hand.
+    expect(b.itemCount).toBe(7);
+    expect(b.totalValue).toBe(106_984);
+    expect(b.valueShare).toBeCloseTo(16.896728, 5);
+    expect(c.itemCount).toBe(7);
+    expect(c.totalValue).toBe(36_780);
+    expect(c.valueShare).toBeCloseTo(5.808922, 5);
   });
 
   it('ranks the four A items in the order the hand calculation gives', () => {
@@ -283,8 +283,8 @@ describe('the café sample', () => {
       'Takeaway cups, 12 oz',
       'Oat milk',
     ]);
-    expect(analysis.items[3].cumulativeShare).toBeCloseTo(76.349, 3);
-    expect(analysis.items[4].cumulativeShare).toBeCloseTo(82.246, 3);
+    expect(analysis.items[3].cumulativeShare).toBeCloseTo(77.294, 3);
+    expect(analysis.items[4].cumulativeShare).toBeCloseTo(83.264, 3);
   });
 
   it('puts the cheapest units on the list in A and the dearest in C', () => {
@@ -292,7 +292,7 @@ describe('the café sample', () => {
 
     // 0.62 a cup, 180 000 cups: third by value, and firmly class A.
     expect(byName('Takeaway cups, 12 oz')).toMatchObject({ unitCost: 0.62, abcClass: 'A' });
-    // 1450 a set, three sets a year: eighteenth by value, and class C.
+    // 1450 a set, three sets a year: seventeenth by value, and class C.
     expect(byName('Grinder burr set')).toMatchObject({ unitCost: 1450, abcClass: 'C' });
     // A second pair making the same point, in case the first is read as a fluke.
     expect(byName('Cup lids, 12 oz')).toMatchObject({ unitCost: 0.21, abcClass: 'B' });

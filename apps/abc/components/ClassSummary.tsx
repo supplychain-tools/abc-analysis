@@ -28,7 +28,7 @@ export interface ClassSummaryProps {
  * is small and the bottom half is nearly everything, and C is the other way
  * round.
  *
- * No bar is drawn under any of it. The gap between 20.0 and 76.3 is the point
+ * No bar is drawn under any of it. The gap between 22.2 and 77.3 is the point
  * and a pair of figures that far apart does not need a bar to be believed.
  */
 export function ClassSummary({ bands }: ClassSummaryProps) {

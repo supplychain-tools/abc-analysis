@@ -15,6 +15,7 @@ import {
 import { ClassSummary } from '@/components/ClassSummary';
 import { ItemTable } from '@/components/ItemTable';
 import { ParetoChart } from '@/components/ParetoChart';
+import { ResultTable } from '@/components/ResultTable';
 import { SettingsProvider, useSettings } from '@/components/Settings';
 import type { CurrencyCode, Locale } from '@sct/shared/lib/format';
 import { AppShell } from '@sct/shared/ui/AppShell';
@@ -197,6 +198,7 @@ export default function AbcPage() {
             left, the curve it came from on the right. */}
         <div className="grid gap-4">
           <ItemTable rows={rows} analysis={analysis} onEdit={edit} onRemove={remove} onAdd={add} />
+          {analysis.isEmpty ? null : <ResultTable analysis={analysis} />}
 
           {analysis.isEmpty ? <EmptyState /> : <ClassSummary bands={analysis.bands} />}
 

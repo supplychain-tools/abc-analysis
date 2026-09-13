@@ -244,3 +244,58 @@ body {
   font-size: 0.85em;
 }
 
+
+/* ---- Two tables on a phone, one on a desk --------------------------
+   Seven columns do not fit 375px. Rather than hide four of them or make a
+   reader swipe past the names to reach them, the table is cut where it
+   already divides: what a person types stays here, what the tool computes
+   goes to the second table underneath (see components/ResultTable). Each
+   half fits, and each row carries its article.
+
+   Print is paper, not a phone: it keeps the one whole table, and the second
+   one — which would repeat every figure — never reaches it.
+   ------------------------------------------------------------------ */
+
+.col-computed {
+  display: none;
+}
+
+/* The breakpoint the rest of this page changes shape at. */
+@media (min-width: 640px) {
+  .col-computed {
+    display: table-cell;
+  }
+}
+
+@media print {
+  .col-computed {
+    display: table-cell;
+  }
+}
+
+@media (max-width: 639px) {
+  /* Three columns and four have room to breathe where seven had none, so
+     the heads set on one line as everywhere else — but the gutters still
+     come in a little, and the name in the second table gives up whatever
+     it must so that no figure has to. */
+  .table-scroll table.banded :is(th, td) {
+    padding-left: 6px;
+    padding-right: 6px;
+  }
+
+  /* Three heads still say "Consommation annuelle" over a five-figure
+     number, so here they wrap rather than setting the column's width by
+     their own length. The figures themselves stay on one line. */
+  .table-scroll table.banded thead th {
+    white-space: normal;
+    hyphens: auto;
+  }
+
+  .result-name {
+    max-width: 0;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: inherit;
+  }
+}

@@ -288,6 +288,43 @@ test('names itself and offers no way out of the page', async ({ page }) => {
   await expect(page.locator('header a')).toHaveCount(0);
 });
 
+test('splits the table in two on a phone and keeps it whole on a desk', async ({ page }) => {
+  await page.goto(PAGE);
+  await ready(page);
+  await page.getByTestId('load-example').click();
+
+  const entry = page.getByTestId('item-table');
+  const results = page.getByTestId('result-table');
+  const computed = entry.locator('thead th.col-computed');
+
+  await page.setViewportSize({ width: 375, height: 812 });
+
+  // What is typed stays in the first table; what is computed moves to the
+  // second, and both rows read the same article at the same rank.
+  await expect(computed.first()).toBeHidden();
+  await expect(results).toBeVisible();
+  await expect(results.locator('[data-testid="result-row"]')).toHaveCount(30);
+  await expect(results.locator('[data-testid="result-value"]').first()).toContainText('187,200.00');
+  await expect(results.locator('[data-testid="result-class"]').first()).toContainText('A');
+  await expect(entry.locator('#name-' + (await firstId(page)))).toBeVisible();
+
+  // The desk gets the one table, whole, and never renders the second.
+  await page.setViewportSize({ width: 1024, height: 812 });
+  await expect(computed.first()).toBeVisible();
+  await expect(computed).toHaveCount(4);
+  await expect(results).toBeHidden();
+});
+
+async function firstId(page: Page): Promise<string> {
+  const id = await page
+    .getByTestId('item-row')
+    .first()
+    .locator('input')
+    .first()
+    .getAttribute('id');
+  return (id ?? '').replace('name-', '');
+}
+
 /* ---- The house rules the sibling tool is held to ------------------- */
 
 test('never scrolls sideways, at any of the sizes it claims to support', async ({ page }) => {

@@ -27,6 +27,9 @@ export const en = {
     chart: 'Pareto chart',
     summary: 'Classes',
     table: 'Items',
+    // Only a phone sees this one: the head of the second table, the half
+    // holding what the tool computed.
+    results: 'Values and classes',
   },
 
   actions: {

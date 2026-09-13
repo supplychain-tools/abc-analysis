@@ -21,6 +21,9 @@ export const fr: AbcDictionary = {
     chart: 'Diagramme de Pareto',
     summary: 'Classes',
     table: 'Articles',
+    // Only a phone sees this one: the head of the second table, the half
+    // holding what the tool computed.
+    results: 'Valeurs et classes',
   },
 
   actions: {

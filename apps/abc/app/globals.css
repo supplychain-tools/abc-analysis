@@ -291,11 +291,39 @@ body {
     hyphens: auto;
   }
 
-  .result-name {
-    max-width: 0;
+  /* The second table is laid out to fixed widths so that the name can wrap.
+     Left to itself a table widens a column to fit its longest line and never
+     wraps a cell it was not told the width of; the figures get exactly what
+     they need, and the name takes the rest of the row. */
+  .result-table {
+    table-layout: fixed;
     width: 100%;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  }
+
+  .result-table thead th:nth-child(2) {
+    width: 92px;
+  }
+
+  .result-table thead th:nth-child(3) {
+    width: 46px;
+  }
+
+  .result-table thead th:nth-child(4) {
+    width: 40px;
+  }
+
+  /* The name takes what the figures leave and wraps over as many lines as it
+     needs. It was set on one line with an ellipsis, and that cut every
+     article to about nine characters — three different gobelets all read
+     "Gobelets...". The figures beside it stay on one line, and the row grows
+     instead. */
+  /* Specific enough to beat `table.banded th`, which sets nowrap on every
+     head cell in the family. */
+  .result-table th.result-name {
+    white-space: normal;
+    overflow-wrap: break-word;
     font-weight: inherit;
+    vertical-align: top;
+    padding-top: 5px;
   }
 }

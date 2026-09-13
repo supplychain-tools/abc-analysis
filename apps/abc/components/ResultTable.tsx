@@ -25,8 +25,12 @@ export interface ResultTableProps {
  * halves together — without it this is a column of unattached figures.
  *
  * Rows come from analysis.items, the same ranked list the entry table walks,
- * so the two read down in step and the cumulative column is the running
- * total it claims to be.
+ * so the two read down in step.
+ *
+ * No cumulative column. It is the one figure here that only means anything
+ * read as a column, and a column read top to bottom is what a phone is worst
+ * at; the curve over the diagram below says it better, and the width it gives
+ * back goes to the article names, which were being cut to nine characters.
  *
  * Read-only: nothing here can be typed into, so the names are text rather
  * than fields and there is no remove button. The wide screen never renders
@@ -43,7 +47,7 @@ export function ResultTable({ analysis }: ResultTableProps) {
       </div>
 
       <div className="table-scroll px-4 py-2">
-        <table className="banded t-body" data-testid="result-table">
+        <table className="banded t-body result-table" data-testid="result-table">
           <caption className="sr-only">{t.sections.results}</caption>
           <thead>
             <tr>
@@ -53,9 +57,6 @@ export function ResultTable({ analysis }: ResultTableProps) {
               </th>
               <th scope="col" className="n">
                 {t.table.columns.valueShare} <span className="unit">%</span>
-              </th>
-              <th scope="col" className="n">
-                {t.table.columns.cumulativeShare} <span className="unit">%</span>
               </th>
               <th scope="col">{t.table.columns.abcClass}</th>
             </tr>
@@ -79,9 +80,6 @@ export function ResultTable({ analysis }: ResultTableProps) {
                 </td>
                 <td className="n">
                   <Figure value={analysis.isEmpty ? null : item.valueShare} decimals={1} />
-                </td>
-                <td className="n">
-                  <Figure value={analysis.isEmpty ? null : item.cumulativeShare} decimals={1} />
                 </td>
                 <td data-testid="result-class">
                   {item.abcClass === null ? null : (
@@ -109,7 +107,6 @@ export function ResultTable({ analysis }: ResultTableProps) {
               <td className="n num-total border-t border-[color:var(--line-strong)] pt-1.5">
                 <Figure value={analysis.isEmpty ? null : 100} decimals={1} />
               </td>
-              <td className="border-t border-[color:var(--line-strong)] pt-1.5" />
               <td className="border-t border-[color:var(--line-strong)] pt-1.5" />
             </tr>
           </tfoot>

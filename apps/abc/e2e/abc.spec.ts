@@ -306,6 +306,14 @@ test('splits the table in two on a phone and keeps it whole on a desk', async ({
   await expect(results.locator('[data-testid="result-row"]')).toHaveCount(30);
   await expect(results.locator('[data-testid="result-value"]').first()).toContainText('187,200.00');
   await expect(results.locator('[data-testid="result-class"]').first()).toContainText('A');
+
+  // No cumulative column here, and a long name wraps instead of being cut:
+  // the second table exists to tie a figure to an article, and an article
+  // clipped to nine characters ties it to nothing.
+  await expect(results.locator('thead th')).toHaveCount(4);
+  const name = results.locator('.result-name').first();
+  await expect(name).toContainText('Espresso beans, house blend');
+  expect(await name.evaluate((el) => el.scrollWidth <= el.clientWidth + 1)).toBe(true);
   await expect(entry.locator('#name-' + (await firstId(page)))).toBeVisible();
 
   // The desk gets the one table, whole, and never renders the second.

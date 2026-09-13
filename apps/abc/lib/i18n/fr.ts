@@ -76,7 +76,7 @@ export const fr: AbcDictionary = {
   empty: {
     title: 'Rien à analyser pour le moment',
     message:
-      "Saisissez le nom d'un article, la quantité consommée en un an et le coût d'une unité. Le diagramme et les classes apparaissent au fur et à mesure.",
+      "Saisissez le nom d'un article, la quantité consommée en un an et le coût d'une unité.",
   },
 
   units: {

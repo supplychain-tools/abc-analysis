@@ -81,7 +81,7 @@ export const en = {
   empty: {
     title: 'Nothing to analyse yet',
     message:
-      'Type an item name, the number of units used in a year, and the cost of one unit. The chart and the classes appear as you type.',
+      'Type an item name, the number of units used in a year, and the cost of one unit.',
   },
 
   units: {

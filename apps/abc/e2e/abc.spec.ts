@@ -29,7 +29,7 @@ async function withExample(page: Page): Promise<void> {
   await page.goto(PAGE);
   await ready(page);
   await page.locator('[data-testid="load-example"]').click();
-  await expect(page.locator('[data-testid="item-row"]')).toHaveCount(18);
+  await expect(page.locator('[data-testid="item-row"]')).toHaveCount(25);
 }
 
 /** The row inputs, in the order the table currently shows them. */
@@ -53,14 +53,14 @@ test('opens empty, on one row waiting to be typed into', async ({ page }) => {
 test('puts the whole worked example one button away', async ({ page }) => {
   await withExample(page);
 
-  await expect(page.locator('[data-testid="pareto-bar"]')).toHaveCount(18);
+  await expect(page.locator('[data-testid="pareto-bar"]')).toHaveCount(25);
   await expect(page.locator('[data-testid="empty-state"]')).toHaveCount(0);
 
   // The finding, as the summary states it.
   await expect(page.locator('[data-testid="band-A-count"]')).toContainText('4');
-  await expect(page.locator('[data-testid="band-A-item-share"]')).toContainText('22.2');
-  await expect(page.locator('[data-testid="band-A-value-share"]')).toContainText('77.3');
-  await expect(page.locator('[data-testid="total-value"]')).toContainText('633,164.00');
+  await expect(page.locator('[data-testid="band-A-item-share"]')).toContainText('16.0');
+  await expect(page.locator('[data-testid="band-A-value-share"]')).toContainText('74.8');
+  await expect(page.locator('[data-testid="total-value"]')).toContainText('654,622.00');
 });
 
 test('sorts by annual value descending, not by unit price', async ({ page }) => {
@@ -94,7 +94,7 @@ test('recomputes on every keystroke, with no button to press', async ({ page }) 
   await withExample(page);
 
   const total = page.locator('[data-testid="total-value"]');
-  await expect(total).toContainText('633,164.00');
+  await expect(total).toContainText('654,622.00');
 
   // Empty the largest line. Everything downstream has to move at once.
   const beans = page.locator('[data-testid="item-row"]', {
@@ -102,10 +102,11 @@ test('recomputes on every keystroke, with no button to press', async ({ page }) 
   });
   await beans.locator('input[id^="usage-"]').fill('');
 
-  await expect(total).toContainText('445,964.00');
-  // A still holds four lines, but they are different lines holding a different
-  // share: 77.3% of the money before, 76.2% of what is left after.
-  await expect(page.locator('[data-testid="band-A-value-share"]')).toContainText('76.2');
+  await expect(total).toContainText('467,422.00');
+  // The band itself moves, not just its figures: four lines carried 74.8% of
+  // the money, six carry 79.8% of what is left after the biggest one goes.
+  await expect(page.locator('[data-testid="band-A-count"]')).toContainText('6');
+  await expect(page.locator('[data-testid="band-A-value-share"]')).toContainText('79.8');
 
   await expect(nameInputs(page).nth(0)).toHaveValue('Whole milk');
 });
@@ -162,7 +163,7 @@ test('treats an unparseable cell as zero rather than showing NaN', async ({ page
   await beans.locator('input[id^="cost-"]').fill('not a number');
 
   await expect(page.locator('main')).not.toContainText('NaN');
-  await expect(page.locator('[data-testid="total-value"]')).toContainText('445,964.00');
+  await expect(page.locator('[data-testid="total-value"]')).toContainText('467,422.00');
 });
 
 test('clears to one blank row and an empty state, and comes back', async ({ page }) => {
@@ -180,8 +181,8 @@ test('clears to one blank row and an empty state, and comes back', async ({ page
 
   // Clearing is never a door that closes behind you.
   await page.locator('[data-testid="load-example"]').click();
-  await expect(page.locator('[data-testid="item-row"]')).toHaveCount(18);
-  await expect(page.locator('[data-testid="total-value"]')).toContainText('633,164.00');
+  await expect(page.locator('[data-testid="item-row"]')).toHaveCount(25);
+  await expect(page.locator('[data-testid="total-value"]')).toContainText('654,622.00');
 });
 
 test('classifies the one row a cleared table leaves as A', async ({ page }) => {
@@ -201,7 +202,7 @@ test('adds and removes rows, and never removes the last one', async ({ page }) =
   await withExample(page);
 
   await page.locator('[data-testid="add-row"]').click();
-  await expect(page.locator('[data-testid="item-row"]')).toHaveCount(19);
+  await expect(page.locator('[data-testid="item-row"]')).toHaveCount(26);
 
   await page.locator('[data-testid="clear-all"]').click();
   await expect(page.locator('[data-testid="item-row"]')).toHaveCount(1);
@@ -240,7 +241,7 @@ test('follows the browser language, and starts in dirhams', async ({ page }) => 
   await expect(page.getByLabel('Currency')).toHaveValue('MAD');
 
   await page.locator('[data-testid="load-example"]').click();
-  await expect(page.locator('[data-testid="total-value"]')).toContainText('633,164.00');
+  await expect(page.locator('[data-testid="total-value"]')).toContainText('654,622.00');
 });
 
 test('answers a French browser in French, and in dirhams', async ({ browser }) => {
@@ -268,14 +269,14 @@ test('reads its figures in French and switches without losing them', async ({ pa
   await ready(page);
   await page.locator('[data-testid="load-example"]').click();
 
-  await expect(page.locator('[data-testid="total-value"]')).toContainText('633 164,00');
+  await expect(page.locator('[data-testid="total-value"]')).toContainText('654 622,00');
   await expect(page.getByRole('heading', { name: 'Analyse ABC des stocks' })).toBeVisible();
 
   // The language switch is a segmented control whose radios are hidden behind
   // their labels. A real user clicks the label, so the test does too.
   await page.getByText('EN', { exact: true }).click();
   await expect(page.getByRole('radio', { name: 'EN', exact: true })).toBeChecked();
-  await expect(page.locator('[data-testid="total-value"]')).toContainText('633,164.00');
+  await expect(page.locator('[data-testid="total-value"]')).toContainText('654,622.00');
   await expect(page.locator('[data-testid="band-A-count"]')).toContainText('4');
 });
 
@@ -306,7 +307,7 @@ test('splits the table in two on a phone and keeps it whole on a desk', async ({
   // second, and both rows read the same article at the same rank.
   await expect(computed.first()).toBeHidden();
   await expect(results).toBeVisible();
-  await expect(results.locator('[data-testid="result-row"]')).toHaveCount(18);
+  await expect(results.locator('[data-testid="result-row"]')).toHaveCount(25);
   await expect(results.locator('[data-testid="result-value"]').first()).toContainText('187,200.00');
   await expect(results.locator('[data-testid="result-class"]').first()).toContainText('A');
 

@@ -16,7 +16,7 @@ export interface ClassSummaryProps {
  *
  * It was a table, and a table was the wrong shape for it. Three rows of five
  * columns asked a reader to travel along a row to collect one class and down a
- * column to compare classes, and the finding needs both at once: a fifth of
+ * column to compare classes, and the finding needs both at once: a sixth of
  * the lines, three quarters of the spend. Side by side, each class is one
  * object you can take in whole, and the three read against each other without
  * anyone tracking across a rule.
@@ -28,7 +28,7 @@ export interface ClassSummaryProps {
  * is small and the bottom half is nearly everything, and C is the other way
  * round.
  *
- * No bar is drawn under any of it. The gap between 22.2 and 77.3 is the point
+ * No bar is drawn under any of it. The gap between 16.0 and 74.8 is the point
  * and a pair of figures that far apart does not need a bar to be believed.
  */
 export function ClassSummary({ bands }: ClassSummaryProps) {

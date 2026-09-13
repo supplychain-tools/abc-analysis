@@ -74,7 +74,7 @@ export function ItemTable({ rows, analysis, onEdit, onRemove, onAdd }: ItemTable
           <caption className="sr-only">{t.sections.table}</caption>
           <thead>
             <tr>
-              <th scope="col" className="min-w-[6rem] sm:min-w-[16rem]">
+              <th scope="col" className="min-w-[8.25rem] sm:min-w-[16rem]">
                 {t.table.columns.name}
               </th>
               <th scope="col" className="n">
@@ -114,7 +114,7 @@ export function ItemTable({ rows, analysis, onEdit, onRemove, onAdd }: ItemTable
                     </label>
                     <input
                       id={`name-${item.id}`}
-                      className="field-input field-text t-body min-w-[6rem] sm:min-w-[16rem]"
+                      className="field-input field-text t-body min-w-[8.25rem] sm:min-w-[16rem]"
                       type="text"
                       autoComplete="off"
                       spellCheck={false}

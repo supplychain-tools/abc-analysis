@@ -61,7 +61,13 @@
   border-radius: 0;
 }
 
+/* The heading sits straight on the panel it names. The shared sheet rules it
+   off underneath, which made sense while a head could be followed by anything;
+   above a diagram the rule and the chart's own axis line up as two greys a few
+   pixels apart and read as a mistake. The extra top padding below does the
+   separating instead. */
 .panel-head {
+  border-bottom: 0;
   padding: 11px 16px;
 }
 

@@ -249,43 +249,42 @@ describe('band summary', () => {
 describe('the café sample', () => {
   const analysis = classify(SAMPLE_ITEMS);
 
-  it('has thirty rows and a total of 660 686', () => {
-    expect(SAMPLE_ITEMS).toHaveLength(30);
-    expect(analysis.totalValue).toBeCloseTo(660_686, 6);
+  it('has twenty rows and a total of 641 004', () => {
+    expect(SAMPLE_ITEMS).toHaveLength(20);
+    expect(analysis.totalValue).toBeCloseTo(641_004, 6);
   });
 
-  it('puts five items, a sixth of the list, over four fifths of the money', () => {
+  it('puts four items, a fifth of the list, over three quarters of the money', () => {
     const [a] = analysis.bands;
 
-    // 527 200 out of 660 686, summed off the sorted list by hand.
-    expect(a.itemCount).toBe(5);
-    expect(a.totalValue).toBe(527_200);
-    expect(a.itemShare).toBeCloseTo(16.666667, 5);
-    expect(a.valueShare).toBeCloseTo(79.795849, 5);
+    // 489 400 out of 641 004, summed off the sorted list by hand.
+    expect(a.itemCount).toBe(4);
+    expect(a.totalValue).toBe(489_400);
+    expect(a.itemShare).toBeCloseTo(20, 5);
+    expect(a.valueShare).toBeCloseTo(76.348978, 5);
   });
 
-  it('splits the tail eleven to B and fourteen to C', () => {
+  it('splits the tail eight to B and eight to C', () => {
     const [, b, c] = analysis.bands;
 
-    // 99 614 and 33 872 out of 660 686, summed off the sorted list by hand.
-    expect(b.itemCount).toBe(11);
-    expect(b.totalValue).toBe(99_614);
-    expect(b.valueShare).toBeCloseTo(15.077359, 5);
-    expect(c.itemCount).toBe(14);
-    expect(c.totalValue).toBe(33_872);
-    expect(c.valueShare).toBeCloseTo(5.126792, 5);
+    // 113 914 and 37 690 out of 641 004, summed off the sorted list by hand.
+    expect(b.itemCount).toBe(8);
+    expect(b.totalValue).toBe(113_914);
+    expect(b.valueShare).toBeCloseTo(17.771184, 5);
+    expect(c.itemCount).toBe(8);
+    expect(c.totalValue).toBe(37_690);
+    expect(c.valueShare).toBeCloseTo(5.879839, 5);
   });
 
-  it('ranks the five A items in the order the hand calculation gives', () => {
-    expect(names(analysis.items.slice(0, 5))).toEqual([
+  it('ranks the four A items in the order the hand calculation gives', () => {
+    expect(names(analysis.items.slice(0, 4))).toEqual([
       'Espresso beans, house blend',
       'Whole milk',
       'Takeaway cups, 12 oz',
       'Oat milk',
-      'Cup lids, 12 oz',
     ]);
-    expect(analysis.items[4].cumulativeShare).toBeCloseTo(79.7959, 3);
-    expect(analysis.items[5].cumulativeShare).toBeCloseTo(82.5748, 3);
+    expect(analysis.items[3].cumulativeShare).toBeCloseTo(76.349, 3);
+    expect(analysis.items[4].cumulativeShare).toBeCloseTo(82.246, 3);
   });
 
   it('puts the cheapest units on the list in A and the dearest in C', () => {
@@ -296,20 +295,34 @@ describe('the café sample', () => {
     // 1450 a set, three sets a year: eighteenth by value, and class C.
     expect(byName('Grinder burr set')).toMatchObject({ unitCost: 1450, abcClass: 'C' });
     // A second pair making the same point, in case the first is read as a fluke.
-    expect(byName('Cup lids, 12 oz')).toMatchObject({ unitCost: 0.21, abcClass: 'A' });
+    expect(byName('Cup lids, 12 oz')).toMatchObject({ unitCost: 0.21, abcClass: 'B' });
     expect(byName('Water filter cartridge')).toMatchObject({ unitCost: 340, abcClass: 'C' });
   });
 
-  it('resolves the one genuine tie by name, sending the pair to different bands', () => {
-    // Cup carriers and hazelnut syrup are both worth 5280 a year. The tiebreak
-    // decides which of them crosses 95, so it decides a class.
+  it('resolves the one genuine tie by name', () => {
+    // Cup carriers and hazelnut syrup are both worth 5280 a year, so the order
+    // between them comes from the names and from nothing else.
     const carriers = analysis.items.findIndex((entry) => entry.name === 'Cup carriers, 4 cup');
     const syrup = analysis.items.findIndex((entry) => entry.name === 'Hazelnut syrup');
 
     expect(analysis.items[carriers].annualValue).toBe(analysis.items[syrup].annualValue);
     expect(carriers).toBeLessThan(syrup);
-    expect(analysis.items[carriers].abcClass).toBe('B');
-    expect(analysis.items[syrup].abcClass).toBe('C');
+  });
+
+  it('would let that tiebreak decide a class, where a pair straddles a line', () => {
+    // What the sample showed while it was thirty lines long, kept here on data
+    // built for it: two items of equal value on either side of 95%, so the name
+    // that sorts first takes B and the other takes C.
+    const { items } = classify([
+      item('bulk', 800, 1),
+      item('middle', 80, 1),
+      item('zinc', 60, 1),
+      item('alum', 60, 1),
+    ]);
+
+    // 80, 88, 94, 100: the pair arrives at 94 and 100, one either side of 95.
+    expect(names(items)).toEqual(['bulk', 'middle', 'alum', 'zinc']);
+    expect(items.map((entry) => entry.abcClass)).toEqual(['A', 'B', 'B', 'C']);
   });
 
   it('gives every item a unique id, so duplicate names could not collide', () => {

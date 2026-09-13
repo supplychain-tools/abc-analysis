@@ -29,7 +29,7 @@ async function withExample(page: Page): Promise<void> {
   await page.goto(PAGE);
   await ready(page);
   await page.locator('[data-testid="load-example"]').click();
-  await expect(page.locator('[data-testid="item-row"]')).toHaveCount(30);
+  await expect(page.locator('[data-testid="item-row"]')).toHaveCount(20);
 }
 
 /** The row inputs, in the order the table currently shows them. */
@@ -53,14 +53,14 @@ test('opens empty, on one row waiting to be typed into', async ({ page }) => {
 test('puts the whole worked example one button away', async ({ page }) => {
   await withExample(page);
 
-  await expect(page.locator('[data-testid="pareto-bar"]')).toHaveCount(30);
+  await expect(page.locator('[data-testid="pareto-bar"]')).toHaveCount(20);
   await expect(page.locator('[data-testid="empty-state"]')).toHaveCount(0);
 
   // The finding, as the summary states it.
-  await expect(page.locator('[data-testid="band-A-count"]')).toContainText('5');
-  await expect(page.locator('[data-testid="band-A-item-share"]')).toContainText('16.7');
-  await expect(page.locator('[data-testid="band-A-value-share"]')).toContainText('79.8');
-  await expect(page.locator('[data-testid="total-value"]')).toContainText('660,686.00');
+  await expect(page.locator('[data-testid="band-A-count"]')).toContainText('4');
+  await expect(page.locator('[data-testid="band-A-item-share"]')).toContainText('20.0');
+  await expect(page.locator('[data-testid="band-A-value-share"]')).toContainText('76.3');
+  await expect(page.locator('[data-testid="total-value"]')).toContainText('641,004.00');
 });
 
 test('sorts by annual value descending, not by unit price', async ({ page }) => {
@@ -94,7 +94,7 @@ test('recomputes on every keystroke, with no button to press', async ({ page }) 
   await withExample(page);
 
   const total = page.locator('[data-testid="total-value"]');
-  await expect(total).toContainText('660,686.00');
+  await expect(total).toContainText('641,004.00');
 
   // Empty the largest line. Everything downstream has to move at once.
   const beans = page.locator('[data-testid="item-row"]', {
@@ -102,8 +102,8 @@ test('recomputes on every keystroke, with no button to press', async ({ page }) 
   });
   await beans.locator('input[id^="usage-"]').fill('');
 
-  await expect(total).toContainText('473,486.00');
-  await expect(page.locator('[data-testid="band-A-count"]')).not.toContainText('5');
+  await expect(total).toContainText('453,804.00');
+  await expect(page.locator('[data-testid="band-A-count"]')).not.toContainText('4');
 
   await expect(nameInputs(page).nth(0)).toHaveValue('Whole milk');
 });
@@ -137,16 +137,17 @@ test('never moves a row that has not been filled in yet', async ({ page }) => {
 test('keeps the caret in the cell when the sort moves the row', async ({ page }) => {
   await withExample(page);
 
-  // The knock box is last by value. Typing a large usage into it should carry
-  // it to the top without the input being torn down under the cursor.
-  const knock = page.locator('[data-testid="item-row"]', {
-    has: page.locator('input[value="Knock box"]'),
+  // The water filter cartridge is last by value. Typing a large usage into it
+  // should carry it to the top without the input being torn down under the
+  // cursor.
+  const filter = page.locator('[data-testid="item-row"]', {
+    has: page.locator('input[value="Water filter cartridge"]'),
   });
-  const usage = knock.locator('input[id^="usage-"]');
+  const usage = filter.locator('input[id^="usage-"]');
   await usage.click();
   await usage.fill('9000');
 
-  await expect(nameInputs(page).nth(0)).toHaveValue('Knock box');
+  await expect(nameInputs(page).nth(0)).toHaveValue('Water filter cartridge');
   await expect(usage).toBeFocused();
 });
 
@@ -159,7 +160,7 @@ test('treats an unparseable cell as zero rather than showing NaN', async ({ page
   await beans.locator('input[id^="cost-"]').fill('not a number');
 
   await expect(page.locator('main')).not.toContainText('NaN');
-  await expect(page.locator('[data-testid="total-value"]')).toContainText('473,486.00');
+  await expect(page.locator('[data-testid="total-value"]')).toContainText('453,804.00');
 });
 
 test('clears to one blank row and an empty state, and comes back', async ({ page }) => {
@@ -177,8 +178,8 @@ test('clears to one blank row and an empty state, and comes back', async ({ page
 
   // Clearing is never a door that closes behind you.
   await page.locator('[data-testid="load-example"]').click();
-  await expect(page.locator('[data-testid="item-row"]')).toHaveCount(30);
-  await expect(page.locator('[data-testid="total-value"]')).toContainText('660,686.00');
+  await expect(page.locator('[data-testid="item-row"]')).toHaveCount(20);
+  await expect(page.locator('[data-testid="total-value"]')).toContainText('641,004.00');
 });
 
 test('classifies the one row a cleared table leaves as A', async ({ page }) => {
@@ -198,7 +199,7 @@ test('adds and removes rows, and never removes the last one', async ({ page }) =
   await withExample(page);
 
   await page.locator('[data-testid="add-row"]').click();
-  await expect(page.locator('[data-testid="item-row"]')).toHaveCount(31);
+  await expect(page.locator('[data-testid="item-row"]')).toHaveCount(21);
 
   await page.locator('[data-testid="clear-all"]').click();
   await expect(page.locator('[data-testid="item-row"]')).toHaveCount(1);
@@ -237,7 +238,7 @@ test('follows the browser language, and starts in dirhams', async ({ page }) => 
   await expect(page.getByLabel('Currency')).toHaveValue('MAD');
 
   await page.locator('[data-testid="load-example"]').click();
-  await expect(page.locator('[data-testid="total-value"]')).toContainText('660,686.00');
+  await expect(page.locator('[data-testid="total-value"]')).toContainText('641,004.00');
 });
 
 test('answers a French browser in French, and in dirhams', async ({ browser }) => {
@@ -265,15 +266,15 @@ test('reads its figures in French and switches without losing them', async ({ pa
   await ready(page);
   await page.locator('[data-testid="load-example"]').click();
 
-  await expect(page.locator('[data-testid="total-value"]')).toContainText('660 686,00');
+  await expect(page.locator('[data-testid="total-value"]')).toContainText('641 004,00');
   await expect(page.getByRole('heading', { name: 'Analyse ABC des stocks' })).toBeVisible();
 
   // The language switch is a segmented control whose radios are hidden behind
   // their labels. A real user clicks the label, so the test does too.
   await page.getByText('EN', { exact: true }).click();
   await expect(page.getByRole('radio', { name: 'EN', exact: true })).toBeChecked();
-  await expect(page.locator('[data-testid="total-value"]')).toContainText('660,686.00');
-  await expect(page.locator('[data-testid="band-A-count"]')).toContainText('5');
+  await expect(page.locator('[data-testid="total-value"]')).toContainText('641,004.00');
+  await expect(page.locator('[data-testid="band-A-count"]')).toContainText('4');
 });
 
 test('names itself and offers no way out of the page', async ({ page }) => {
@@ -303,7 +304,7 @@ test('splits the table in two on a phone and keeps it whole on a desk', async ({
   // second, and both rows read the same article at the same rank.
   await expect(computed.first()).toBeHidden();
   await expect(results).toBeVisible();
-  await expect(results.locator('[data-testid="result-row"]')).toHaveCount(30);
+  await expect(results.locator('[data-testid="result-row"]')).toHaveCount(20);
   await expect(results.locator('[data-testid="result-value"]').first()).toContainText('187,200.00');
   await expect(results.locator('[data-testid="result-class"]').first()).toContainText('A');
 

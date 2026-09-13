@@ -5,23 +5,31 @@ import type { AbcItem } from './classify';
 /**
  * A year of supplies for one busy café.
  *
- * Chosen so the Pareto effect is visible rather than argued for: five of the
- * thirty lines carry 79.8% of the money. It also carries two placements that
+ * Twenty lines. It was thirty, and the ten that went were the back of the
+ * list — the descaler, the tamper mat, the knock box — things a café buys
+ * once a year and which taught the reader nothing the lines above them had
+ * not already taught. Every line that carries part of the argument stayed.
+ *
+ * Chosen so the Pareto effect is visible rather than argued for: four of the
+ * twenty lines carry 76.3% of the money. It also carries two placements that
  * contradict the reflex of ranking a stock list by unit price, because that
  * reflex is the thing an ABC analysis exists to break:
  *
  *   Takeaway cups, 12 oz    0.62 each, 180 000 a year   third by value, A
- *   Cup lids, 12 oz         0.21 each, 180 000 a year   fifth by value,  A
+ *   Cup lids, 12 oz         0.21 each, 180 000 a year   fifth by value,  B
  *   Grinder burr set        1450 each, 3 a year         18th by value,   C
- *   Water filter cartridge   340 each, 6 a year         24th by value,   C
+ *   Water filter cartridge   340 each, 6 a year         20th by value,   C
  *
  * The cheapest thing on the list outranks the dearest by a factor of
  * twenty-six. Nothing here needs saying in the interface: the table says it.
  *
- * Two lines are worth exactly 5280 a year, which is not a coincidence being
- * papered over. It is the case that makes the name tiebreak load-bearing:
- * the pair straddles the 95% mark, so which of them is printed first decides
- * which class each one gets.
+ * Two lines are still worth exactly 5280 a year, so the sample still exercises
+ * the name tiebreak in the sort. On thirty lines the pair straddled the 95%
+ * mark and the tiebreak decided a class as well as an order; on twenty it
+ * lands inside C. Keeping that property would have meant dropping the middle
+ * of the list — the milk, the napkins, the syrups — and keeping the oddments,
+ * which is a worse sample to look at. The class-deciding case is covered by
+ * its own test in classify.test.ts instead.
  */
 interface SampleRow {
   id: string;
@@ -51,18 +59,8 @@ const SAMPLE_ROWS: readonly SampleRow[] = [
   { id: 's16', en: 'Sugar sachets, box of 1000', fr: 'Sucre en bûchettes, boîte de 1000', annualUsage: 190, unitCost: 28 },
   { id: 's17', en: 'Hazelnut syrup', fr: 'Sirop noisette', annualUsage: 120, unitCost: 44 },
   { id: 's18', en: 'Grinder burr set', fr: 'Jeu de meules pour moulin', annualUsage: 3, unitCost: 1450 },
-  { id: 's19', en: 'Espresso machine detergent', fr: 'Détergent machine espresso', annualUsage: 36, unitCost: 96 },
-  { id: 's20', en: 'Cleaning tablets, group head', fr: 'Pastilles de nettoyage, groupe', annualUsage: 2200, unitCost: 1.35 },
-  { id: 's21', en: 'Wooden stirrers, box of 1000', fr: 'Touillettes bois, boîte de 1000', annualUsage: 150, unitCost: 19 },
   { id: 's22', en: 'Pastry bags', fr: 'Sachets viennoiserie', annualUsage: 9000, unitCost: 0.28 },
-  { id: 's23', en: 'Steam wand cloths', fr: 'Lavettes buse vapeur', annualUsage: 260, unitCost: 9.5 },
   { id: 's24', en: 'Water filter cartridge', fr: "Cartouche de filtration d'eau", annualUsage: 6, unitCost: 340 },
-  { id: 's25', en: 'Milk jug, 0.6 L', fr: 'Pichet à lait, 0,6 L', annualUsage: 24, unitCost: 78 },
-  { id: 's26', en: 'Descaler concentrate', fr: 'Détartrant concentré', annualUsage: 20, unitCost: 88 },
-  { id: 's27', en: 'Portafilter basket, 18 g', fr: 'Panier de porte-filtre, 18 g', annualUsage: 16, unitCost: 96 },
-  { id: 's28', en: 'Cleaning brush, group head', fr: 'Brosse de nettoyage, groupe', annualUsage: 24, unitCost: 42 },
-  { id: 's29', en: 'Tamper mat', fr: 'Tapis de tassage', annualUsage: 8, unitCost: 115 },
-  { id: 's30', en: 'Knock box', fr: 'Bac à marc', annualUsage: 4, unitCost: 210 },
 ];
 
 /** The sample in one language. Ids are stable across both. */

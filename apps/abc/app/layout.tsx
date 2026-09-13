@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Archivo, Roboto_Mono } from 'next/font/google';
+import { Archivo, Chivo_Mono } from 'next/font/google';
 
 import { FAMILY } from '@sct/tools';
 
@@ -12,17 +12,20 @@ import './globals.css';
  * carries every word, and neither ever does the other's job. The division is
  * the design system's, not this page's.
  *
- * The mono is Roboto Mono rather than the Overpass Mono the sibling tool
- * loads, for one reason: Overpass Mono draws a dot inside its zero and offers
- * no alternate that removes it — not the `zero` feature, not a stylistic set.
- * A dotted zero is a programmer's convention, for telling 0 from O in a
- * typeface where they collide. Nothing on this page is code, every figure is a
- * quantity or an amount of money, and the mark reads as a decimal point that
- * has landed in the wrong place. Of the faces tested with a plain zero — Noto
- * Sans Mono, DM Mono and Inconsolata all slash theirs, Space Mono dots it —
- * this was the one that left it alone.
+ * The mono is Chivo Mono, the one the sibling tool carries its figures in, so
+ * both tools set a number the same way.
+ *
+ * It is here for its zero. Most monospaces mark the zero to tell it from a
+ * capital O — a dot inside it or a stroke across it — which is right in a
+ * terminal and wrong in a column of money, where no letter can appear and the
+ * mark reads as a decimal point that has landed in the wrong place. Overpass
+ * Mono dots its zero and offers no alternate that removes it. Roboto Mono
+ * replaced it here and turned out to strike a bar through its own, which is
+ * the same mistake wearing a different hat: measured against a capital O at
+ * 110px, the zero carries ink through its middle and the O carries none.
+ * Chivo Mono's zero is a plain oval, measured the same way and empty.
  */
-const mono = Roboto_Mono({
+const mono = Chivo_Mono({
   subsets: ['latin'],
   weight: ['400', '600', '700'],
   variable: '--font-figure',

@@ -23,7 +23,7 @@ export const fr: AbcDictionary = {
     table: 'Articles',
     // Only a phone sees this one: the head of the second table, the half
     // holding what the tool computed.
-    results: 'Valeurs et classes',
+    results: 'Analyse ABC',
   },
 
   actions: {

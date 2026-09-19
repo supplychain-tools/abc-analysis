@@ -14,3 +14,11 @@ test-results/
 # agent tooling installed locally, not part of the app
 .claude/
 skills-lock.json
+
+# Screenshots taken while comparing one design revision against the next. They
+# are how a pass was judged, not part of what it produced, and they are written
+# at the repository root because that is where the tooling drops them.
+/v[0-9]*-*.png
+
+# Console and network logs from the local browser automation.
+.playwright-mcp/

@@ -122,20 +122,19 @@
   const N = values.length;
   const bw = (R - L) / N;
 
-  /* One scale for both, running 0 to 100% of the stock's value from the
-     baseline to the top of the plot. The bars are each article's share of that
-     value, the curve is those shares added up, and the two cuts are heights on
-     the same ruler.
+  /* Two scales sharing one ceiling, as the tool's own Pareto has them: the
+     bars measured against the largest article, the curve and its cuts against
+     the whole stock in percent. The top of the plot is both the largest
+     article and 100%, so the tallest bar runs the full height and the curve
+     ends level with it.
 
-     The bars used to be drawn against the largest article instead, which put
-     the first bar within a few pixels of the 95% rule and told a reader that
-     one article carried almost all the value. It carries 28%, which is what
-     the bar is now the height of. The chart is flatter for it, and that
-     flatness is the finding: no single line dominates, four of them together
-     do. */
-  const pctOf = (v) => (v / totalValue) * 100;
+     The ceiling is the largest article exactly, with nothing added. Padded by
+     9%, as it was, the tallest bar stopped at 91.7% of the height and the 95%
+     rule was drawn above it — which on a chart whose right-hand scale is a
+     percentage reads as the largest article falling short of 95%, and inverts
+     the order the live chart puts them in. */
   const yCum = (pct) => B - (pct / 100) * (B - T);
-  const yBar = (v) => yCum(pctOf(v));
+  const yBar = (v) => B - (v / values[0]) * (B - T);
 
   const ns = 'http://www.w3.org/2000/svg';
   const svg = document.getElementById('chart');

@@ -1,7 +1,33 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <rect width="32" height="32" rx="6" fill="#14456b"/>
-  <path d="M6 8 C 9 21, 12 24, 16 24 C 20 24, 23 21, 26 8"
-        fill="none" stroke="#ffffff" stroke-width="2.6"
-        stroke-linecap="round" stroke-linejoin="round"/>
-  <circle cx="16" cy="24" r="3.4" fill="#b3261e"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="ABC">
+  <!-- The ranked drop, in white on the accent blue, one step down.
+
+       Everything structural here is the ordering calculator's and is inherited
+       rather than decided again: #1d4ed8 because #2563EB glares at tab size,
+       the corners eased the way an application icon's are, white strokes with
+       round caps, and the mark drawn rather than typed — a favicon renders
+       with none of the page's webfonts, so <text> would fall back to whatever
+       sans the reader's machine happens to hold. These are strokes, so it is
+       the same mark everywhere.
+
+       What it draws is this tool's own answer. The sibling draws Q*, because
+       Q* is what it hands back. This one hands back a ranking, and the shape
+       of that ranking is the whole finding: a few articles carry nearly all
+       the value and the rest trail off to nothing.
+
+       So the three bars are not evenly stepped. An even stair is what a chart
+       icon looks like when it means "data"; the drop here is a cliff — the
+       second bar is under half the first and the third is a stub — which is
+       what a consumption-value ranking actually looks like and what no
+       generic chart mark says.
+
+       Two things were drawn and cut. The cumulative curve crossing the bars is
+       the other half of the method, and at sixteen pixels two ideas are one
+       smudge. And the red dot this icon used to carry went with the palette it
+       belonged to: the family has no red in it any more. -->
+  <rect width="32" height="32" rx="7" fill="#1d4ed8"/>
+  <g fill="none" stroke="#ffffff" stroke-width="3.1" stroke-linecap="round">
+    <path d="M9.4 9 V23"/>
+    <path d="M16 16.8 V23"/>
+    <path d="M22.6 21 V23"/>
+  </g>
 </svg>

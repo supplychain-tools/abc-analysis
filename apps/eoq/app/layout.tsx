@@ -61,7 +61,7 @@ export const metadata: Metadata = {
         url: '/og.png',
         width: 1200,
         height: 630,
-        alt: 'La courbe du coût annuel en fonction de la quantité commandée, avec Q* marqué à son minimum.',
+        alt: "L'écran de résultat du calculateur : Q* = 1 596,9 unités, le nombre de commandes par an, le délai entre deux commandes et le coût total pertinent, à côté de la courbe du coût annuel avec Q* marqué à son minimum.",
       },
     ],
   },

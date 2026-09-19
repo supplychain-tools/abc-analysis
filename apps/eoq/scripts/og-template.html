@@ -4,27 +4,33 @@
 <meta charset="utf-8">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;600;700&family=Chivo+Mono:wght@400;700&display=block">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,400;0,600;0,700;1,600&family=Chivo+Mono:wght@400;600;700&display=block">
 <style>
   /* The social preview.
 
-     Designed against what the network actually prints around it. LinkedIn
-     puts the image at the full width of the post and, underneath it on a grey
-     strip, the og:title in bold and the domain in small grey. The
-     og:description is not shown in the feed.
+     It is the tool's own answer screen, cropped to the moment that screen
+     exists for. A reader scrolling a feed gets one glance; what they get here
+     is what they would get after filling the form — the label naming the
+     quantity, the quantity itself, and the curve that says why that one.
 
-     Two consequences, and they are why this card looks the way it does. The
-     address is not repeated here, because LinkedIn prints it a few pixels
-     below; a card that repeats it spends a line saying what the reader is
-     already being told. And the picture has to carry the meaning on its own,
-     because the sentence explaining it may never be displayed.
+     Designed against what the network prints around it. LinkedIn puts the
+     image at the full width of the post and, on a grey strip beneath it, the
+     og:title in bold and the domain in small grey. The og:description is not
+     shown in the feed. So the address is not repeated here, and the picture
+     carries the meaning on its own.
 
-     Read at about 550 wide in a desktop feed and 350 on a phone, so nothing
-     is under 26px, there are no hairlines, and the chart is drawn at weights
-     that survive being halved. */
+     Read at about 550 wide in a desktop feed and 350 on a phone, so nothing is
+     under 22px, there are no hairlines under 2px, and the chart is drawn at
+     weights that survive being halved.
+
+     The figures are the tool's worked example — the ones the live page shows
+     when a reader presses "Charger un exemple" — so the card and the page it
+     links to say the same thing. */
   :root {
-    --ground: #f4f6f8; --surface: #ffffff; --line: #d9e0e8; --line-strong: #7a8899;
-    --text: #172033; --text-2: #5b6779; --accent: #2563eb;
+    --ground: #f4f6f8; --surface: #ffffff; --surface-2: #f1f5f9;
+    --line: #d9e0e8; --line-strong: #7a8899;
+    --text: #172033; --text-2: #5b6779;
+    --accent: #2563eb; --mark: #2563eb;
     --trace: #1e3a5f;
     --mono: 'Chivo Mono', monospace; --sans: 'Fira Sans', system-ui, sans-serif;
   }
@@ -32,44 +38,145 @@
   body {
     width: 1200px; height: 630px; background: var(--ground);
     font-family: var(--sans); color: var(--text);
+    display: flex; flex-direction: column;
   }
-  .sheet {
-    position: absolute; inset: 34px; background: var(--surface); border-radius: 16px;
-    display: flex; flex-direction: column; overflow: hidden;
+
+  /* The shell, as the page wears it: the family, then the tool. */
+  .bar {
+    flex: none; background: var(--surface); border-bottom: 2px solid var(--line);
+    padding: 22px 44px; display: flex; align-items: baseline; gap: 12px;
   }
-  .head { padding: 38px 56px 0; flex: none; }
-  .family { font-size: 26px; font-weight: 600; color: var(--accent); }
-  h1 {
-    font-size: 62px; font-weight: 700; letter-spacing: -0.024em; line-height: 1.02;
-    margin-top: 14px; max-width: 20ch;
+  .family { font-size: 27px; font-weight: 600; color: var(--text-2); }
+  .slash { font-size: 27px; font-weight: 600; color: var(--line-strong); }
+  .tool { font-size: 30px; font-weight: 700; }
+
+  .body { flex: 1; padding: 34px 44px 38px; display: flex; gap: 32px; min-height: 0; }
+  .col { display: flex; flex-direction: column; min-width: 0; }
+  .left { width: 540px; flex: none; }
+  .right { flex: 1; background: var(--surface); border-radius: 10px; }
+
+  /* The figure goes first and the sentence explains it, which is the order the
+     live page uses and the only order that survives a glance: in a feed the
+     blue number is what stops the scroll, and a paragraph above it is a wall
+     to be got past before anything is seen. The tool is named once, in the
+     bar; naming it again here would spend the widest line on the card
+     repeating what is printed twenty pixels above. */
+  .lead { font-size: 27px; line-height: 1.3; color: var(--text-2); margin-top: 20px; }
+
+  /* The answer line, in the same parts the live page sets it in: an italic
+     variable, a starred optimum, the figure in the one marked colour, and the
+     unit set quietly beside it. The star is not decoration — it is what
+     separates the optimum from any other order quantity.
+
+     nowrap throughout: a figure broken across two lines stops being one
+     number, and the thin space inside it is exactly where a browser would
+     choose to break. */
+  .equation {
+    display: flex; flex-wrap: nowrap; align-items: baseline; gap: 0.14em;
+    font-family: var(--mono); font-weight: 700; font-size: 78px;
+    line-height: 1; letter-spacing: -0.02em; font-variant-numeric: tabular-nums;
+    white-space: nowrap; margin-top: 4px;
   }
-  .sub { font-size: 30px; line-height: 1.25; color: var(--text-2); margin-top: 16px; }
-  /* The picture gets the room. It is the half of the card that says something
-     the title does not, and a starved curve flattens into parallel lines. */
-  .plot { flex: 1; min-height: 250px; padding: 18px 56px 34px; }
+  .symbol { font-family: var(--sans); font-style: italic; font-weight: 600; }
+  .star {
+    font-style: normal; font-size: 0.5em; font-weight: 700;
+    vertical-align: 0.62em; margin-left: 0.01em;
+  }
+  .op { font-weight: 400; color: var(--text-2); }
+  .answer { color: var(--accent); }
+
+  /* The group separator inside a figure.
+
+     A monospace gives every glyph one cell, a thin space included, so 1 596,9
+     set plainly reads as two numbers with a gap between them. word-spacing is
+     no use here — it moves U+0020 and nothing else, and this is U+2009 — so
+     the space is set in its own box and shrunk to about the width the
+     proportional face would have given it. */
+  .sep { font-size: 0.34em; }
+
+  .unit {
+    font-family: var(--sans); font-size: 0.38em; font-weight: 600;
+    color: var(--text-2); margin-left: 0.2em;
+  }
+
+  /* Two readings the quantity implies, in the boxes the page puts them in.
+     Stacked rather than side by side: at half this width a two-column pair
+     gives each label about nine characters, and both of them wrap. */
+  .kpis { display: flex; flex-direction: column; gap: 12px; margin-top: auto; }
+  .kpi {
+    background: var(--surface-2); border-radius: 8px; padding: 17px 20px;
+    display: flex; align-items: baseline; justify-content: space-between; gap: 20px;
+  }
+  .kpi .k { font-size: 25px; font-weight: 600; color: var(--text-2); }
+  .kpi .v {
+    font-family: var(--mono); font-size: 32px; font-weight: 700;
+    font-variant-numeric: tabular-nums; white-space: nowrap;
+  }
+  .kpi .v small {
+    font-family: var(--sans); font-size: 20px; font-weight: 600;
+    color: var(--text-2); margin-left: 0.3em;
+  }
+
+  /* The picture gets the rest. It is the half of the card that says something
+     the figure does not — that the total is flat near its minimum — and a
+     starved curve flattens into parallel lines. */
+  .plot-head { font-size: 24px; font-weight: 600; color: var(--text-2); padding: 16px 20px 0; }
+  .plot { flex: 1; min-height: 0; padding: 6px 20px 16px; }
   svg { width: 100%; height: 100%; display: block; }
-  .axis { font-size: 26px; font-weight: 600; fill: var(--text-2); }
-  .trace-label { font-size: 26px; font-weight: 700; }
+  .axis { font-size: 22px; font-weight: 600; fill: var(--text-2); }
+  .trace-label { font-size: 23px; font-weight: 700; }
   .mark {
-    font-family: var(--mono); font-size: 32px; font-weight: 700; fill: var(--accent);
-    paint-order: stroke; stroke: var(--surface); stroke-width: 9px; stroke-linejoin: round;
+    font-family: var(--mono); font-size: 27px; font-weight: 700; fill: var(--accent);
+    paint-order: stroke; stroke: var(--surface); stroke-width: 8px; stroke-linejoin: round;
   }
 </style>
 </head>
 <body>
-  <div class="sheet">
-    <div class="head">
-      <div class="family">Supply Chain Tools</div>
-      <h1>Quantité économique de commande</h1>
-      <p class="sub">Combien commander à la fois pour que le coût annuel soit le plus bas.</p>
+  <div class="bar">
+    <span class="family">Supply Chain Tools</span>
+    <span class="slash">/</span>
+    <span class="tool">Quantité économique de commande</span>
+  </div>
+
+  <div class="body">
+    <div class="col left">
+      <div class="equation">
+        <span class="symbol">Q<span class="star">*</span></span>
+        <span class="op">=</span>
+        <span class="answer">1<span class="sep">&thinsp;</span>596,9</span>
+        <span class="unit">unités</span>
+      </div>
+      <p class="lead">Combien commander à la fois pour que le coût annuel soit le plus bas.</p>
+      <!-- The three readings the live page prints under the answer, in the
+           order it prints them. They are here because the quantity alone is
+           not yet a plan: it becomes one when you know how often you order
+           and what the year costs. -->
+      <div class="kpis">
+        <div class="kpi">
+          <div class="k">Commandes par an</div>
+          <div class="v">15,03</div>
+        </div>
+        <div class="kpi">
+          <div class="k">Jours entre commandes</div>
+          <div class="v">20,0 <small>jours</small></div>
+        </div>
+        <div class="kpi">
+          <div class="k">Coût total pertinent</div>
+          <div class="v">13<span class="sep">&thinsp;</span>525,98 <small>MAD</small></div>
+        </div>
+      </div>
     </div>
-    <div class="plot"><svg id="chart" viewBox="0 0 1088 248" preserveAspectRatio="none"></svg></div>
+
+    <div class="col right">
+      <div class="plot-head">Courbe de coût</div>
+      <div class="plot"><svg id="chart" viewBox="0 0 552 400" preserveAspectRatio="none"></svg></div>
+    </div>
   </div>
 
 <script>
-  /* The curve is drawn from the model rather than sketched, so the minimum is
-     where the arithmetic puts it. The figures behind it are never printed:
-     an unexplained 1 596,9 tells a reader scrolling past nothing at all. */
+  /* The curve is drawn from the model rather than sketched, so its minimum is
+     where the arithmetic puts it — and where the figure printed beside it says
+     it is. These are the worked example's numbers. */
   const D = 24000, S = 450, H = 8.47;
   const qStar = Math.sqrt((2 * D * S) / H);
   const ordering = (q) => (D / q) * S;
@@ -80,9 +187,14 @@
      is its flat bottom, and starting at zero spends most of the width on an
      asymptote nobody orders at. */
   const qMin = qStar / 3, qMax = qStar * 2.15;
-  const yMax = Math.max(total(qMin), total(qMax)) * 1.04;
+  const yMax = Math.max(total(qMin), total(qMax)) * 1.06;
 
-  const W = 1088, HT = 248, L = 34, R = W - 168, T = 52, B = HT - 40;
+  /* The viewBox is sized to the box it is painted into rather than to a round
+     number, because preserveAspectRatio="none" scales x and y independently
+     and a mismatch squashes every label in the drawing. R leaves room for the
+     three trace names, which are set outside the plot and would otherwise run
+     off the sheet. */
+  const W = 552, HT = 400, L = 22, R = W - 146, T = 42, B = HT - 44;
   const sx = (q) => L + ((q - qMin) / (qMax - qMin)) * (R - L);
   const sy = (v) => B - (v / yMax) * (B - T);
   const path = (f) => {
@@ -106,25 +218,25 @@
 
   /* The two axes, named in words. A reader who never clicks should still come
      away knowing what is plotted against what. */
-  add('line', { x1: L, x2: R, y1: B, y2: B, stroke: 'var(--line-strong)', 'stroke-width': 2.5 });
-  add('line', { x1: L, x2: L, y1: T - 6, y2: B, stroke: 'var(--line-strong)', 'stroke-width': 2.5 });
+  add('line', { x1: L, x2: R, y1: B, y2: B, stroke: 'var(--line-strong)', 'stroke-width': 2 });
+  add('line', { x1: L, x2: L, y1: T - 6, y2: B, stroke: 'var(--line-strong)', 'stroke-width': 2 });
   /* Named above the axis on one line rather than beside it: two stacked words
      in a left margin collide with the curve where it is steepest. */
-  add('text', { x: L, y: T - 18, class: 'axis' }, 'coût annuel');
-  add('text', { x: R, y: B + 32, 'text-anchor': 'end', class: 'axis' }, 'quantité commandée');
+  add('text', { x: L, y: T - 16, class: 'axis' }, 'coût annuel');
+  add('text', { x: R, y: B + 28, 'text-anchor': 'end', class: 'axis' }, 'quantité commandée');
 
-  add('path', { d: path(ordering), fill: 'none', stroke: 'var(--text-2)', 'stroke-width': 3.5, 'stroke-dasharray': '11 9' });
-  add('path', { d: path(holding), fill: 'none', stroke: 'var(--text-2)', 'stroke-width': 3.5 });
-  add('path', { d: path(total), fill: 'none', stroke: 'var(--trace)', 'stroke-width': 7 });
+  add('path', { d: path(ordering), fill: 'none', stroke: 'var(--text-2)', 'stroke-width': 2.6, 'stroke-dasharray': '9 7' });
+  add('path', { d: path(holding), fill: 'none', stroke: 'var(--text-2)', 'stroke-width': 2.6 });
+  add('path', { d: path(total), fill: 'none', stroke: 'var(--trace)', 'stroke-width': 5.5 });
 
-  add('text', { x: R + 12, y: sy(ordering(qMax)) + 8, class: 'trace-label', fill: 'var(--text-2)' }, 'passation');
-  add('text', { x: R + 12, y: sy(holding(qMax)) + 8, class: 'trace-label', fill: 'var(--text-2)' }, 'possession');
-  add('text', { x: R + 12, y: sy(total(qMax)) - 14, class: 'trace-label', fill: 'var(--trace)' }, 'total');
+  add('text', { x: R + 10, y: sy(ordering(qMax)) + 8, class: 'trace-label', fill: 'var(--text-2)' }, 'passation');
+  add('text', { x: R + 10, y: sy(holding(qMax)) + 8, class: 'trace-label', fill: 'var(--text-2)' }, 'possession');
+  add('text', { x: R + 10, y: sy(total(qMax)) - 12, class: 'trace-label', fill: 'var(--trace)' }, 'total');
 
   const yStar = sy(total(qStar));
-  add('line', { x1: sx(qStar), x2: sx(qStar), y1: yStar, y2: B, stroke: 'var(--accent)', 'stroke-width': 5 });
-  add('circle', { cx: sx(qStar), cy: yStar, r: 12, fill: 'var(--accent)', stroke: 'var(--surface)', 'stroke-width': 4 });
-  add('text', { x: sx(qStar) + 18, y: yStar - 16, class: 'mark' }, 'Q*');
+  add('line', { x1: sx(qStar), x2: sx(qStar), y1: yStar, y2: B, stroke: 'var(--mark)', 'stroke-width': 4 });
+  add('circle', { cx: sx(qStar), cy: yStar, r: 10, fill: 'var(--mark)', stroke: 'var(--surface)', 'stroke-width': 3.5 });
+  add('text', { x: sx(qStar) + 14, y: yStar - 14, class: 'mark' }, 'Q*');
 
   document.documentElement.dataset.drawn = 'true';
 </script>

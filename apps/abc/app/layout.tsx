@@ -78,7 +78,7 @@ export const metadata: Metadata = {
         url: '/og.png',
         width: 1200,
         height: 630,
-        alt: "L'écran de résultat de l'analyse : la classe A porte 74,8 % de la valeur de consommation annuelle sur 16,0 % des articles, la valeur annuelle des classes A et C, et le diagramme de Pareto où la courbe cumulée franchit le seuil de 80 %.",
+        alt: "Le nom de l'outil au-dessus du diagramme de Pareto de l'exemple : vingt-cinq articles classés par valeur annuelle décroissante, la courbe cumulée franchissant le seuil de 80 %, les bandes A, B et C sous les barres, et le constat que 4 articles sur 25 portent 74,8 % de la valeur.",
       },
     ],
   },

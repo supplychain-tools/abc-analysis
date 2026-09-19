@@ -13,6 +13,7 @@ import {
   type ItemRow,
 } from '@/lib/rows';
 import { ClassSummary } from '@/components/ClassSummary';
+import { Finding } from '@/components/Finding';
 import { ItemTable } from '@/components/ItemTable';
 import { ParetoChart } from '@/components/ParetoChart';
 import { ResultTable } from '@/components/ResultTable';
@@ -198,11 +199,34 @@ export default function AbcPage() {
             left, the curve it came from on the right. */}
         <div className="grid gap-4">
           <ItemTable rows={rows} analysis={analysis} onEdit={edit} onRemove={remove} onAdd={add} />
+
+          {/* The phone's second table is the computed half of the one above it,
+              so it stays with the table it was cut from rather than joining
+              the reading. */}
           {analysis.isEmpty ? null : <ResultTable analysis={analysis} />}
 
-          {analysis.isEmpty ? <EmptyState /> : <ClassSummary bands={analysis.bands} />}
+          {/* The reading is one sheet.
 
-          {analysis.isEmpty ? null : <ParetoChart analysis={analysis} />}
+              These three sections are not three documents: the finding, what
+              each class holds, and the curve the finding was read off are one
+              argument told three times over, and a reader goes down all of it
+              in one pass. Set as separate cards they were three things to
+              choose between; divided by hairlines on one surface they are one
+              thing with three parts, which is what the ordering calculator
+              does with its own answer, detail and diagram.
+
+              gap-0 because the rule between neighbours is drawn by the stack,
+              and the stack clips the four outer corners so the ground cannot
+              show through the joins. */}
+          {analysis.isEmpty ? (
+            <EmptyState />
+          ) : (
+            <div id="results" className="sheet-stack grid min-w-0 gap-0">
+              <Finding bands={analysis.bands} />
+              <ClassSummary bands={analysis.bands} />
+              <ParetoChart analysis={analysis} />
+            </div>
+          )}
         </div>
       </main>
     </SettingsProvider>

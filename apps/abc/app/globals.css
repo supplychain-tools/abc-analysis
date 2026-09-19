@@ -112,7 +112,8 @@
   }
 
   .panel,
-  .sheet-stack {
+  .sheet-stack,
+  .class-card {
     border-radius: 0;
     overflow: visible;
   }
@@ -120,13 +121,31 @@
   .panel-head + .panel-body:has(svg[role='img']) {
     padding-block: 3px;
   }
+
+  /* The answer line is sized to a screen, where it has a column of its own and
+     nothing above it. A4 is 21cm across and read at arm's length, so it comes
+     down to what a printed page can hold — the same size the ordering
+     calculator prints Q* at, since the two lines answer the same way. */
+  .equation {
+    font-size: 16pt;
+  }
+
+  /* A class card is contained by tone, and tone is the one thing a monochrome
+     printer has nothing to spend on: the fill comes back as grey behind the
+     figures, or as nothing at all, depending on the driver. On paper the three
+     cards are separated by the space between them, and the rule inside each
+     one still divides what the class costs from what it returns. */
+  .class-card {
+    background: transparent;
+    padding: 0;
+  }
 }
 
 /* ---- Type ----------------------------------------------------------
    The sibling tool's scale, which is a step down from the shared one:
    this family is read at desk distance off a table of figures, not
-   across a room. Fira Sans for words, Spline Sans Mono for figures, and
-   the division is load-bearing — mono means this is a number.
+   across a room. Fira Sans for words, Chivo Mono for figures, and the
+   division is load-bearing — mono means this is a number.
    ------------------------------------------------------------------ */
 
 body {
@@ -239,16 +258,22 @@ body {
 .class-card-return {
   margin-top: 10px;
   padding-top: 10px;
-  border-top: 1px solid var(--line);
+
+  /* --line is drawn to sit on --surface, and a card is --surface-2. Left at
+     --line the rule was four points of luminance off its own ground and
+     effectively invisible, which mattered little while the two halves were
+     set at two different sizes and told apart by that. They are one size now,
+     and this rule is the only thing saying which half is which, so it is
+     mixed down until it holds the same distance from --surface-2 that --line
+     holds from --surface. */
+  border-top: 1px solid color-mix(in srgb, var(--line-strong) 28%, var(--surface-2));
 }
 
-/* The words that follow a figure here name what the figure is a share of, so
-   they sit at reading size rather than at the caption size a unit takes when
-   it is a symbol like MAD or %. */
-.class-card-cost .unit,
-.class-card-return .unit {
-  font-size: 0.85em;
-}
+/* Nothing here overrides the unit any more. The words that used to follow a
+   figure — "des articles", "de la valeur" — were set at reading size because
+   they were prose rather than units, and they have moved above the figures
+   they name. What is left after a figure in a card is % and the currency, and
+   those are symbols: they take the caption size every other unit takes. */
 
 
 /* ---- Two tables on a phone, one on a desk --------------------------

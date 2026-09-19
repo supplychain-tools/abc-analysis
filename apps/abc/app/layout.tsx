@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Archivo, Chivo_Mono } from 'next/font/google';
+import { Chivo_Mono, Fira_Sans } from 'next/font/google';
 
 import { FAMILY } from '@sct/tools';
 
@@ -8,9 +8,15 @@ import { fr } from '@/lib/i18n/fr';
 import './globals.css';
 
 /**
- * Two families, doing two different jobs: mono carries every figure, Archivo
- * carries every word, and neither ever does the other's job. The division is
- * the design system's, not this page's.
+ * Two families, doing two different jobs: mono carries every figure, the text
+ * face carries every word, and neither ever does the other's job. The division
+ * is the design system's, not this page's.
+ *
+ * Both faces are the ordering calculator's, chosen there and adopted here
+ * rather than chosen again. Two tools in one family that set the same figure
+ * and the same label in two different faces are two tools, whatever else they
+ * share: the face is the first thing a reader recognises and the last thing
+ * that should vary between siblings.
  *
  * The mono is Chivo Mono, the one the sibling tool carries its figures in, so
  * both tools set a number the same way.
@@ -33,8 +39,18 @@ const mono = Chivo_Mono({
   fallback: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Consolas', 'monospace'],
 });
 
-const text = Archivo({
+/*
+ * Fira Sans carries the words. Drawn for interface text at small sizes, which
+ * is where nearly all of this page lives — a table of twenty-five rows is read
+ * at 11 and 13px and almost nowhere else. The weights and the italic are
+ * declared rather than left to the default: the table heads are set at 500,
+ * the labels at 600, and the class letters at 700, so a subset carrying 400
+ * alone would have the browser slant and embolden the face itself.
+ */
+const text = Fira_Sans({
   subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  style: ['normal', 'italic'],
   variable: '--font-text',
   display: 'swap',
   fallback: ['system-ui', 'Segoe UI', 'Helvetica Neue', 'Arial', 'sans-serif'],

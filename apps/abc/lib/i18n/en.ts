@@ -54,9 +54,26 @@ export const en = {
     rowCount: (count: number) => (count === 1 ? '1 item' : `${count} items`),
   },
 
+  finding: {
+    /* The quiet line over the headline, naming what the two figures under it
+       are. The sibling calculator names Q* the same way and at the same size. */
+    title: 'What class A carries',
+    /* The word that binds the two figures. A share of the value means nothing
+       without the share of the list that carries it. */
+    on: 'on',
+  },
+
   summary: {
     ofItems: 'of items',
     ofValue: 'of the value',
+
+    /* The two halves of a class card, each naming the figure under it rather
+       than trailing after it. Both are shares, and they are named as shares of
+       two different things, because that difference is the whole finding. */
+    labels: {
+      itemShare: 'Share of the list',
+      valueShare: 'Share of the value',
+    },
 
     columns: {
       abcClass: 'Class',
@@ -91,6 +108,7 @@ export const en = {
 
   a11y: {
     skipToTable: 'Skip to the item table',
+    findingRegion: 'Headline finding',
     chartRegion: 'Pareto chart',
     classOf: (abcClass: string) => `Class ${abcClass}`,
   },

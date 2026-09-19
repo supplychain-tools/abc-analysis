@@ -3,7 +3,7 @@
 import type { ClassBand } from '@/lib/classify';
 import { currencySymbol } from '@sct/shared/lib/format';
 
-import { Figure, Measure } from '@sct/shared/ui/Figure';
+import { Measure } from '@sct/shared/ui/Figure';
 import { rankOf } from './rank';
 import { useSettings } from './Settings';
 
@@ -22,14 +22,26 @@ export interface ClassSummaryProps {
  * anyone tracking across a rule.
  *
  * Each card is in two halves, and the division is the whole argument. Above:
- * what the class costs in attention — how many lines, what fraction of the
- * list. Below: what it returns — the share of the money, and the money. The
- * gap between them is where the Pareto effect is legible: the top half of A
- * is small and the bottom half is nearly everything, and C is the other way
- * round.
+ * what the class costs in attention. Below: what it returns. The gap between
+ * them is where the Pareto effect is legible: the top half of A is small and
+ * the bottom half is nearly everything, and C is the other way round.
  *
- * No bar is drawn under any of it. The gap between 16.0 and 74.8 is the point
- * and a pair of figures that far apart does not need a bar to be believed.
+ * Each half is one reading, set the way the ordering calculator sets a
+ * headline metric: the name of the figure above it, small and quiet, and the
+ * figure under its own name. The labels used to trail the figures inline —
+ * "16,0 % des articles", "74,8 % de la valeur" — which put four numbers and
+ * four sets of words into one column and left a reader to work out which
+ * belonged to which. Overhead, each figure is claimed before it is read.
+ *
+ * Both shares are now set at one size. They were 13px and 22px, which decided
+ * the comparison before the reader made it: the figure that matters is
+ * whichever is larger in the particular class being looked at, and in C it is
+ * the top half. Same size, and the gap between 16,0 and 74,8 is the reader's
+ * to see. Under each share sits the figure it was computed from — the count,
+ * the money — quiet, because it is the evidence rather than the finding.
+ *
+ * No bar is drawn under any of it. A pair of figures that far apart does not
+ * need a bar to be believed.
  */
 export function ClassSummary({ bands }: ClassSummaryProps) {
   const { locale, currency, t } = useSettings();
@@ -54,28 +66,41 @@ export function ClassSummary({ bands }: ClassSummaryProps) {
 
               <dl className="mt-3">
                 <div className="class-card-cost">
-                  <dt className="sr-only">{t.summary.columns.itemCount}</dt>
-                  <dd className="t-body num" data-testid={`band-${band.abcClass}-count`}>
-                    {t.table.rowCount(band.itemCount)}
+                  <dt className="t-micro text-[color:var(--text-2)]">
+                    {t.summary.labels.itemShare}
+                  </dt>
+                  <dd
+                    className="t-figure-lg num mt-1"
+                    data-testid={`band-${band.abcClass}-item-share`}
+                  >
+                    <Measure value={band.itemShare} decimals={1} unit="%" />
                   </dd>
 
-                  <dt className="sr-only">{t.summary.columns.itemShare}</dt>
-                  <dd className="t-body num" data-testid={`band-${band.abcClass}-item-share`}>
-                    <Measure value={band.itemShare} decimals={1} unit="%" />{' '}
-                    <span className="unit">{t.summary.ofItems}</span>
+                  {/* The count the share was taken of. Named for a screen
+                      reader only: on screen "4 articles" says what it is. */}
+                  <dt className="sr-only">{t.summary.columns.itemCount}</dt>
+                  <dd
+                    className="t-body num mt-0.5 text-[color:var(--text-2)]"
+                    data-testid={`band-${band.abcClass}-count`}
+                  >
+                    {t.table.rowCount(band.itemCount)}
                   </dd>
                 </div>
 
                 <div className="class-card-return">
-                  <dt className="sr-only">{t.summary.columns.valueShare}</dt>
+                  <dt className="t-micro text-[color:var(--text-2)]">
+                    {t.summary.labels.valueShare}
+                  </dt>
                   <dd
-                    className="t-figure-lg num"
+                    className="t-figure-lg num mt-1"
                     data-testid={`band-${band.abcClass}-value-share`}
                   >
-                    <Measure value={band.valueShare} decimals={1} unit="%" />{' '}
-                    <span className="unit">{t.summary.ofValue}</span>
+                    <Measure value={band.valueShare} decimals={1} unit="%" />
                   </dd>
 
+                  {/* The money the share was taken of. The currency symbol
+                      names it on screen, so the term is for the reader who
+                      cannot see it. */}
                   <dt className="sr-only">{t.table.columns.annualValue}</dt>
                   <dd className="t-body num mt-0.5 text-[color:var(--text-2)]">
                     <Measure value={band.totalValue} decimals={2} unit={symbol} />

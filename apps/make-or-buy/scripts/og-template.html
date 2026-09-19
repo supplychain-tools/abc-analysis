@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,400;0,600;0,700;1,600&family=Chivo+Mono:wght@400;600;700&display=block">
+<style>
+  /* The social preview, sharing every measurement with its two siblings: the
+     same sheet inset into the same ground, the same family line, the same 62px
+     name, the same 30px sentence under it, and the picture taking whatever is
+     left. The three sites are one family, and a feed is where that is either
+     obvious or not at all.
+
+     The card names the tool and draws what it draws. It prints no result — no
+     break-even volume, no verdict — because the figure a reader wants depends
+     on their own part and their own supplier, and an unexplained 15 376 tells
+     someone scrolling past nothing at all. What the picture has to say is that
+     there is a volume where the answer changes, and which side of it is which.
+
+     That is the live chart's own argument, and it is made the live chart's own
+     way: the bands answer first, in colour, before a line is traced or a
+     figure read; the two cost lines stay quieter, because they are the
+     evidence the bands assert and a diagram that only asserted would be a
+     graphic rather than a chart.
+
+     Read at about 550 wide in a desktop feed and 350 on a phone, so nothing is
+     under 26px, there are no hairlines under 2px, and the chart is drawn at
+     weights that survive being halved.
+
+     Designed against what the network prints around it. LinkedIn puts the
+     image at the full width of the post and, on a grey strip beneath it, the
+     og:title in bold and the domain in small grey. The og:description is not
+     shown in the feed. So the address is not repeated here, and the picture
+     carries the meaning on its own.
+
+     The costs are the tool's worked example, the part the live page loads from
+     "Charger l'exemple", so the card and the page it links to draw the same
+     two lines crossing in the same place. */
+  :root {
+    --ground: #f4f6f8; --surface: #ffffff; --line: #d9e0e8; --line-strong: #7a8899;
+    --text: #172033; --text-2: #5b6779; --accent: #2563eb;
+    /* The two sides keep the colours the live chart gives them: the house blue
+       for producing, the teal it reserves for the second trace for buying. */
+    --make: #2563eb; --buy: #1d6a63;
+    --mono: 'Chivo Mono', monospace; --sans: 'Fira Sans', system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  body {
+    width: 1200px; height: 630px; background: var(--ground);
+    font-family: var(--sans); color: var(--text);
+  }
+  .sheet {
+    position: absolute; inset: 34px; background: var(--surface); border-radius: 16px;
+    display: flex; flex-direction: column; overflow: hidden;
+  }
+  .head { padding: 38px 56px 0; flex: none; }
+  .family { font-size: 26px; font-weight: 600; color: var(--accent); }
+  h1 {
+    font-size: 62px; font-weight: 700; letter-spacing: -0.024em; line-height: 1.02;
+    margin-top: 14px; max-width: 20ch;
+  }
+  .sub { font-size: 30px; line-height: 1.25; color: var(--text-2); margin-top: 16px; }
+
+  .plot { flex: 1; min-height: 250px; padding: 18px 56px 34px; }
+  svg { width: 100%; height: 100%; display: block; }
+  .axis { font-size: 26px; font-weight: 600; fill: var(--text-2); }
+  /* The name of whichever side wins a band, set inside it in its own colour.
+     Both measure past 4.5:1 against their own 12% wash, which is the only
+     ground they are ever printed on. */
+  .band-label { font-size: 27px; font-weight: 700; }
+</style>
+</head>
+<body>
+  <div class="sheet">
+    <div class="head">
+      <div class="family">Supply Chain Tools</div>
+      <h1>Calculateur produire ou acheter</h1>
+      <p class="sub">À partir de quel volume produire revient moins cher qu&rsquo;acheter.</p>
+    </div>
+    <div class="plot"><svg id="chart"></svg></div>
+  </div>
+
+<script>
+  /* The worked example, and the arithmetic behind it, so the crossing lands
+     where the tool puts it rather than where a sketch would.
+
+     Yield grosses up every variable cost, not only materials: scrap is found
+     at the end of the line, so the labour and the overhead on a unit that
+     failed were spent as surely as its materials were. That is the one thing
+     in this model a reader will not find in a textbook formula, and it is the
+     point of the tool, so the card's chart is drawn with it. */
+  const VOLUME = 10000, HORIZON = 5;
+  const MATERIALS = 12, LABOUR_HOURS = 0.5, LABOUR_RATE = 40, OVERHEAD = 5, YIELD = 0.95;
+  const FIXED = 60000, TOOLING = 50000, OPPORTUNITY = 0;
+  const PRICE = 40, FREIGHT = 2, DUTY = 0.025, INSPECTION = 0.5, SWITCHING = 0;
+
+  const makePerUnit = (MATERIALS + LABOUR_HOURS * LABOUR_RATE + OVERHEAD) / YIELD;
+  const makeFixed = FIXED + TOOLING / HORIZON + OPPORTUNITY;
+  const buyPerUnit = PRICE + PRICE * DUTY + FREIGHT + INSPECTION;
+  const buyFixed = SWITCHING / HORIZON;
+
+  const makeAt = (v) => makePerUnit * v + makeFixed;
+  const buyAt = (v) => buyPerUnit * v + buyFixed;
+
+  /* Where the two lines meet, and the axis the live chart draws around it: the
+     furthest crossing doubled, so the flip sits in the middle third and both
+     sides of it get room to be seen. */
+  const crossing = (makeFixed - buyFixed) / (buyPerUnit - makePerUnit);
+  const vMax = Math.max(VOLUME, crossing) * 2;
+  const yMax = Math.max(makeAt(vMax), buyAt(vMax)) * 1.06;
+
+  /* The viewBox is measured from the box the drawing lands in rather than
+     written down, so nothing is scaled on either axis and a 26px label is 26px
+     on the sheet. R leaves room for nothing outside the plot here — both names
+     sit inside their own bands — so the picture runs to the right edge. */
+  const box = document.querySelector('.plot');
+  const W = box.clientWidth, HT = box.clientHeight;
+  document.getElementById('chart').setAttribute('viewBox', '0 0 ' + W + ' ' + HT);
+  const L = 34, R = W - 8, T = 46, B = HT - 44;
+
+  const sx = (v) => L + (v / vMax) * (R - L);
+  const sy = (c) => B - (c / yMax) * (B - T);
+
+  const ns = 'http://www.w3.org/2000/svg';
+  const svg = document.getElementById('chart');
+  const add = (tag, attrs, text) => {
+    const el = document.createElementNS(ns, tag);
+    for (const [k, v] of Object.entries(attrs)) el.setAttribute(k, v);
+    if (text !== undefined) el.textContent = text;
+    svg.appendChild(el);
+    return el;
+  };
+
+  /* The bands first, under everything, because they are what a reader is meant
+     to take in first: the colour behind the plot has answered the question
+     before any line is followed. The edge between them is the break-even, and
+     it is not drawn twice — no rule, no dot. The live chart tried both and
+     removed them, the second statement being the more eye-catching of the
+     two. */
+  const cheaperLeft = buyAt(1) < makeAt(1) ? 'buy' : 'make';
+  const bands = [
+    { from: 0, to: crossing, side: cheaperLeft },
+    { from: crossing, to: vMax, side: cheaperLeft === 'buy' ? 'make' : 'buy' },
+  ];
+  const INK = { make: 'var(--make)', buy: 'var(--buy)' };
+  const NAME = { make: 'produire', buy: 'acheter' };
+
+  for (const band of bands) {
+    add('rect', {
+      x: sx(band.from), y: T - 14, width: sx(band.to) - sx(band.from), height: B - (T - 14),
+      fill: INK[band.side], opacity: 0.14,
+    });
+  }
+
+  /* The two axes, named in words, as the ordering calculator names its own. A
+     cost against a volume is two continuous scales and says nothing until you
+     know which is which — unlike the ranked bars on the stock card, which
+     carry their own meaning and had their names taken away for the room. */
+  add('line', { x1: L, x2: R, y1: B, y2: B, stroke: 'var(--line-strong)', 'stroke-width': 2 });
+  add('line', { x1: L, x2: L, y1: T - 14, y2: B, stroke: 'var(--line-strong)', 'stroke-width': 2 });
+  add('text', { x: L, y: T - 24, class: 'axis' }, 'coût annuel total');
+  add('text', { x: R, y: B + 32, 'text-anchor': 'end', class: 'axis' }, 'volume annuel');
+
+  /* The two costs, kept quieter than the bands they explain, and told apart by
+     more than colour: producing is solid, buying is dashed, so the pair still
+     reads where the card is printed in grey or met by an eye that does not
+     separate blue from teal. */
+  const trace = (f, stroke, dash) => add('path', {
+    d: 'M' + sx(0) + ' ' + sy(f(0)) + ' L' + sx(vMax) + ' ' + sy(f(vMax)),
+    fill: 'none', stroke, 'stroke-width': 4, 'stroke-linecap': 'round',
+    ...(dash ? { 'stroke-dasharray': dash } : {}),
+  });
+  trace(makeAt, INK.make);
+  trace(buyAt, INK.buy, '13 9');
+
+  /* Which side wins in each band, named inside it, in its own colour. This is
+     the whole finding, and it is a word rather than a figure: the volume where
+     the answer changes belongs to the reader's own part and their own
+     supplier, and is on the other side of the click.
+
+     Set at the top of the band rather than the bottom. Two total costs that
+     both start near zero and rise together leave their whole difference in the
+     bottom of the plot and the top of it empty, so a name set low lands on the
+     lines it is explaining, and a name set high has the room to itself. */
+  for (const band of bands) {
+    const mid = (sx(band.from) + sx(band.to)) / 2;
+    add('text', {
+      x: mid, y: T + 20, 'text-anchor': 'middle', class: 'band-label', fill: INK[band.side],
+    }, NAME[band.side] + ' moins cher');
+  }
+
+  document.documentElement.dataset.drawn = 'true';
+</script>
+</body>
+</html>

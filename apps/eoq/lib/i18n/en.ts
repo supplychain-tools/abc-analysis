@@ -67,7 +67,7 @@ export const en = {
     totalCost: 'Total annual cost',
     averageInventory: 'Average inventory',
     safetyStock: 'Safety stock',
-    closedForm: 'Total relevant cost (closed form)',
+    closedForm: 'Relevant cost excluding safety stock',
     orderWhole: 'Order in whole units: round up to',
     beforeRounding: 'before rounding',
   },

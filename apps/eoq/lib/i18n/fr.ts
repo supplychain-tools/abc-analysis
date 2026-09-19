@@ -70,7 +70,7 @@ export const fr: Dictionary = {
     totalCost: 'Coût annuel total',
     averageInventory: 'Stock moyen',
     safetyStock: 'Stock de sécurité',
-    closedForm: 'CTP',
+    closedForm: 'Coût total pertinent (formule directe)',
     orderWhole: 'Commander en unités entières : arrondir à',
     beforeRounding: 'avant arrondi',
   },

@@ -6,19 +6,20 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,400;0,600;0,700;1,600&family=Chivo+Mono:wght@400;600;700&display=block">
 <style>
-  /* The social preview, built to the tool page's own opening: the family name,
-     the tool named at full size, one line saying what it answers, and the
-     picture under it running the whole width.
+  /* The social preview, sharing every measurement with the ordering
+     calculator's card: the same sheet inset into the same ground, the same
+     family line, the same 62px name, the same 30px sentence under it, and the
+     picture taking whatever is left. The two sites are one family, and a feed
+     is where that is either obvious or not at all.
 
-     A feed is not a dashboard. The card before this one split the sheet into a
-     column of figures and a squeezed plot, and at the 350px a phone gives it
-     neither half survived: the figures lost their labels and the Pareto lost
-     its tail. So the sheet now carries one thing largely rather than five
-     things small. The Pareto is the argument — a cliff, then twenty lines
-     worth almost nothing — and it gets the full width to make it in.
+     The card names the tool and draws what it draws. It prints no result. An
+     unexplained 74,8 tells a reader scrolling past nothing at all, and the
+     figures a reader does want are on the other side of the click; what the
+     picture has to say — that a handful of lines carry the value and the tail
+     carries almost none — it says by being a Pareto.
 
      Read at about 550 wide in a desktop feed and 350 on a phone, so nothing is
-     under 25px, there are no hairlines under 2px, and the chart is drawn at
+     under 26px, there are no hairlines under 2px, and the chart is drawn at
      weights that survive being halved.
 
      Designed against what the network prints around it. LinkedIn puts the
@@ -27,14 +28,12 @@
      shown in the feed. So the address is not repeated here, and the picture
      carries the meaning on its own.
 
-     The figures are the tool's worked example, the cafe's year of supplies the
+     The bars are the tool's worked example, the cafe's year of supplies the
      live page loads from "Charger l'exemple", so the card and the page it
-     links to say the same thing. */
+     links to draw the same chart. */
   :root {
-    --ground: #f4f6f8; --surface: #ffffff;
-    --line: #d9e0e8; --line-strong: #7a8899;
-    --text: #172033; --text-2: #5b6779;
-    --accent: #2563eb;
+    --ground: #f4f6f8; --surface: #ffffff; --line: #d9e0e8; --line-strong: #7a8899;
+    --text: #172033; --text-2: #5b6779; --accent: #2563eb;
     --rank-1: #2563eb; --rank-2: #85a9f3; --rank-3: #7a8899;
     --threshold: #f5b700; --trace: #1e3a5f;
     --mono: 'Chivo Mono', monospace; --sans: 'Fira Sans', system-ui, sans-serif;
@@ -43,53 +42,43 @@
   body {
     width: 1200px; height: 630px; background: var(--ground);
     font-family: var(--sans); color: var(--text);
-    padding: 30px; display: flex;
   }
   .sheet {
-    flex: 1; background: var(--surface); border: 2px solid var(--line);
-    border-radius: 16px; padding: 38px 52px 34px;
-    display: flex; flex-direction: column; min-height: 0;
+    position: absolute; inset: 34px; background: var(--surface); border-radius: 16px;
+    display: flex; flex-direction: column; overflow: hidden;
   }
-
-  /* The family, above the tool rather than beside it. On the page this is the
-     line that tells a reader there are siblings; on the card it is also the
-     only place the suite is named, so it keeps its own line and its own
-     colour. */
-  .family { font-size: 29px; font-weight: 700; color: var(--accent); }
-
-  /* The tool at the size the page sets it. Four words at 76px is the widest
-     the sheet holds on one line, and one line is what keeps the picture tall
-     enough to be worth printing. */
-  .tool {
-    font-size: 76px; font-weight: 700; line-height: 1.04;
-    letter-spacing: -0.022em; margin-top: 8px;
+  .head { padding: 38px 56px 0; flex: none; }
+  .family { font-size: 26px; font-weight: 600; color: var(--accent); }
+  /* 24ch rather than the sibling's 20ch. Its name is five words and wants the
+     break; this one is four and fits on a line, and forcing "Analyse ABC des"
+     over "stocks" breaks the name where nobody says it. */
+  h1 {
+    font-size: 62px; font-weight: 700; letter-spacing: -0.024em; line-height: 1.02;
+    margin-top: 14px; max-width: 24ch;
   }
+  .sub { font-size: 30px; line-height: 1.25; color: var(--text-2); margin-top: 16px; }
 
-  /* What the tool answers, in the words a reader would use for it. Held to
-     about 60 characters so it never takes a second line away from the plot. */
-  .lead { font-size: 30px; line-height: 1.32; color: var(--text-2); margin-top: 12px; }
-
-  .plot { flex: 1; min-height: 0; margin-top: 22px; }
+  /* The picture gets the rest, and a floor under it: a Pareto starved of
+     height flattens into a row of stubs and a curve with nowhere to climb. */
+  .plot { flex: 1; min-height: 250px; padding: 18px 56px 34px; }
   svg { width: 100%; height: 100%; display: block; }
-
-  .axis { font-size: 25px; font-weight: 600; fill: var(--text-2); }
-  .band { font-family: var(--mono); font-size: 30px; font-weight: 700; fill: var(--text); }
+  .axis { font-size: 26px; font-weight: 600; fill: var(--text-2); }
   .edge {
-    font-size: 25px; font-weight: 700; fill: var(--text);
-    paint-order: stroke; stroke: var(--surface); stroke-width: 7px; stroke-linejoin: round;
+    font-size: 26px; font-weight: 700; fill: var(--text);
+    paint-order: stroke; stroke: var(--surface); stroke-width: 9px; stroke-linejoin: round;
   }
-  /* The finding, set under the run of bars it describes rather than printed as
-     a statistic somewhere else on the sheet. It is the only blue ink in the
-     drawing besides the class A bars, and it names the same four lines they
-     are. */
-  .call { font-size: 27px; font-weight: 600; fill: var(--accent); }
+  /* The band letters in the figure face, as the sibling sets Q* in it: a
+     letter naming a class is a label on the data, not prose about it. */
+  .band { font-family: var(--mono); font-size: 32px; font-weight: 700; fill: var(--text); }
 </style>
 </head>
 <body>
   <div class="sheet">
-    <div class="family">Supply Chain Tools</div>
-    <h1 class="tool">Analyse ABC des stocks</h1>
-    <p class="lead">Quels articles portent l&rsquo;essentiel de la valeur du stock.</p>
+    <div class="head">
+      <div class="family">Supply Chain Tools</div>
+      <h1>Analyse ABC des stocks</h1>
+      <p class="sub">Quels articles portent l&rsquo;essentiel de la valeur du stock.</p>
+    </div>
     <div class="plot"><svg id="chart"></svg></div>
   </div>
 
@@ -116,18 +105,20 @@
   const bandOf = (i) => (cumulative[i] <= A_CUT ? 'A' : cumulative[i] <= B_CUT ? 'B' : 'C');
   const FILL = { A: 'var(--rank-1)', B: 'var(--rank-2)', C: 'var(--rank-3)' };
 
-  /* The viewBox is taken from the box the drawing lands in rather than written
-     down, so the two can never disagree: guess it and the browser either
-     letterboxes the chart inside its own column or, with preserveAspectRatio
-     off, stretches every label out of shape. Measured, the drawing is painted
-     at 1:1 and a 25px label is 25px on the sheet.
+  /* The viewBox is measured from the box the drawing lands in rather than
+     written down. The sibling writes its own down and scales it with
+     preserveAspectRatio="none", which it can afford because its drawing is
+     curves; here the drawing is twenty-five bars, and stretching one axis
+     against the other leaves the bars one width and the gaps between them
+     another. Measured, nothing is scaled: a 26px label is 26px on the sheet.
 
      R leaves room for the two names set outside the plot, B for the band
-     letters and the line under them. */
+     letters and the axis named on their line. */
   const box = document.querySelector('.plot');
   const W = box.clientWidth, HT = box.clientHeight;
   document.getElementById('chart').setAttribute('viewBox', '0 0 ' + W + ' ' + HT);
-  const L = 26, R = W - 156, T = 34, B = HT - 78;
+  const L = 34, R = W - 168, T = 52, B = HT - 86;
+
   const N = values.length;
   const bw = (R - L) / N;
   /* The tallest bar stops short of the top. Run to the ceiling and it reads as
@@ -146,12 +137,17 @@
     return el;
   };
 
-  /* The baseline only. Bars stand on it and begin at the axis, so a vertical
-     rule on the left would be hidden behind the first bar for its whole length
-     except the stub above it, and that stub reads as a stray mark rather than
-     as an axis. */
+  /* The baseline only. The sibling draws both rules because its curves start
+     away from the left edge and need one to be measured against; bars stand on
+     the baseline and begin at the axis, so a vertical rule there is hidden
+     behind the first bar for its whole length except the stub above it, and
+     that stub reads as a stray mark rather than as an axis.
+
+     Both axes are named in words all the same, as they are there. A reader who
+     never clicks should still come away knowing what is plotted against
+     what. */
   add('line', { x1: L, x2: R, y1: B, y2: B, stroke: 'var(--line-strong)', 'stroke-width': 2 });
-  add('text', { x: L, y: T - 10, class: 'axis' }, 'valeur annuelle');
+  add('text', { x: L, y: T - 18, class: 'axis' }, 'valeur annuelle');
 
   values.forEach((v, i) => {
     const x = L + i * bw;
@@ -171,41 +167,28 @@
     .join(' ');
   add('path', { d: cumPath, fill: 'none', stroke: 'var(--trace)', 'stroke-width': 5.5 });
 
-  /* The curve named where it ends rather than in a legend to be looked up. It
-     also fills the one empty corner a Pareto leaves, which is the corner the
-     curve is heading for. */
-  add('text', { x: R + 12, y: yCum(100) + 8, class: 'edge', fill: 'var(--trace)' }, 'cumul');
+  /* The curve named where it ends, the way the sibling names its three traces:
+     at the line rather than in a legend to be looked up. It also fills the one
+     empty corner a Pareto leaves, which is the corner the curve is heading
+     for. */
+  add('text', { x: R + 12, y: yCum(100) + 9, class: 'edge', fill: 'var(--trace)' }, 'cumul');
 
   /* Each band named under the run of bars it covers, in ink rather than in its
      own fill: --rank-2 measures 2.4:1 against white and cannot carry a letter.
      The bars hold the colour, the position holds the mapping. */
   const firstOf = (band) => values.findIndex((_, i) => bandOf(i) === band);
   const lastOf = (band) => values.reduce((acc, _, i) => (bandOf(i) === band ? i : acc), -1);
-  const spans = {};
   for (const band of ['A', 'B', 'C']) {
     const from = firstOf(band), to = lastOf(band);
     if (from < 0) continue;
-    spans[band] = [from, to];
     const mid = L + ((from + to) / 2 + 0.5) * bw;
-    add('text', { x: mid, y: B + 32, 'text-anchor': 'middle', class: 'band' }, band);
+    add('text', { x: mid, y: B + 34, 'text-anchor': 'middle', class: 'band' }, band);
   }
 
-  /* The whole point of the classification, said once, on the row under the
-     letters, which is the last row on the sheet and so gets it to itself. The
-     horizontal axis goes unnamed: bars falling from left to right under the
-     letters A, B and C already say the list is sorted by value and cut into
-     three, and a name repeating that would be the second thing on a row that
-     reads better with one. Anchored to the left edge rather than centred on
-     the A run: the run is four bars wide and the sentence is not. */
-  const aCount = spans.A[1] - spans.A[0] + 1;
-  const aShare = cumulative[spans.A[1]].toLocaleString('fr-FR', {
-    minimumFractionDigits: 1, maximumFractionDigits: 1,
-  });
-  add(
-    'text',
-    { x: L, y: B + 68, class: 'call' },
-    aCount + ' articles sur ' + N + ' portent ' + aShare + ' % de la valeur',
-  );
+  /* The horizontal axis named under the letters rather than beside them. The
+     letters are themselves the axis's tick labels and the C run reaches the
+     right edge, so a name set on their line lands on top of the C. */
+  add('text', { x: R, y: B + 72, 'text-anchor': 'end', class: 'axis' }, 'articles classés par valeur');
 
   document.documentElement.dataset.drawn = 'true';
 </script>

@@ -1,3 +1,7 @@
+import { createHash } from 'node:crypto';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+
 import type { Metadata } from 'next';
 import { Chivo_Mono, Fira_Sans } from 'next/font/google';
 
@@ -62,6 +66,28 @@ const text = Fira_Sans({
  */
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://abc-analyser.vercel.app';
 
+/**
+ * The social image, addressed by its contents.
+ *
+ * LinkedIn, Slack and the rest cache a preview by the image's URL and keep
+ * serving their own copy of the bitmap long after the file behind it changes —
+ * re-scraping the page does not help, because the address it finds is the
+ * address they already hold. So the file's own hash rides along in the query
+ * string: redraw the card and the address changes with it, and every crawler
+ * sees a resource it has never fetched. Leave the card alone and the address
+ * does not move, so nothing re-downloads for free.
+ *
+ * Read at build time, which is the only time it can be read: this is a static
+ * export and there is no server later to ask. The path is the one `npm run og`
+ * writes to. Next addresses its own icons exactly this way.
+ */
+const ogImage =
+  '/og.png?' +
+  createHash('sha256')
+    .update(readFileSync(join(process.cwd(), 'public', 'og.png')))
+    .digest('hex')
+    .slice(0, 16);
+
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: fr.meta.title,
@@ -75,10 +101,10 @@ export const metadata: Metadata = {
     url: '/',
     images: [
       {
-        url: '/og.png',
+        url: ogImage,
         width: 1200,
         height: 630,
-        alt: "Le nom de l'outil au-dessus du diagramme de Pareto de l'exemple : vingt-cinq articles classés par valeur annuelle décroissante, la courbe cumulée franchissant le seuil de 80 %, les bandes A, B et C sous les barres, et le constat que 4 articles sur 25 portent 74,8 % de la valeur.",
+        alt: "Le nom de l'outil au-dessus du diagramme de Pareto de l'exemple : vingt-cinq articles classés par valeur annuelle décroissante, la courbe cumulée franchissant le seuil de 80 %, et les bandes A, B et C nommées sous les barres.",
       },
     ],
   },
@@ -89,7 +115,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: fr.meta.title,
     description: fr.meta.description,
-    images: ['/og.png'],
+    images: [ogImage],
   },
 };
 

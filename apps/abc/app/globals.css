@@ -122,14 +122,6 @@
     padding-block: 3px;
   }
 
-  /* The answer line is sized to a screen, where it has a column of its own and
-     nothing above it. A4 is 21cm across and read at arm's length, so it comes
-     down to what a printed page can hold — the same size the ordering
-     calculator prints Q* at, since the two lines answer the same way. */
-  .equation {
-    font-size: 16pt;
-  }
-
   /* A class card is contained by tone, and tone is the one thing a monochrome
      printer has nothing to spend on: the fill comes back as grey behind the
      figures, or as nothing at all, depending on the driver. On paper the three

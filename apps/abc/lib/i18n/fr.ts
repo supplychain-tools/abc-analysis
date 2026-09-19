@@ -48,11 +48,6 @@ export const fr: AbcDictionary = {
     rowCount: (count: number) => (count === 1 ? '1 article' : `${count} articles`),
   },
 
-  finding: {
-    title: 'Ce que porte la classe A',
-    on: 'sur',
-  },
-
   summary: {
     ofItems: 'des articles',
     ofValue: 'de la valeur',
@@ -96,7 +91,6 @@ export const fr: AbcDictionary = {
 
   a11y: {
     skipToTable: 'Aller au tableau des articles',
-    findingRegion: 'Le résultat principal',
     chartRegion: 'Diagramme de Pareto',
     classOf: (abcClass: string) => `Classe ${abcClass}`,
   },

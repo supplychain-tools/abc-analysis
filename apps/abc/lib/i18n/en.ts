@@ -54,15 +54,6 @@ export const en = {
     rowCount: (count: number) => (count === 1 ? '1 item' : `${count} items`),
   },
 
-  finding: {
-    /* The quiet line over the headline, naming what the two figures under it
-       are. The sibling calculator names Q* the same way and at the same size. */
-    title: 'What class A carries',
-    /* The word that binds the two figures. A share of the value means nothing
-       without the share of the list that carries it. */
-    on: 'on',
-  },
-
   summary: {
     ofItems: 'of items',
     ofValue: 'of the value',
@@ -108,7 +99,6 @@ export const en = {
 
   a11y: {
     skipToTable: 'Skip to the item table',
-    findingRegion: 'Headline finding',
     chartRegion: 'Pareto chart',
     classOf: (abcClass: string) => `Class ${abcClass}`,
   },

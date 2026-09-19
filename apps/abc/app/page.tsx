@@ -13,7 +13,6 @@ import {
   type ItemRow,
 } from '@/lib/rows';
 import { ClassSummary } from '@/components/ClassSummary';
-import { Finding } from '@/components/Finding';
 import { ItemTable } from '@/components/ItemTable';
 import { ParetoChart } from '@/components/ParetoChart';
 import { ResultTable } from '@/components/ResultTable';
@@ -205,27 +204,27 @@ export default function AbcPage() {
               the reading. */}
           {analysis.isEmpty ? null : <ResultTable analysis={analysis} />}
 
-          {/* The reading is one sheet.
+          {/* Two sheets, not one.
 
-              These three sections are not three documents: the finding, what
-              each class holds, and the curve the finding was read off are one
-              argument told three times over, and a reader goes down all of it
-              in one pass. Set as separate cards they were three things to
-              choose between; divided by hairlines on one surface they are one
-              thing with three parts, which is what the ordering calculator
-              does with its own answer, detail and diagram.
+              What each class holds and the curve it was read off were joined
+              into a single hairline-divided sheet, on the reasoning that they
+              are one argument told twice. They are not read that way. The
+              cards are a verdict you take in at a glance and stop at; the
+              diagram is something you go into, point at and follow. Sharing a
+              surface asked the eye to carry straight on from one into the
+              other, and put a full-width plot directly under three boxes with
+              nothing between them to say the reading had changed shape.
 
-              gap-0 because the rule between neighbours is drawn by the stack,
-              and the stack clips the four outer corners so the ground cannot
-              show through the joins. */}
+              Apart, each is the thing it is, and the ground between them does
+              the separating — which is how every other sheet on this page is
+              contained. */}
           {analysis.isEmpty ? (
             <EmptyState />
           ) : (
-            <div id="results" className="sheet-stack grid min-w-0 gap-0">
-              <Finding bands={analysis.bands} />
+            <>
               <ClassSummary bands={analysis.bands} />
               <ParetoChart analysis={analysis} />
-            </div>
+            </>
           )}
         </div>
       </main>

@@ -1,0 +1,8 @@
+{
+  // Everything the app's own project deliberately leaves out: the unit tests,
+  // the browser specs, and the two runner configurations. Checked by
+  // `npm run typecheck` alongside the app, never by `next build`.
+  "extends": "./tsconfig.json",
+  "include": ["e2e/**/*.ts", "**/*.test.ts", "vitest.config.ts", "playwright.config.ts"],
+  "exclude": ["node_modules", "out", ".next"]
+}

@@ -5,6 +5,8 @@ import {
   currencySymbol,
   decimalMark,
   EMPTY_VALUE,
+  axisScale,
+  formatAxisTick,
   formatMoney,
   formatMoneyWithCurrency,
   formatNumber,
@@ -173,6 +175,68 @@ describe('splitting a figure for decimal alignment', () => {
 
   it('does not mistake English grouping commas for a decimal mark', () => {
     expect(splitFormatted('1,234,567', 'en')).toEqual({ integer: '1,234,567', fraction: '' });
+  });
+});
+
+describe('axis tick figures', () => {
+  it('leaves a short axis unscaled, so nothing has to be expanded', () => {
+    const scale = axisScale(20_625, 'en');
+
+    expect(scale).toEqual({ divisor: 1, unit: '' });
+    expect(formatAxisTick(20_000, 'en', scale)).toBe('20,000');
+  });
+
+  it('writes a whole axis in one unit rather than deciding per tick', () => {
+    // The defect this exists to stop: 800K, 1M, 1.2M on one ruler, where two
+    // consecutive ticks are in different units.
+    const scale = axisScale(1_280_000, 'en');
+
+    expect(formatAxisTick(800_000, 'en', scale)).toBe('800K');
+    expect(formatAxisTick(1_000_000, 'en', scale)).toBe('1,000K');
+    expect(formatAxisTick(1_200_000, 'en', scale)).toBe('1,200K');
+  });
+
+  it('steps up to millions only once thousands would run long', () => {
+    expect(formatAxisTick(9.5e7, 'en', axisScale(9.5e7, 'en'))).toBe('95M');
+    expect(formatAxisTick(2e7, 'en', axisScale(2e7, 'en'))).toBe('20M');
+  });
+
+  it('steps up again to billions, rather than printing 20,000M', () => {
+    // A tool costing millions of units a year at thousands apiece reaches ten
+    // figures, and millions stop shortening anything there.
+    expect(formatAxisTick(4e10, 'en', axisScale(4.4e10, 'en'))).toBe('40B');
+    expect(formatAxisTick(2e10, 'en', axisScale(4.4e10, 'en'))).toBe('20B');
+    expect(normalise(formatAxisTick(2e10, 'fr', axisScale(4.4e10, 'fr')))).toBe('20 Md');
+  });
+
+  it('keeps millions until the axis actually needs billions', () => {
+    // The boundary itself: 9.9 thousand million still reads better as millions.
+    expect(axisScale(9.9e9, 'en').divisor).toBe(1e6);
+    expect(axisScale(1.2e10, 'en').divisor).toBe(1e9);
+  });
+
+  it('takes the suffix and its spacing from the locale, not from a table', () => {
+    // French sets a space before a lowercase k; English sets neither.
+    expect(normalise(formatAxisTick(800_000, 'fr', axisScale(1_280_000, 'fr')))).toBe('800 k');
+    expect(formatAxisTick(800_000, 'en', axisScale(1_280_000, 'en'))).toBe('800K');
+  });
+
+  it('leaves the origin as a bare zero', () => {
+    // "0K" would ask a reader to divide by a thousand to get back to nothing.
+    expect(formatAxisTick(0, 'en', axisScale(1_280_000, 'en'))).toBe('0');
+    expect(formatAxisTick(0, 'fr', axisScale(1_280_000, 'fr'))).toBe('0');
+  });
+
+  it('yields the empty marker rather than NaN', () => {
+    const scale = axisScale(1_280_000, 'en');
+
+    expect(formatAxisTick(Number.NaN, 'en', scale)).toBe(EMPTY_VALUE);
+    expect(formatAxisTick(Number.POSITIVE_INFINITY, 'en', scale)).toBe(EMPTY_VALUE);
+  });
+
+  it('survives an axis with no magnitude at all', () => {
+    expect(axisScale(0, 'en')).toEqual({ divisor: 1, unit: '' });
+    expect(axisScale(Number.NaN, 'en')).toEqual({ divisor: 1, unit: '' });
   });
 });
 

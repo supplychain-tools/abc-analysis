@@ -1,6 +1,6 @@
 # The shared layer
 
-Everything both tools in **Supply Chain Tools** inherit without editing.
+Everything every tool in **Supply Chain Tools** inherits without editing.
 
 Published as `@sct/shared`, a private workspace package. It ships as TypeScript
 source rather than as a built artefact, so each app compiles it through
@@ -29,7 +29,6 @@ packages/shared/
   lib/
     format.ts       locale-aware number parsing and formatting
     scale.ts        axis arithmetic for hand-built diagrams
-    csv.ts          CSV writing, with the Excel details that matter
   ui/
     settings.tsx    locale and currency, generic over the dictionary
     AppShell.tsx    the family header
@@ -66,6 +65,59 @@ table resolved against the viewport instead, kept its static position seven
 hundred pixels along the table, escaped the scroller and widened the whole
 document. Sideways page scroll, caused by an element nobody can see. The first
 tool has the same construction and was one wide table away from the same bug.
+
+## The third tool arrived
+
+`apps/make-or-buy` costs making a component against buying it. Its diagram put
+two questions to this layer that the first two never had: how to draw a pair of
+series that rank equally, and which of several points on one plot deserves the
+eye.
+
+- **`formatAxisValue`**, in `lib/format.ts`. An axis label has a fixed amount of
+  room and no way to wrap, so past some magnitude the choice is between compact
+  notation and labels that overlap. Below the threshold nothing is abbreviated,
+  because a reader should not have to expand `8k` to check a figure they can
+  simply be shown. The threshold is a parameter rather than a constant, since
+  how much room a label gets is the diagram's business and not this layer's.
+  A caller should pick one notation for a whole axis rather than per tick: a
+  ruler setting `500 000` in full and `1M` short is harder to read across than
+  either choice made consistently.
+- **`--trace-b`**, a second series colour at the same weight as `--trace`.
+  `--trace-2` was the obvious candidate and the wrong one: it is a *supporting*
+  trace, lighter, for a series that genuinely matters less. Two options being
+  compared on equal terms are not that, and a lighter grey tells a reader which
+  one is the lesser before a figure has been read. A dash instead of a colour
+  says worse: dashed conventionally means projected or estimated, and both
+  series here are equally real.
+- **`.chart-mark-quiet` and `.chart-mark-current`**, beside the existing
+  `.chart-mark`. See below.
+
+### What the third diagram changed about red
+
+`.chart-mark` is red because red means a threshold has been crossed. The
+make-or-buy chart was built on the assumption that its break-even inherits
+that, and it does not.
+
+Two things were wrong with it. Red is the most salient thing on a page, so it
+took the eye to the crossing, while the figure that actually decides the
+verdict is where the reader's own volume falls relative to it: the answer was
+in the faintest mark on the diagram and the eye went to the loudest. And a
+crossing is neutral information rather than a fault, so red also read as a
+warning about a fact.
+
+So on that diagram the accent and the only solid vertical rule belong to the
+current volume, the crossing is a neutral landmark beside it, and red appears
+nowhere. In that tool red is left to mean exactly one thing: a figure that will
+not do. Hence the two new classes, which are `.chart-mark` in different ink.
+
+The general rule this leaves, which is worth more than the instance: **mark the
+thing the reader has to find, not the thing the model computed.** They are
+often the same point and here they were not.
+
+`.chart-region` came from the same diagram. It names a band of a plot rather
+than a point, for the case where the picture's whole finding is that one region
+means one thing and the next means another, and tracing two lines to recover
+that is work the picture was drawn to save.
 
 ## How a second tool uses it
 

@@ -29,8 +29,8 @@ describe('the roster', () => {
     }
   });
 
-  it('carries the two tools built so far', () => {
-    expect(TOOLS.map((t) => t.id)).toEqual(['eoq', 'abc']);
+  it('carries the three tools built so far', () => {
+    expect(TOOLS.map((t) => t.id)).toEqual(['eoq', 'abc', 'make-or-buy']);
   });
 });
 
@@ -48,9 +48,11 @@ describe('siblingsOf', () => {
   it('labels a sibling in the language of whoever is reading', () => {
     expect(siblingsOf('eoq', 'fr')).toEqual([
       { href: 'https://abc-analyser.vercel.app', label: 'Analyse ABC' },
+      { href: 'https://make-or-buy.vercel.app', label: 'Produire ou acheter' },
     ]);
     expect(siblingsOf('abc', 'en')).toEqual([
       { href: 'https://eoq.vercel.app', label: 'Inventory ordering' },
+      { href: 'https://make-or-buy.vercel.app', label: 'Make or buy' },
     ]);
   });
 

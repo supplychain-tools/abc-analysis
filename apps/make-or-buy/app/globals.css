@@ -1,0 +1,308 @@
+@import 'tailwindcss';
+
+/* Tailwind detects its sources from the package it is invoked in, so the
+   shared layer sits outside what it would find on its own. Without this, the
+   utility classes used inside shared/ui are scanned by nobody and simply do
+   not exist in the built stylesheet. */
+@source '../../../packages/shared';
+
+/* The design system this tool shares with the rest of the family. */
+@import '../../../packages/shared/styles.css';
+
+/* ==================================================================
+   Revision 3, this tool only. See docs/design-plan-v3.md.
+
+   Everything below is the block the ordering tool carries, brought over
+   so that the family reads as one tool in three parts. It is duplicated
+   now, which is one copy too many: it belongs in packages/shared, and
+   the siblings drop their copies at the same time.
+
+   Nothing here is peculiar to producing or buying. The one thing that
+   is — the answer being a word rather than an equation — needs no CSS
+   of its own: it is a word, and the text face already sets it.
+   ================================================================== */
+
+:root {
+  /* Two radii, and the difference between them says which is which: a sheet is
+     a surface the work sits on, a control is a thing you put your hand on. */
+  --radius-panel: 10px;
+  --radius-control: 6px;
+
+  color-scheme: light;
+}
+
+/* ---- The split -----------------------------------------------------
+   Figures down one side, what they produce on the other.
+
+   The rail is sticky and scrolls inside itself, so a reader editing the
+   twentieth field still has the verdict in view: the two halves of this
+   tool are a question and an answer, and they stop working the moment
+   they are on different screens.
+
+   The offset is the height of the sticky header, so the rail hangs from
+   underneath it rather than sliding behind it.
+   ------------------------------------------------------------------ */
+
+@media (min-width: 1024px) {
+  .input-rail {
+    position: sticky;
+    top: 12px;
+    max-height: calc(100vh - 24px);
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
+    /* The scroller keeps its track whether or not it is scrolling, so the
+       sheet's right edge does not move as figures are typed into it. */
+    scrollbar-gutter: stable;
+  }
+}
+
+/* ---- The tab strip -------------------------------------------------
+   The strip sits on the ground above the sheet rather than inside it:
+   a tab is the thing you choose a sheet with, so it cannot be part of
+   the sheet it chooses.
+   ------------------------------------------------------------------ */
+
+.tablist {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 10px;
+}
+
+.tablist > [role='tab'] {
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-control);
+  color: var(--text-2);
+  padding: 6px 12px;
+  min-height: 32px;
+  cursor: pointer;
+  transition:
+    background-color 160ms ease,
+    color 160ms ease;
+}
+
+.tablist > [role='tab']:hover {
+  color: var(--text);
+  background: var(--surface);
+}
+
+.tablist > [role='tab'][aria-selected='true'] {
+  background: var(--surface);
+  border-color: var(--line);
+  color: var(--text);
+}
+
+/* The panel takes no focus ring of its own: it is focusable only so that a
+   reader arriving from the tab by keyboard lands inside it, and a ring around
+   a whole sheet reads as an error rather than as a position. */
+.tabpanel:focus {
+  outline: none;
+}
+
+.tabpanel:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ---- Sheets --------------------------------------------------------
+   Containment is by tone, not by outline: the ground sits well below
+   the sheet and does the separating on its own. Three identical
+   bordered cards were the strongest remaining tell in the built page,
+   and the only thing that still marked this tool as the odd one out.
+   ------------------------------------------------------------------ */
+
+.panel {
+  border: 0;
+  border-radius: var(--radius-panel);
+}
+
+/* Sections that are one continuous reading share one sheet, divided by
+   hairlines rather than by more boxes. The column sets gap-0; this draws the
+   rule between neighbours. */
+.sheet-stack > .panel + .panel {
+  border-top: 1px solid var(--line);
+}
+
+/* The stack is one sheet, so the corners belong to the stack and not to each
+   section in it. Rounding the panels individually would round every internal
+   join and let the ground show through the notches between them; clipping at
+   the stack rounds the four outer corners only. */
+.sheet-stack {
+  border-radius: var(--radius-panel);
+  overflow: hidden;
+}
+
+.sheet-stack > .panel {
+  border-radius: 0;
+}
+
+/* The heading sits straight on the panel it names. The shared sheet rules it
+   off underneath, which made sense while a head could be followed by anything;
+   above a diagram the rule and the chart's own axis line up as two greys a few
+   pixels apart and read as a mistake. The extra top padding below does the
+   separating instead. */
+.panel-head {
+  border-bottom: 0;
+  padding: 11px 16px;
+}
+
+.panel-body {
+  padding: 16px;
+}
+
+/* A diagram needs room between its name and itself; a paragraph does not.
+   Only the panels that hold one get the extra. */
+.panel-head + .panel-body:has(svg[role='img']) {
+  padding-top: 20px;
+  padding-bottom: 18px;
+}
+
+/* ---- Controls -------------------------------------------------------
+   The field's own edge agreeing with the shared focus ring, rather than
+   a second ring drawn beside it.
+   ------------------------------------------------------------------ */
+
+.field-input {
+  border-color: var(--line-strong);
+  background: var(--surface);
+}
+
+.field-input:focus {
+  border-color: var(--accent);
+}
+
+.btn {
+  border-color: var(--line-strong);
+}
+
+/* A segmented control in the rail runs the full width of the column, and its
+   options divide that width between them, so it lines up with the field boxes
+   above and below it. Scoped to the rail on purpose: the language toggle in
+   the header is the same control and must go on hugging its two labels. */
+form .seg {
+  display: flex;
+  width: 100%;
+}
+
+/* `1 1 auto`, not `1 1 0`: equal halves would give the longer label the same
+   room as the shorter one and wrap it onto a second line. Growing from each
+   label's own width shares the free space out instead. */
+form .seg > label {
+  flex: 1 1 auto;
+  text-align: center;
+}
+
+/* ---- Type ----------------------------------------------------------
+   A step down from the shared scale: this family is read at desk
+   distance off a table of figures, not across a room. Archivo for
+   words, Chivo Mono for figures, and the division is load-bearing —
+   mono means this is a number, the text face means this is a word.
+   ------------------------------------------------------------------ */
+
+body {
+  font-size: 13px;
+}
+
+.t-figure-lg {
+  font-size: clamp(19px, 2.1vw, 22px);
+  letter-spacing: -0.005em;
+}
+
+.t-label {
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.008em;
+}
+
+/* ---- The answer -----------------------------------------------------
+   The one figure a reader came for, in the accent and nothing else
+   behind it. Both sibling tools mark their answer this way.
+   ------------------------------------------------------------------ */
+
+.answer {
+  color: var(--accent);
+  white-space: nowrap;
+}
+
+/* ---- Headline metrics ----------------------------------------------
+   The figures that follow the answer, each in its own box, so they read
+   as three separate readings rather than a wall of label-value pairs.
+   ------------------------------------------------------------------ */
+
+.kpi {
+  background: var(--surface-2);
+  border-radius: var(--radius-control);
+  padding: 10px 12px;
+}
+
+/* ---- A two-column list of figures ----------------------------------
+   The rule under a row is a leader carrying the eye from the name to the
+   number, so the rows of the last line carry none.
+
+   `:last-child` alone is wrong here: in two columns it clears only the
+   right-hand cell and leaves a hairline stopping halfway across.
+   ------------------------------------------------------------------ */
+
+.figure-list > * {
+  border-bottom: 1px solid var(--line);
+}
+
+.figure-list > :last-child {
+  border-bottom: 0;
+}
+
+/* Matches the sm breakpoint the grid switches to two columns at. */
+@media (min-width: 640px) {
+  .figure-list > :nth-last-child(-n + 2) {
+    border-bottom: 0;
+  }
+}
+
+/* ---- Print ----------------------------------------------------------
+   Panels flatten to rules on paper. Media queries add no specificity, so
+   the screen radii above, which come later in the file, have to be undone
+   here rather than left to the shared sheet.
+   ------------------------------------------------------------------ */
+
+@media print {
+  :root {
+    --threshold: #000000;
+    --accent: #000000;
+  }
+
+  /* On paper there are no tabs to choose with, so every panel prints. A sheet
+     that carried only whichever tab happened to be open would be a different
+     document depending on where the reader had clicked. */
+  .tabpanel[hidden] {
+    display: block !important;
+  }
+
+  .input-rail {
+    position: static !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  .panel,
+  .sheet-stack,
+  .kpi {
+    border-radius: 0;
+    overflow: visible;
+  }
+
+  .kpi {
+    background: transparent;
+    padding: 0;
+  }
+
+  .panel-head + .panel-body:has(svg[role='img']) {
+    padding-block: 3px;
+  }
+
+  /* The stack's internal rules are the only thing separating the sections on
+     paper, so they survive the flattening above. */
+  .sheet-stack > .panel + .panel {
+    border-top: 1px solid var(--line);
+  }
+}

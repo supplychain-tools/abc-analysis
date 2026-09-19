@@ -40,8 +40,8 @@ export const TOOLS: readonly ToolEntry[] = [
     url: 'https://eoq.vercel.app',
     name: { fr: 'Commande de stock', en: 'Inventory ordering' },
     blurb: {
-      fr: 'Quantité économique de commande, point de commande et remises sur quantité.',
-      en: 'Economic order quantity, reorder point, and all-units quantity discounts.',
+      fr: 'Quantité économique de commande, stock de sécurité et coût d’une commande hors optimum.',
+      en: 'Economic order quantity, safety stock, and the cost of ordering off the optimum.',
     },
   },
   {
@@ -51,6 +51,15 @@ export const TOOLS: readonly ToolEntry[] = [
     blurb: {
       fr: 'Classe les articles stockés par valeur de consommation annuelle, en A, B et C.',
       en: 'Ranks stocked items by annual consumption value into A, B and C.',
+    },
+  },
+  {
+    id: 'make-or-buy',
+    url: 'https://make-or-buy.vercel.app',
+    name: { fr: 'Produire ou acheter', en: 'Make or buy' },
+    blurb: {
+      fr: "Compare le coût annuel de la production interne à celui de l'achat, et trouve le volume de bascule.",
+      en: 'Compares the annual cost of making a component in-house against buying it, and finds the break-even volume.',
     },
   },
 ];

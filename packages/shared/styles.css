@@ -70,6 +70,20 @@
   /* Chart traces: text at two weights, plus the one marked colour. */
   --trace: #1e3a5f;
   --trace-2: #64748b;
+
+  /* The second of two series that rank equally.
+
+     --trace-2 is a *supporting* trace: lighter, for a series that genuinely
+     matters less than --trace. That is the wrong tool for two alternatives
+     being compared on equal terms, where a lighter weight says one of them is
+     the lesser option before a figure has been read, and a dashed line says it
+     is estimated rather than real. This is a second hue at the same weight, so
+     neither of a pair outranks the other.
+
+     It is a hue, so it never carries the identification on its own: a chart
+     using it labels each series at its own line, the way a plotted chart is
+     labelled, and the colour reinforces a mapping that is already legible. */
+  --trace-b: #1d6a63;
   --grid: #e2e8f0;
 
   /* An ordinal ramp, for a classification whose bands are ranked rather than
@@ -149,6 +163,17 @@ table.banded th {
   font-family: var(--font-sans);
   font-style: italic;
   font-weight: 500;
+}
+
+/* A subscript on a variable, for symbols that have to tell two sides of a
+   comparison apart. Zero line height so a subscripted symbol occupies exactly
+   the same row as an unsubscripted one and the stripe stays level. */
+.symbol sub {
+  font-size: 0.72em;
+  font-style: normal;
+  line-height: 0;
+  position: relative;
+  bottom: -0.2em;
 }
 
 /* Headings and labels are short enough to balance; running prose only
@@ -336,9 +361,8 @@ p {
   fill: var(--text-2);
 }
 
-/* A point marked on a diagram: Q* and the tier the schedule points at on one
-   chart, the reorder point on the other. Haloed, because these are drawn over
-   a curve rather than beside it.
+/* A point marked on a diagram: Q* and its projection down to the axis.
+   Haloed, because these are drawn over a curve rather than beside it.
 
    Two names for one appearance, on purpose: each diagram keeps its own handle
    even though the ink is the same. */
@@ -358,6 +382,104 @@ p {
   stroke: var(--surface);
   stroke-width: 3px;
   stroke-linejoin: round;
+}
+
+/* Two more marked points, same construction as .chart-mark and deliberately
+   not the same ink.
+
+   .chart-mark is red because red means a threshold has been crossed. Not every
+   point worth marking is one. A crossing between two options, or an intercept,
+   is neutral information, and setting it in red tells a reader something is
+   wrong with a figure that is merely a fact. .chart-mark-current is where the
+   reader's own input lands on the diagram, which is structure rather than
+   warning, so it takes the accent: on a chart whose whole argument is which
+   side of a landmark you are standing on, the place you are standing is the
+   thing to look at first. */
+.chart-mark-quiet,
+.chart-mark-current {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  paint-order: stroke;
+  stroke: var(--surface);
+  stroke-width: 3px;
+  stroke-linejoin: round;
+}
+
+.chart-mark-quiet {
+  fill: var(--text);
+}
+
+.chart-mark-current {
+  fill: var(--accent);
+}
+
+/* A value called out on a diagram inside a filled badge: the reader's own
+   input, marked where it lands. Filled rather than outlined because it names
+   the one place on a plot a whole reading can turn on, and it has to hold that
+   against the data drawn behind it.
+
+   Two faces in one badge, because the division that runs through the system
+   holds inside a label too: the words take the text face, the figure takes the
+   mono. */
+.chart-badge-label {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 600;
+  fill: var(--on-accent);
+}
+
+.chart-badge-figure {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  fill: var(--on-accent);
+}
+
+/* The option that wins across a stretch of an axis, named inside the band that
+   marks it. The largest type on a diagram that carries it, and deliberately so:
+   on a chart whose whole job is to say which of two options is cheaper where,
+   this is the answer and everything else is the evidence for it. Haloed,
+   because it sits over the plot rather than beside it. */
+.chart-band-label {
+  font-family: var(--font-sans);
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.005em;
+  paint-order: stroke;
+  stroke: var(--surface);
+  stroke-width: 3.5px;
+  stroke-linejoin: round;
+}
+
+/* The volume at which the answer changes, set on the axis under the point the
+   bands change colour. Ink rather than a marked hue: the colour either side has
+   already done the marking, and this is the figure that change is worth. */
+.chart-boundary-figure {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  fill: var(--text);
+}
+
+/* A series named at the end of its own line. Set in the line's own colour, so
+   the mapping needs no legend to look up, and heavier than a tick because it
+   is the name of the thing rather than a reading off it. */
+.chart-series-label {
+  font-family: var(--font-sans);
+  font-size: 11.5px;
+  font-weight: 700;
+}
+
+/* What an axis measures, and in what unit. Darker than the ticks it sits
+   beside: the ticks are read off, this is read once. */
+.chart-axis-title {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 600;
+  fill: var(--text);
 }
 
 .chart-label {
@@ -475,6 +597,29 @@ table.banded > tbody > tr[data-feasible='false'] {
   font-family: var(--font-sans);
   font-variant-numeric: normal;
   text-align: left;
+}
+
+/* The disclosure that opens a field's one-line explanation. Sized to the 24px
+   touch target the rest of the controls keep, while the ring it draws stays at
+   13px so a column of them reads as punctuation beside the units rather than as
+   a column of buttons competing with the labels. */
+.field-hint-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  margin: -6px -6px -6px 0;
+  border: 0;
+  background: none;
+  color: var(--line-strong);
+  cursor: pointer;
+  transition: color 160ms ease;
+}
+
+.field-hint-toggle:hover,
+.field-hint-toggle[aria-expanded='true'] {
+  color: var(--accent);
 }
 
 .field-input:hover:not(:disabled) {
@@ -664,6 +809,11 @@ table.banded > tbody > tr[data-feasible='false'] {
     --rank-1: #000000;
     --rank-2: #808080;
     --rank-3: #cccccc;
+
+    /* A pair separated by hue on screen has to be separated some other way on
+       a monochrome printer. Mid grey against black keeps the two apart, and
+       the direct labels on each series carry the naming either way. */
+    --trace-b: #666666;
 
     color-scheme: light;
   }

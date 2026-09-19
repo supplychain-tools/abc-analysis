@@ -180,6 +180,67 @@ export function formatPercent(
 }
 
 /**
+ * The one scale a whole axis is written in.
+ *
+ * Chosen once, from the axis maximum, rather than per figure. Deciding per
+ * figure is what produces a ruler reading 800K, 1M, 1.2M, where three
+ * consecutive ticks are in two different units and a reader comparing two of
+ * them has to convert one first. With one scale the same axis reads 800K,
+ * 1,000K, 1,200K, and the ticks can be compared as the numbers they are.
+ *
+ * The thresholds keep an axis unscaled while its labels are still short,
+ * because a reader should not be made to expand 20,625 into anything.
+ */
+export interface AxisScale {
+  /** Divide a tick by this before formatting it. */
+  divisor: number;
+  /** What to append, including whatever separator the locale puts first. */
+  unit: string;
+}
+
+export function axisScale(maxAbs: number, locale: Locale): AxisScale {
+  const magnitude = Number.isFinite(maxAbs) ? Math.abs(maxAbs) : 0;
+
+  // The ladder runs to billions, not to millions. Stopping at 1e6 is fine until
+  // an axis reaches ten figures, and then every tick on it reads "20,000M":
+  // scaled, but no shorter than the number it replaced, which is the one thing
+  // a scaled axis exists to avoid. A tool costing millions of units a year at
+  // thousands apiece gets there easily.
+  const divisor =
+    magnitude < 1e5 ? 1 : magnitude < 1e7 ? 1e3 : magnitude < 1e10 ? 1e6 : 1e9;
+  if (divisor === 1) return { divisor: 1, unit: '' };
+
+  // The suffix, and the space French puts before it, taken from Intl rather
+  // than written out: "1K" in English, "1 k" in French, and everything except
+  // the digits of that 1 is what a tick on this axis has to carry.
+  const parts = formatter(locale, {
+    notation: 'compact',
+    compactDisplay: 'short',
+    maximumFractionDigits: 0,
+  }).formatToParts(divisor);
+
+  const unit = parts
+    .filter((part) => part.type !== 'integer' && part.type !== 'group')
+    .map((part) => part.value)
+    .join('');
+
+  return { divisor, unit };
+}
+
+/**
+ * One tick, written in the scale its axis chose.
+ *
+ * The origin keeps its bare zero. A scaled zero is still zero, and "0 k" asks
+ * a reader to divide by a thousand to arrive back where they started.
+ */
+export function formatAxisTick(value: number, locale: Locale, scale: AxisScale): string {
+  if (!Number.isFinite(value)) return EMPTY_VALUE;
+  const scaled = value / scale.divisor;
+  const figure = formatNumber(scaled, locale, { decimals: 0 });
+  return scaled === 0 ? figure : `${figure}${scale.unit}`;
+}
+
+/**
  * The currency symbol on its own, so the layout can set it smaller and lighter
  * than the figure it qualifies.
  */

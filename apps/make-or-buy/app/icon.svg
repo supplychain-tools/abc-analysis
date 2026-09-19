@@ -1,6 +1,37 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <rect width="32" height="32" rx="6" fill="#14456b"/>
-  <path d="M5 24 L27 9" fill="none" stroke="#ffffff" stroke-width="2.6" stroke-linecap="round"/>
-  <path d="M5 12 L27 22" fill="none" stroke="#ffffff" stroke-width="2.6" stroke-linecap="round" opacity="0.6"/>
-  <circle cx="16" cy="16.2" r="3.4" fill="#b3261e"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Produire ou acheter">
+  <!-- The fork, in white on the accent blue, one step down.
+
+       Everything structural here is the ordering calculator's and is inherited
+       rather than decided again: #1d4ed8 because #2563eb glares at tab size,
+       the corners eased the way an application icon's are, white strokes with
+       round caps, and the mark drawn rather than typed — a favicon renders
+       with none of the page's webfonts, so <text> would fall back to whatever
+       sans the reader's machine happens to hold. These are strokes, so it is
+       the same mark everywhere.
+
+       One path arrives and leaves as two. This tool hands back a word rather
+       than a figure, and the word is a choice between two ways of getting the
+       same part; the fork is that choice and nothing else.
+
+       What it deliberately does not draw is the break-even chart. Two cost
+       lines crossing is the truer picture of the method, and it was drawn: at
+       sixteen pixels it is an X, which every reader has already learned means
+       close. A balance scale carrying a factory and a package was drawn too,
+       and so was the same pair split across two halves of the tile. Both
+       needed three things legible inside thirty-two pixels — a container and
+       two objects — and in the tab strip all three became one texture. The
+       split version also set half the tile in white, which stops being a tile
+       at all on a light tab strip: the family is a solid blue square in both
+       themes, and that is load-bearing.
+
+       So the fork keeps the tile and spends the whole pixel budget on a single
+       stroke. The arms are unequal in neither length nor angle on purpose —
+       the choice is open, and a tilt would be a verdict, which belongs to the
+       reader's own figures rather than to the icon. -->
+  <rect width="32" height="32" rx="7" fill="#1d4ed8"/>
+  <g fill="none" stroke="#ffffff" stroke-width="3.1" stroke-linecap="round">
+    <path d="M6.5 16 H14.8"/>
+    <path d="M14.8 16 L25.5 7.6"/>
+    <path d="M14.8 16 L25.5 24.4"/>
+  </g>
 </svg>

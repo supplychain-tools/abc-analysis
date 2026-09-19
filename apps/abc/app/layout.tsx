@@ -102,8 +102,12 @@ export const metadata: Metadata = {
     images: [
       {
         url: ogImage,
-        width: 1200,
-        height: 630,
+        /* The file's real pixels, which are twice the 1200x630 the card is
+           laid out at: it is captured at 2x so a feed's downscale stays
+           sharp. The ratio is what a network lays out from, and that is
+           unchanged. */
+        width: 2400,
+        height: 1260,
         alt: "Le nom de l'outil au-dessus du diagramme de Pareto de l'exemple : vingt-cinq articles classés par valeur annuelle décroissante, la courbe cumulée franchissant les seuils de 80 % et de 95 %, et les bandes A, B et C nommées sous les barres.",
       },
     ],

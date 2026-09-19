@@ -121,11 +121,21 @@
 
   const N = values.length;
   const bw = (R - L) / N;
-  /* The tallest bar stops short of the top. Run to the ceiling and it reads as
-     a bar that has been cut off rather than the largest one there is. */
-  const headroom = values[0] * 1.09;
-  const yBar = (v) => B - (v / headroom) * (B - T);
+
+  /* One scale for both, running 0 to 100% of the stock's value from the
+     baseline to the top of the plot. The bars are each article's share of that
+     value, the curve is those shares added up, and the two cuts are heights on
+     the same ruler.
+
+     The bars used to be drawn against the largest article instead, which put
+     the first bar within a few pixels of the 95% rule and told a reader that
+     one article carried almost all the value. It carries 28%, which is what
+     the bar is now the height of. The chart is flatter for it, and that
+     flatness is the finding: no single line dominates, four of them together
+     do. */
+  const pctOf = (v) => (v / totalValue) * 100;
   const yCum = (pct) => B - (pct / 100) * (B - T);
+  const yBar = (v) => yCum(pctOf(v));
 
   const ns = 'http://www.w3.org/2000/svg';
   const svg = document.getElementById('chart');
@@ -154,14 +164,32 @@
     add('rect', { x: x + 2.5, y: yBar(v), width: bw - 5, height: B - yBar(v), fill: FILL[bandOf(i)] });
   });
 
+  /* Where the curve reaches a given percentage, read off the drawn polyline
+     rather than off the data, so the mark lands on the line a reader sees. */
+  const xAtCum = (pct) => {
+    const xOf = (i) => L + i * bw + bw / 2;
+    const i = cumulative.findIndex((c) => c >= pct);
+    if (i <= 0) return xOf(Math.max(i, 0));
+    const span = cumulative[i] - cumulative[i - 1];
+    return xOf(i - 1) + ((pct - cumulative[i - 1]) / span) * (xOf(i) - xOf(i - 1));
+  };
+
   /* The two cuts that make the three classes, and the only amber on the card:
      a threshold is the one thing amber means anywhere in this family. Both are
-     drawn alike because they are the same kind of thing — the reader is meant
-     to see one rule applied twice, not a headline and a footnote. Each is
-     named at the right, on the line it belongs to. */
+     drawn alike because they are the same rule applied twice, not a headline
+     and a footnote.
+
+     Each runs from the curve out to its own figure, and no further. Drawn all
+     the way across, as they were, they cut through the bars — and the two are
+     not on one scale: the bars are drawn against the largest item, the curve
+     against the whole stock, so the 80% rule passed under the top of the first
+     bar and said, to anyone reading the bars, that one article carries more
+     than 80% of the value. It carries 28%. Starting each cut at the crossing
+     keeps it where it means something, in the flat upper right the curve
+     leaves empty, and lets it lead the eye to the figure that names it. */
   for (const cut of [A_CUT, B_CUT]) {
     add('line', {
-      x1: L, x2: R, y1: yCum(cut), y2: yCum(cut),
+      x1: xAtCum(cut), x2: R, y1: yCum(cut), y2: yCum(cut),
       stroke: 'var(--threshold)', 'stroke-width': 4, 'stroke-dasharray': '11 8',
     });
     add('text', { x: R + 12, y: yCum(cut) + 9, class: 'edge' }, cut + ' %');

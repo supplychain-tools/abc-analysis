@@ -112,12 +112,12 @@
      against the other leaves the bars one width and the gaps between them
      another. Measured, nothing is scaled: a 26px label is 26px on the sheet.
 
-     R leaves room for the two names set outside the plot, B for the band
-     letters and the axis named on their line. */
+     R leaves room for the cuts' own figures and the curve's name, all set
+     outside the plot; B for the band letters under the baseline. */
   const box = document.querySelector('.plot');
   const W = box.clientWidth, HT = box.clientHeight;
   document.getElementById('chart').setAttribute('viewBox', '0 0 ' + W + ' ' + HT);
-  const L = 34, R = W - 168, T = 52, B = HT - 86;
+  const L = 34, R = W - 168, T = 52, B = HT - 48;
 
   const N = values.length;
   const bw = (R - L) / N;
@@ -137,30 +137,35 @@
     return el;
   };
 
-  /* The baseline only. The sibling draws both rules because its curves start
-     away from the left edge and need one to be measured against; bars stand on
-     the baseline and begin at the axis, so a vertical rule there is hidden
-     behind the first bar for its whole length except the stub above it, and
-     that stub reads as a stray mark rather than as an axis.
+  /* The baseline only, and neither axis named. The sibling names both because
+     a cost curve against an order quantity is two continuous scales and says
+     nothing until you know which is which; this is twenty-five bars falling
+     from left to right under the letters A, B and C, which is a shape a reader
+     has either seen before or is about to click to understand. The names sat
+     where the chart needed the room and told that reader nothing.
 
-     Both axes are named in words all the same, as they are there. A reader who
-     never clicks should still come away knowing what is plotted against
-     what. */
+     No vertical rule either: bars stand on the baseline and begin at the axis,
+     so a rule there is hidden behind the first bar for its whole length except
+     the stub above it, and that stub reads as a stray mark. */
   add('line', { x1: L, x2: R, y1: B, y2: B, stroke: 'var(--line-strong)', 'stroke-width': 2 });
-  add('text', { x: L, y: T - 18, class: 'axis' }, 'valeur annuelle');
 
   values.forEach((v, i) => {
     const x = L + i * bw;
     add('rect', { x: x + 2.5, y: yBar(v), width: bw - 5, height: B - yBar(v), fill: FILL[bandOf(i)] });
   });
 
-  /* The 80% cut, which is what makes the A class, and the only amber on the
-     card: a threshold is the one thing amber means anywhere in this family. */
-  add('line', {
-    x1: L, x2: R, y1: yCum(A_CUT), y2: yCum(A_CUT),
-    stroke: 'var(--threshold)', 'stroke-width': 4, 'stroke-dasharray': '11 8',
-  });
-  add('text', { x: R + 12, y: yCum(A_CUT) + 9, class: 'edge' }, '80 %');
+  /* The two cuts that make the three classes, and the only amber on the card:
+     a threshold is the one thing amber means anywhere in this family. Both are
+     drawn alike because they are the same kind of thing — the reader is meant
+     to see one rule applied twice, not a headline and a footnote. Each is
+     named at the right, on the line it belongs to. */
+  for (const cut of [A_CUT, B_CUT]) {
+    add('line', {
+      x1: L, x2: R, y1: yCum(cut), y2: yCum(cut),
+      stroke: 'var(--threshold)', 'stroke-width': 4, 'stroke-dasharray': '11 8',
+    });
+    add('text', { x: R + 12, y: yCum(cut) + 9, class: 'edge' }, cut + ' %');
+  }
 
   const cumPath = cumulative
     .map((pct, i) => (i === 0 ? 'M' : 'L') + (L + i * bw + bw / 2).toFixed(1) + ' ' + yCum(pct).toFixed(1))
@@ -168,10 +173,10 @@
   add('path', { d: cumPath, fill: 'none', stroke: 'var(--trace)', 'stroke-width': 5.5 });
 
   /* The curve named where it ends, the way the sibling names its three traces:
-     at the line rather than in a legend to be looked up. It also fills the one
-     empty corner a Pareto leaves, which is the corner the curve is heading
-     for. */
-  add('text', { x: R + 12, y: yCum(100) + 9, class: 'edge', fill: 'var(--trace)' }, 'cumul');
+     at the line rather than in a legend to be looked up. Set above the curve's
+     end rather than beside it, because the 95% cut arrives within a few pixels
+     of 100% and its figure would otherwise be printed over this word. */
+  add('text', { x: R + 12, y: T - 18, class: 'edge', fill: 'var(--trace)' }, 'cumul');
 
   /* Each band named under the run of bars it covers, in ink rather than in its
      own fill: --rank-2 measures 2.4:1 against white and cannot carry a letter.
@@ -184,11 +189,6 @@
     const mid = L + ((from + to) / 2 + 0.5) * bw;
     add('text', { x: mid, y: B + 34, 'text-anchor': 'middle', class: 'band' }, band);
   }
-
-  /* The horizontal axis named under the letters rather than beside them. The
-     letters are themselves the axis's tick labels and the C run reaches the
-     right edge, so a name set on their line lands on top of the C. */
-  add('text', { x: R, y: B + 72, 'text-anchor': 'end', class: 'axis' }, 'articles classés par valeur');
 
   document.documentElement.dataset.drawn = 'true';
 </script>

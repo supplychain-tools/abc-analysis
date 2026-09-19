@@ -104,7 +104,7 @@ export const metadata: Metadata = {
         url: ogImage,
         width: 1200,
         height: 630,
-        alt: "Le nom de l'outil au-dessus du diagramme de Pareto de l'exemple : vingt-cinq articles classés par valeur annuelle décroissante, la courbe cumulée franchissant le seuil de 80 %, et les bandes A, B et C nommées sous les barres.",
+        alt: "Le nom de l'outil au-dessus du diagramme de Pareto de l'exemple : vingt-cinq articles classés par valeur annuelle décroissante, la courbe cumulée franchissant les seuils de 80 % et de 95 %, et les bandes A, B et C nommées sous les barres.",
       },
     ],
   },

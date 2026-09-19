@@ -163,32 +163,18 @@
     add('rect', { x: x + 2.5, y: yBar(v), width: bw - 5, height: B - yBar(v), fill: FILL[bandOf(i)] });
   });
 
-  /* Where the curve reaches a given percentage, read off the drawn polyline
-     rather than off the data, so the mark lands on the line a reader sees. */
-  const xAtCum = (pct) => {
-    const xOf = (i) => L + i * bw + bw / 2;
-    const i = cumulative.findIndex((c) => c >= pct);
-    if (i <= 0) return xOf(Math.max(i, 0));
-    const span = cumulative[i] - cumulative[i - 1];
-    return xOf(i - 1) + ((pct - cumulative[i - 1]) / span) * (xOf(i) - xOf(i - 1));
-  };
-
   /* The two cuts that make the three classes, and the only amber on the card:
      a threshold is the one thing amber means anywhere in this family. Both are
      drawn alike because they are the same rule applied twice, not a headline
      and a footnote.
 
-     Each runs from the curve out to its own figure, and no further. Drawn all
-     the way across, as they were, they cut through the bars — and the two are
-     not on one scale: the bars are drawn against the largest item, the curve
-     against the whole stock, so the 80% rule passed under the top of the first
-     bar and said, to anyone reading the bars, that one article carries more
-     than 80% of the value. It carries 28%. Starting each cut at the crossing
-     keeps it where it means something, in the flat upper right the curve
-     leaves empty, and lets it lead the eye to the figure that names it. */
+     Each runs the full width of the plot, out to its own figure, the way the
+     tool's own chart rules them. A cut is a level, and a level is something
+     the whole chart is measured against, not a mark that begins where the
+     curve happens to meet it. */
   for (const cut of [A_CUT, B_CUT]) {
     add('line', {
-      x1: xAtCum(cut), x2: R, y1: yCum(cut), y2: yCum(cut),
+      x1: L, x2: R, y1: yCum(cut), y2: yCum(cut),
       stroke: 'var(--threshold)', 'stroke-width': 4, 'stroke-dasharray': '11 8',
     });
     add('text', { x: R + 12, y: yCum(cut) + 9, class: 'edge' }, cut + ' %');

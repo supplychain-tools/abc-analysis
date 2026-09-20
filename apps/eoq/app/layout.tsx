@@ -1,3 +1,7 @@
+import { createHash } from 'node:crypto';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+
 import type { Metadata } from 'next';
 import { Chivo_Mono, Fira_Sans } from 'next/font/google';
 
@@ -45,6 +49,23 @@ const text = Fira_Sans({
  */
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://eoq.vercel.app';
 
+/**
+ * The card's address carries a hash of the card itself.
+ *
+ * A network that has already scraped this page holds the old picture against
+ * the bare path and will go on printing it. A path that changes when the
+ * bytes change asks for the new one, and stays put when they do not.
+ *
+ * Read at build time, which is the only time it can be read: this is a static
+ * export and there is no server later to ask.
+ */
+const ogImage =
+  '/og.png?' +
+  createHash('sha256')
+    .update(readFileSync(join(process.cwd(), 'public', 'og.png')))
+    .digest('hex')
+    .slice(0, 16);
+
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   // No `title`: the page renders its own, in the language it is actually
@@ -59,9 +80,13 @@ export const metadata: Metadata = {
     url: '/',
     images: [
       {
-        url: '/og.png',
-        width: 1200,
-        height: 630,
+        url: ogImage,
+        /* The file's real pixels, which are twice the 1200x630 the card is
+           laid out at: it is captured at 2x so a feed's downscale stays
+           sharp. The ratio is what a network lays out from, and that is
+           unchanged. */
+        width: 2400,
+        height: 1260,
         alt: 'La courbe du coût annuel en fonction de la quantité commandée, avec Q* marqué à son minimum.',
       },
     ],
@@ -70,7 +95,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: fr.meta.title,
     description: fr.meta.description,
-    images: ['/og.png'],
+    images: [ogImage],
   },
 };
 

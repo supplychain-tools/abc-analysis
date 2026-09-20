@@ -10,8 +10,7 @@
     "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.test.json",
     "test": "vitest run",
     "test:watch": "vitest",
-    "e2e": "playwright test",
-    "og": "node scripts/make-og.mjs"
+    "e2e": "playwright test"
   },
   "dependencies": {
     "@sct/shared": "*",

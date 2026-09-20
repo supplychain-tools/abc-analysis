@@ -271,11 +271,15 @@ test('reads its figures in French and switches without losing them', async ({ pa
 
   await expect(page.locator('[data-testid="total-value"]')).toContainText('654 622,00');
   await expect(page.getByRole('heading', { name: 'Analyse ABC des stocks' })).toBeVisible();
+  // The tab too. Metadata is rendered before the language is known, so this
+  // is the client having corrected it.
+  await expect(page).toHaveTitle('Analyse ABC des stocks');
 
   // The language switch is a segmented control whose radios are hidden behind
   // their labels. A real user clicks the label, so the test does too.
   await page.getByText('EN', { exact: true }).click();
   await expect(page.getByRole('radio', { name: 'EN', exact: true })).toBeChecked();
+  await expect(page).toHaveTitle('ABC inventory analysis');
   await expect(page.locator('[data-testid="total-value"]')).toContainText('654,622.00');
   await expect(page.locator('[data-testid="band-A-count"]')).toContainText('4');
 });

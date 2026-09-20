@@ -94,10 +94,6 @@ export default function Page() {
     }
   }, [locale, currency]);
 
-  useEffect(() => {
-    document.documentElement.lang = locale;
-  }, [locale]);
-
   /* ---- Keep the URL in step, so a result can be shared or bookmarked ---- */
   useEffect(() => {
     if (!ready.current) return;
@@ -110,6 +106,14 @@ export default function Page() {
   }, [state, locale]);
 
   const t = useMemo(() => getDictionary(locale), [locale]);
+
+  // Language is chosen on the client, so these two are the server's guess
+  // until the stored or requested locale is known. Both are corrected here.
+  useEffect(() => {
+    document.documentElement.lang = locale;
+    document.title = t.meta.title;
+  }, [locale, t]);
+
   const derived = useMemo(() => derive(state, locale), [state, locale]);
 
   const patch = useCallback((update: Partial<ToolState>) => {

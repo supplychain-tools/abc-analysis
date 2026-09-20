@@ -89,11 +89,14 @@ export default function AbcPage() {
     }
   }, [locale, currency]);
 
+  const t = useMemo(() => getAbcDictionary(locale), [locale]);
+
+  // Language is chosen on the client, so these two are the server's guess
+  // until the stored or requested locale is known. Both are corrected here.
   useEffect(() => {
     document.documentElement.lang = locale;
-  }, [locale]);
-
-  const t = useMemo(() => getAbcDictionary(locale), [locale]);
+    document.title = t.meta.title;
+  }, [locale, t]);
 
   // The whole computation, on every keystroke. It is a sort and two passes
   // over at most a few hundred rows, which is nothing next to the render it

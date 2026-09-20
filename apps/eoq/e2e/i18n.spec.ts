@@ -133,6 +133,18 @@ test('lets a shared link override the stored language', async ({ page }) => {
   await expect(page.locator('html')).toHaveAttribute('lang', 'en');
 });
 
+test('renames the browser tab with the language', async ({ page }) => {
+  // Metadata is rendered on the server, before the stored or requested
+  // language is known, so a tab in the right language is the client having
+  // corrected it.
+  await page.goto(CASE);
+  await ready(page);
+  await expect(page).toHaveTitle('Economic order quantity');
+
+  await switchTo(page, 'FR');
+  await expect(page).toHaveTitle('Quantité économique de commande');
+});
+
 test('reports errors in the active language', async ({ page }) => {
   await page.goto('/?y=365&hm=u&lang=fr');
   await ready(page);

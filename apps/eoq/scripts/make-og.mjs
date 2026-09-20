@@ -19,12 +19,14 @@ const here = dirname(fileURLToPath(import.meta.url));
 const template = join(here, 'og-template.html');
 const output = join(here, '..', 'public', 'og.png');
 
-/* Laid out at 1200x630 and captured at twice that. A feed prints the card at
-   about 550 wide on a desktop and 350 on a phone, and a 1x capture handed to
-   that downscale — and to a retina screen, which scales it back up — comes
-   back soft. The ratio a network lays out from is unchanged. */
+/* Captured at exactly the size it is laid out at, 1200x630.
+   Capturing at 2x for a sharper downscale backfires: WhatsApp reads the file's
+   own pixels to choose between the full-width preview and a small left-aligned
+   thumbnail, and a 2400x1260 file lands in the thumbnail, where the card is
+   squeezed to about eighty pixels and nothing on it can be read. 1200x630 is
+   what every network lays out from, and at 1:1 no pixel is resampled. */
 const browser = await chromium.launch();
-const page = await browser.newPage({ viewport: { width: 1200, height: 630 }, deviceScaleFactor: 2 });
+const page = await browser.newPage({ viewport: { width: 1200, height: 630 }, deviceScaleFactor: 1 });
 
 await page.goto(pathToFileURL(template).href);
 await page.waitForFunction(() => document.documentElement.dataset.drawn === 'true');

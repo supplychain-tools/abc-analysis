@@ -81,12 +81,8 @@ export const metadata: Metadata = {
     images: [
       {
         url: ogImage,
-        /* The file's real pixels, which are twice the 1200x630 the card is
-           laid out at: it is captured at 2x so a feed's downscale stays
-           sharp. The ratio is what a network lays out from, and that is
-           unchanged. */
-        width: 2400,
-        height: 1260,
+        width: 1200,
+        height: 630,
         alt: 'La courbe du coût annuel en fonction de la quantité commandée, avec Q* marqué à son minimum.',
       },
     ],

@@ -123,7 +123,6 @@ export const fr: MakeOrBuyDictionary = {
     makeCapacity: 'Capacité mobilisée',
     buyPrice: 'Prix',
     buyLanded: 'Mise à quai',
-    buyTerms: 'Conditions',
   },
 
   fields: {
@@ -135,7 +134,7 @@ export const fr: MakeOrBuyDictionary = {
     horizonYears: {
       label: 'Horizon d’analyse',
       unit: 'ans',
-      hint: 'Les coûts ponctuels, comme le changement de fournisseur, sont étalés sur cette durée.',
+      hint: 'Les coûts ponctuels, comme l’investissement en outillage, sont étalés sur cette durée.',
     },
 
     materialsPerUnit: {
@@ -198,11 +197,6 @@ export const fr: MakeOrBuyDictionary = {
       label: 'Réception et contrôle',
       unit: 'par unité',
       hint: 'Manutention à réception et contrôle qualité par unité.',
-    },
-    switchingCost: {
-      label: 'Coût de changement',
-      unit: 'ponctuel',
-      hint: 'Référencement, qualification et premiers articles, étalés sur l’horizon.',
     },
   },
 

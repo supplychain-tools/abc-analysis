@@ -46,10 +46,12 @@ const MAKE_GROUPS: readonly {
   { heading: 'makeCapacity', quiet: true, fields: ['opportunityCostPerYear'] },
 ];
 
-const BUY_GROUPS: readonly { heading: 'buyPrice' | 'buyLanded' | 'buyTerms'; fields: FieldName[] }[] = [
+// Same as the make column: the legends name the groups for a screen reader
+// and stay off the page, because each of these four rows already states its
+// own unit beside the label.
+const BUY_GROUPS: readonly { heading: 'buyPrice' | 'buyLanded'; fields: FieldName[] }[] = [
   { heading: 'buyPrice', fields: ['supplierPrice'] },
   { heading: 'buyLanded', fields: ['freightPerUnit', 'dutyPercent', 'inspectionPerUnit'] },
-  { heading: 'buyTerms', fields: ['switchingCost'] },
 ];
 
 /**
@@ -168,9 +170,7 @@ export function Inputs({ values, issues, onChangeField }: InputsProps) {
         <div className="space-y-3">
           {BUY_GROUPS.map((each) => (
             <fieldset key={each.heading} className="space-y-2.5">
-              <legend className="t-micro pb-1 text-[color:var(--text-2)]">
-                {t.groups[each.heading]}
-              </legend>
+              <legend className="sr-only">{t.groups[each.heading]}</legend>
               {each.fields.map((name) => field(name))}
             </fieldset>
           ))}

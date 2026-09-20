@@ -123,12 +123,11 @@ export const en = {
     makeCapacity: 'Capacity given up',
     buyPrice: 'Price',
     buyLanded: 'Landing it',
-    buyTerms: 'Terms',
   },
 
   fields: {
     annualVolume: { label: 'Annual volume', unit: 'units/yr', hint: 'Good units needed a year. Both options are costed at this volume.' },
-    horizonYears: { label: 'Analysis horizon', unit: 'years', hint: 'One-off costs, such as switching supplier, are spread over this many years.' },
+    horizonYears: { label: 'Analysis horizon', unit: 'years', hint: 'One-off costs, such as the tooling investment, are spread over this many years.' },
 
     materialsPerUnit: { label: 'Direct materials', unit: 'per unit', hint: 'Material cost of one unit started.' },
     laborHoursPerUnit: { label: 'Direct labour', unit: 'hours/unit', hint: 'Hours of direct labour per unit started.' },
@@ -155,7 +154,6 @@ export const en = {
     freightPerUnit: { label: 'Freight', unit: 'per unit', hint: 'Inbound transport per unit.' },
     dutyPercent: { label: 'Customs duty', unit: '% of price', hint: 'Charged on the purchase price, not on freight.' },
     inspectionPerUnit: { label: 'Receiving and inspection', unit: 'per unit', hint: 'Goods-in handling and quality checks per unit.' },
-    switchingCost: { label: 'Switching cost', unit: 'one-off', hint: 'Onboarding, qualification and first-article costs, spread over the horizon.' },
   },
 
 

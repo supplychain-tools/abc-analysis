@@ -33,8 +33,7 @@ export type FieldName =
   | 'supplierPrice'
   | 'freightPerUnit'
   | 'dutyPercent'
-  | 'inspectionPerUnit'
-  | 'switchingCost';
+  | 'inspectionPerUnit';
 
 export const SHARED_FIELDS: readonly FieldName[] = ['annualVolume', 'horizonYears'];
 
@@ -54,7 +53,6 @@ export const BUY_FIELDS: readonly FieldName[] = [
   'freightPerUnit',
   'dutyPercent',
   'inspectionPerUnit',
-  'switchingCost',
 ];
 
 export const FIELDS: readonly FieldName[] = [...SHARED_FIELDS, ...MAKE_FIELDS, ...BUY_FIELDS];
@@ -171,7 +169,9 @@ export function toInput(values: FormValues, locale: Locale): MakeOrBuyInput {
       freightPerUnit: read('freightPerUnit'),
       dutyRate: read('dutyPercent') / 100,
       inspectionPerUnit: read('inspectionPerUnit'),
-      switchingCost: read('switchingCost'),
+      // No longer asked for on the form. The model still carries the term, so
+      // a one-off switching cost stays expressible; nothing on screen sets it.
+      switchingCost: 0,
     },
   };
 }
@@ -209,7 +209,6 @@ const EXAMPLE_NUMBERS: Record<FieldName, number | null> = {
   freightPerUnit: 2,
   dutyPercent: 2.5,
   inspectionPerUnit: 0.5,
-  switchingCost: 0,
 };
 
 export function exampleValues(locale: Locale): FormValues {

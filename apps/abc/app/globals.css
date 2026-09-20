@@ -245,11 +245,18 @@ body {
 /* The two halves sit beside each other and share their row tracks, so the
    share lines up with the share and the basis with the basis, whatever the
    words after a figure do at a narrow width. */
+/* The two halves sit on equal tracks with no gap between them, and the space
+   around the rule is padding on the halves themselves — 12px on the inner
+   edge of each. A column-gap cannot do this: the gap falls entirely on one
+   side of a border drawn on a track edge, so a 12px gap plus 12px of padding
+   put the rule 6px right of the card's centre and left the right half's text
+   box 12px narrower than the left's. Both halves are the same width now and
+   the rule is on the centre line. */
 .class-card-split {
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: auto auto;
-  column-gap: 12px;
+  column-gap: 0;
 }
 
 .class-card-cost,
@@ -266,6 +273,10 @@ body {
    list that is. Right of it is what the class returns. Crossing it is where
    the whole effect is: in A the small share is on the left, in C it is on the
    right. */
+.class-card-cost {
+  padding-right: 12px;
+}
+
 .class-card-return {
   padding-left: 12px;
 

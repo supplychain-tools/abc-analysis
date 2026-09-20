@@ -24,8 +24,17 @@ permissions:
 
 # One publish at a time, and never cancel one halfway: a cancelled deployment
 # can leave the site serving a half-uploaded artefact.
+#
+# The group is per workflow, not the bare `pages` all three shared. All three
+# of these files travel to all three repositories, and a workflow-level
+# concurrency group is applied before the `if:` below decides to skip: so every
+# push started three runs in one group, of which one ran, one queued and the
+# third evicted the queued one. Which survived was a lottery, and two times in
+# three it was a run that would only skip, while the real publish died
+# cancelled. Sharing the group bought nothing either way — only one of the
+# three ever builds in a given repository.
 concurrency:
-  group: pages
+  group: pages-${{ github.workflow }}
   cancel-in-progress: false
 
 jobs:

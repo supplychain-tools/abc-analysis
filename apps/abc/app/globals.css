@@ -237,25 +237,23 @@ body {
    ------------------------------------------------------------------ */
 
 .class-card {
-  /* The halves answer to the card's width, not the window's. Three cards sit
-     in one row on a desk and stack on a phone, so a card 340px wide happens at
-     360px of window and again at 900px, and a media query cannot tell those
-     apart. */
+  /* A container, so the halves below answer to the card's width. */
   container-type: inline-size;
 
   background: var(--surface-2);
   border-radius: var(--radius-control);
+
   padding: 12px 14px;
 }
 
 /* The two halves sit beside each other and share their row tracks, so the
    share lines up with the share and the basis with the basis, whatever the
    words after a figure do at a narrow width. */
-/* The rule is not decoration and not a divider between equals. On one side is
+/* The rule is not decoration and not a divider between equals. Left of it is
    what a class costs to look after — lines to watch, and what fraction of the
-   list that is. On the other is what the class returns. Crossing it is where
-   the whole effect is: in A the small share comes first, in C it is the other
-   way round.
+   list that is. Right of it is what the class returns. Crossing it is where
+   the whole effect is: in A the small share is on the left, in C it is on the
+   right.
 
    --line is drawn to sit on --surface, and a card is --surface-2. Left at
    --line the rule was four points of luminance off its own ground and
@@ -270,113 +268,105 @@ body {
    tracks, the card's exact centre line. Geometrically right, and wrong to look
    at. The left reading is the shorter of the two, so every pixel of its slack
    pooled on the rule's left — 157px of air on one side and 13px on the other,
-   and the rule read as though it were pinned to the right-hand figure rather
-   than standing between the two.
+   and the rule read as pinned to the right-hand figure rather than standing
+   between the two.
 
-   So the rule is its own thing now, centred in the space the two readings
-   leave, and the readings stay put: left-aligned, flush under the chip, in
-   line with the same reading in the cards either side.
+   So the rule is its own thing, centred in the space the two readings leave,
+   and the readings stay put: left-aligned, flush under the chip, in line with
+   the same reading in the cards either side.
 
-   Keeping that true at every width is the awkward part, because a track sized
-   to its content keeps the width it was given while wrapped lines sit narrower
-   inside it. The moment a reading wraps, the rule is centred between the
-   tracks and not between the words — which is the fault being fixed. Hence
-   three regimes below, each one a way of making track and ink the same width.
+   Two track sizings keep that true, and the card picks between them by its own
+   width rather than the window's — three cards sit in one row on a desk and
+   stack on a phone, so a card 300px wide happens at 360px of window and again
+   at 1000px, and a media query cannot tell those apart.
    ------------------------------------------------------------------ */
 
-/* Narrowest: the halves stack and the rule lies across the card. It spans the
-   full width, so it is centred by construction and there is nothing to get
-   wrong. This is where a card lands when three of them share a phone-width row
-   and there is no honest way to stand two readings beside each other. */
 .class-card-split {
   display: grid;
+  grid-template-rows: auto auto;
+
+  /* min-content, which is exactly as wide as the widest unbreakable run in the
+     track. That is the sizing that survives wrapping: the widest run has to
+     land on a line of its own, and no line can exceed the track, so the widest
+     wrapped line is that run and the track is the text — whether a reading sits
+     on one line or three. An auto track is the one that cannot do this. It
+     takes the width it is given and lets the wrapped lines sit narrower inside
+     it, and the rule ends up centred between the tracks rather than between
+     the words, which is the fault all of this is fixing. */
+  grid-template-columns: min-content minmax(8px, 1fr) min-content;
 }
 
+/* Both halves span both rows on a shared track, so the share lines up with the
+   share and the basis with the basis. */
 .class-card-cost,
 .class-card-return {
   display: grid;
+  grid-row: span 2;
+  grid-template-rows: subgrid;
   row-gap: 2px;
   align-content: start;
 }
 
-.class-card-return {
-  margin-top: 10px;
-  padding-top: 10px;
-  border-top: 1px solid color-mix(in srgb, var(--line-strong) 28%, var(--surface-2));
+.class-card-cost {
+  grid-column: 1;
 }
 
-/* Side by side, with the share wrapping under itself.
+.class-card-return {
+  grid-column: 3;
+}
 
-   min-content, not auto: a min-content track is exactly as wide as the widest
-   unbreakable run inside it, and every run here is unbreakable — the label
-   after the figure is nowrap already, and the basis line is made nowrap just
-   below. So the track is precisely the width of the wrapped text, no slack,
-   and the rule between the tracks is the rule between the words. */
-@container (min-width: 250px) {
-  .class-card-split {
-    grid-template-columns: min-content minmax(20px, 1fr) min-content;
-    grid-template-rows: auto auto;
-  }
-
-  /* Both halves span both rows on a shared track, so the share lines up with
-     the share and the basis with the basis. */
-  .class-card-cost,
-  .class-card-return {
-    grid-row: span 2;
-    grid-template-rows: subgrid;
-  }
-
-  .class-card-cost {
-    grid-column: 1;
-  }
-
-  .class-card-return {
-    grid-column: 3;
-    margin-top: 0;
-    padding-top: 0;
-    border-top: 0;
-  }
-
-  .class-card-split::before {
-    content: '';
-    grid-column: 2;
-    grid-row: 1 / 3;
-    justify-self: center;
-    width: 1px;
-    background: color-mix(in srgb, var(--line-strong) 28%, var(--surface-2));
-  }
+.class-card-split::before {
+  content: '';
+  grid-column: 2;
+  grid-row: 1 / 3;
+  justify-self: center;
+  width: 1px;
+  background: color-mix(in srgb, var(--line-strong) 28%, var(--surface-2));
 }
 
 /* Wide enough for both readings to stand on one line each — 345px of card in
-   French, the longer of the two languages, so 360 with a little in hand. An
-   auto track takes its content's full width where there is room for it, and
-   with nothing wrapping, track and ink are the same width again. */
+   French, the longer of the two languages, so 360 with a little in hand.
+
+   Here the tracks become auto, which takes the content's full width where
+   there is room for it. Nothing wraps, so track and ink agree again, and the
+   figures are pinned to their units because at this size there is no reason
+   for "489 400,00" and "MAD" to be on separate lines. Narrower than this they
+   are allowed to part: a reading that wraps is the price of standing two of
+   them beside each other in 180px, and the rule stays centred through it. */
 @container (min-width: 360px) {
   .class-card-split {
     grid-template-columns: auto minmax(24px, 1fr) auto;
   }
-}
 
-/* A figure and the unit after it are one run and never break apart: "489
-   400,00" on one line and "MAD" alone on the next is not a reading. Measure
-   sets its parts in an inline-flex that is allowed to wrap, and flex line
-   breaking pays no attention to white-space, so this is the property that
-   governs it.
+  /* "489 400,00" over "MAD", and "4" over "articles". Held together here and
+     let go below, where each is often the widest run in its half and holding
+     it whole is what pushes a 180px card over its own edge. */
+  .class-card-basis > span {
+    flex-wrap: nowrap;
+  }
 
-   It is also what lets the rule be centred where a share wraps. A min-content
-   track is exactly as wide as the widest unbreakable run inside it, which is
-   only the width of the text if nothing inside can break; pin these and the
-   track is the text, so the rule between the tracks is the rule between the
-   words. */
-.class-card-share > span,
-.class-card-basis > span {
-  flex-wrap: nowrap;
+  .class-card-basis {
+    white-space: nowrap;
+  }
 }
 
 /* A share and the words it is a share of are one reading, so they wrap
    together rather than the words dropping away from the figure. */
 .class-card-share {
   text-wrap: balance;
+}
+
+/* A figure and its unit never part, at any width: "16,0" on one line and "%"
+   alone on the next is not a reading. Measure sets its parts in an inline-flex
+   that is allowed to wrap, and flex line breaking pays no attention to
+   white-space, so this is the property that governs it.
+
+   It is free, too. This makes "16,0 %" the widest run in its half only if it
+   beats the words under it, and it does not in either language — "des
+   articles" and "of the value" are wider — so the track does not grow and the
+   narrowest card fits exactly as it did. */
+.class-card-share > span {
+  flex-wrap: nowrap;
 }
 
 /* The words after the figure are prose, not a unit: reading size, quiet, and
@@ -388,14 +378,9 @@ body {
   white-space: nowrap;
 }
 
-/* The evidence the share was computed from: the count, the money. One line
-   each — "4" above "articles" is not a count — and unbreakable for the same
-   reason the figures above are, so that a min-content track is the width of
-   the text in it. The count is plain words rather than a Measure, so the flex
-   pinning above does not reach it and this is what holds it together. */
+/* The evidence the share was computed from: the count, the money. */
 .class-card-basis {
   align-self: end;
-  white-space: nowrap;
   color: var(--text-2);
 }
 

@@ -186,9 +186,7 @@ body {
   color: var(--text-2);
 }
 
-/* The two figures of the answer line. One of two places the accent is spent
-   on type — the other is the share of the value in a class card — and both
-   are the same claim in different words: this figure is the one to read. */
+/* The two figures, and the only place the accent is spent on type. */
 .answer {
   color: var(--accent);
   white-space: nowrap;
@@ -238,15 +236,8 @@ body {
    this family: the ground it sits on does the separating.
    ------------------------------------------------------------------ */
 
-/* The card is white, and what separates it from the panel behind it is an
-   edge rather than a fill. It was a --surface-2 tint, which put a grey ground
-   under the figures and spent tone — the one thing this palette is short of —
-   on the container instead of on the reading. White inside white, bounded by
-   the same hairline every panel and input is bounded by: the card is legible
-   as an object, and every step of grey left over is free to rank the type. */
 .class-card {
-  background: var(--surface);
-  border: 1px solid var(--line);
+  background: var(--surface-2);
   border-radius: var(--radius-control);
   padding: 12px 14px;
 }
@@ -278,45 +269,32 @@ body {
 .class-card-return {
   padding-left: 12px;
 
-  /* --line is drawn to sit on --surface, and the card is --surface now, so
-     the rule is that line and not a mix of it. It used to be mixed down
-     against the --surface-2 fill the card carried, which no longer exists. */
-  border-left: 1px solid var(--line);
+  /* --line is drawn to sit on --surface, and a card is --surface-2. Left at
+     --line the rule was four points of luminance off its own ground and
+     effectively invisible, which mattered little while the two halves were
+     set at two different sizes and told apart by that. They are one size now,
+     and this rule is the only thing saying which half is which, so it is
+     mixed down until it holds the same distance from --surface-2 that --line
+     holds from --surface. */
+  border-left: 1px solid color-mix(in srgb, var(--line-strong) 28%, var(--surface-2));
 }
 
 /* A share and the words it is a share of are one reading, so they wrap
    together rather than the words dropping away from the figure. */
 .class-card-share {
-  color: var(--text);
   text-wrap: balance;
 }
 
-/* The one place in a card the accent is spent, and it is spent on an argument
-   rather than on decoration. Both shares are the same size, so size cannot say
-   which of the two a buyer is here for; hue can. The share of the value is
-   what the classification is for — it is the money the class carries, and the
-   reason a sixth of the list is worth watching closely — so it is blue, and
-   the share of the list beside it stays in the text colour. Nothing else in
-   the card is coloured, so the blue reads as a pointer and not as a style. */
-.class-card-share-value {
-  color: var(--accent);
-}
-
-/* The words after the figure are prose, not a unit: smaller than the basis
-   line under them, quiet, and in the body face rather than the mono the figure
-   is set in. Three sizes and one grey rank the card — figure, basis, label —
-   rather than three greys, because the grey under a label at this size is
-   already at the floor the contrast rules put it at. */
+/* The words after the figure are prose, not a unit: reading size, quiet, and
+   in the body face rather than the mono the figure is set in. */
 .class-card-of {
   font-family: var(--font-sans);
-  font-size: 11px;
-  font-weight: 400;
+  font-size: 11.5px;
   color: var(--text-2);
   white-space: nowrap;
 }
 
-/* The evidence the share was computed from: the count, the money. Readable,
-   and plainly under the figure it explains. */
+/* The evidence the share was computed from. */
 .class-card-basis {
   align-self: end;
   color: var(--text-2);

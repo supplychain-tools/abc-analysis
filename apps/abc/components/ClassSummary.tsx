@@ -40,12 +40,6 @@ export interface ClassSummaryProps {
  * evidence rather than the finding. The two halves share their row tracks, so
  * those two lines sit on one baseline however the words above them wrap.
  *
- * The share of the value is the only coloured thing in the card. Both shares
- * are set at one size, so size cannot say which of the two the reader is here
- * for, and the answer is the money: blue on the value share, the text colour
- * on the share of the list beside it. The class chip supplies the other blue,
- * and between them nothing else in the card is coloured at all.
- *
  * No bar is drawn under any of it. A pair of figures that far apart does not
  * need a bar to be believed.
  */
@@ -97,7 +91,7 @@ export function ClassSummary({ bands }: ClassSummaryProps) {
                 <div className="class-card-return">
                   <dt className="sr-only">{t.summary.labels.valueShare}</dt>
                   <dd
-                    className="t-figure-lg num class-card-share class-card-share-value"
+                    className="t-figure-lg num class-card-share"
                     data-testid={`band-${band.abcClass}-value-share`}
                   >
                     <Measure value={band.valueShare} decimals={1} unit="%" />{' '}

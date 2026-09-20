@@ -7,6 +7,13 @@
 export const en = {
   meta: {
     title: 'Make or buy calculator',
+    /**
+     * The browser tab, which is not the same string as the metadata title.
+     * A tab is about fifteen characters wide before it truncates, so the
+     * question the tool answers fits where its full name does not, and a
+     * reader with six tabs open can tell this one apart from the others.
+     */
+    tab: 'Make or buy?',
     description:
       'Compare the full annual cost of producing a component in-house against buying it, with yield, tooling, duty and quantity breaks, and find the volume at which the cheaper option changes.',
   },

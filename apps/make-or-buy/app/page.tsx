@@ -89,11 +89,14 @@ export default function MakeOrBuyPage() {
     }
   }, [locale, currency]);
 
+  const t = useMemo(() => getMakeOrBuyDictionary(locale), [locale]);
+
+  // Language is chosen on the client, so these two are the server's guess
+  // until the stored or requested locale is known. Both are corrected here.
   useEffect(() => {
     document.documentElement.lang = locale;
-  }, [locale]);
-
-  const t = useMemo(() => getMakeOrBuyDictionary(locale), [locale]);
+    document.title = t.meta.tab;
+  }, [locale, t]);
 
   // The whole computation, on every keystroke. It is a few dozen
   // multiplications, which is nothing next to the render it feeds, so there is

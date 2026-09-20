@@ -158,8 +158,12 @@ describe('the two dictionaries', () => {
   });
 
   it('has no exclamation marks and no rhetorical headings', () => {
+    // The browser tab is the one question mark the page is allowed. It names
+    // the decision the tool is for rather than teasing a heading, and a tab
+    // is read in a strip of other tabs, not in the flow of the page.
     for (const [path, value] of [...english, ...french]) {
       expect(value, `exclamation at ${path}`).not.toContain('!');
+      if (path === 'meta.tab') continue;
       expect(value, `question heading at ${path}`).not.toMatch(/^[^.]*\?$/);
     }
   });

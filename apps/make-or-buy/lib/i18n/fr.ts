@@ -14,6 +14,9 @@ import type { MakeOrBuyDictionary } from './en';
 export const fr: MakeOrBuyDictionary = {
   meta: {
     title: 'Calculateur produire ou acheter',
+    // Espace fine insécable avant le point d'interrogation, comme partout
+    // ailleurs sur la page.
+    tab: 'Produire ou acheter ?',
     description:
       'Comparez le coût annuel complet d’une pièce produite en interne et celui de son achat, rendement, outillage, droits de douane et remises quantitatives compris, et trouvez le volume à partir duquel l’arbitrage change.',
   },

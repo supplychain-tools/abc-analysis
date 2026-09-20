@@ -70,7 +70,7 @@ export const fr: Dictionary = {
     totalCost: 'Coût annuel total',
     averageInventory: 'Stock moyen',
     safetyStock: 'Stock de sécurité',
-    closedForm: 'Formule de Wilson',
+    closedForm: 'Coût de passation et de possession',
     orderWhole: 'Commander en unités entières : arrondir à',
     beforeRounding: 'avant arrondi',
   },
@@ -97,7 +97,7 @@ export const fr: Dictionary = {
     columns: {
       ratio: 'Q / Q*',
       quantity: 'Q',
-      relevantCost: 'CTP',
+      relevantCost: 'Coût de passation et de possession',
       penalty: 'Surcoût',
     },
     optimum: 'Optimum',

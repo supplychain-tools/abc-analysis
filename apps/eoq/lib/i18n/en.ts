@@ -67,7 +67,7 @@ export const en = {
     totalCost: 'Total annual cost',
     averageInventory: 'Average inventory',
     safetyStock: 'Safety stock',
-    closedForm: 'Wilson formula',
+    closedForm: 'Ordering & Holding Cost',
     orderWhole: 'Order in whole units: round up to',
     beforeRounding: 'before rounding',
   },
@@ -94,7 +94,7 @@ export const en = {
     columns: {
       ratio: 'Q / Q*',
       quantity: 'Q',
-      relevantCost: 'TRC',
+      relevantCost: 'Ordering & Holding Cost',
       penalty: 'Penalty',
     },
     optimum: 'Optimum',

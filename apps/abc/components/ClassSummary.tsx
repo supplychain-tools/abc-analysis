@@ -53,8 +53,8 @@ export function ClassSummary({ bands }: ClassSummaryProps) {
         <h2 className="t-label">{t.sections.summary}</h2>
       </div>
 
-      <div className="panel-body">
-        <div className="grid gap-3 sm:grid-cols-3" data-testid="class-summary">
+      <div className="panel-body class-cards-host">
+        <div className="class-cards" data-testid="class-summary">
           {bands.map((band) => (
             <div key={band.abcClass} className="class-card" data-testid={`band-${band.abcClass}`}>
               {/* The same chip the table rows and the diagram's bars are keyed

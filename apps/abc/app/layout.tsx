@@ -90,7 +90,8 @@ const ogImage =
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: fr.meta.title,
+  // No `title`: the page renders its own, in the language it is actually
+  // in. Two titles would be React's and ours fighting over the tab.
   description: fr.meta.description,
   openGraph: {
     type: 'website',

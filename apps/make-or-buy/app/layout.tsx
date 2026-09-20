@@ -45,10 +45,8 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://make-or-buy.vercel.
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  // The tab, in the language the page opens in. The client corrects it when
-  // the reader switches language, the same way it corrects `lang` on <html>;
-  // rendering it French here is what keeps the default load from flickering.
-  title: fr.meta.tab,
+  // No `title`: the page renders its own, in the language it is actually
+  // in. Two titles would be React's and ours fighting over the tab.
   description: fr.meta.description,
   openGraph: {
     type: 'website',

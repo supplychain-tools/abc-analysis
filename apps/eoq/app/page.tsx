@@ -6,6 +6,7 @@ import { AnswerPanel } from '@/components/AnswerPanel';
 import { Equation } from '@/components/Equation';
 import { Tabs } from '@/components/Tabs';
 import { AppShell } from '@sct/shared/ui/AppShell';
+import { useDocumentLanguage } from '@sct/shared/ui/document';
 import { CostCurve } from '@/components/CostCurve';
 import { InventoryProfile } from '@/components/InventoryProfile';
 import { InputRail } from '@/components/InputRail';
@@ -107,12 +108,7 @@ export default function Page() {
 
   const t = useMemo(() => getDictionary(locale), [locale]);
 
-  // Language is chosen on the client, so these two are the server's guess
-  // until the stored or requested locale is known. Both are corrected here.
-  useEffect(() => {
-    document.documentElement.lang = locale;
-    document.title = t.meta.title;
-  }, [locale, t]);
+  useDocumentLanguage(locale);
 
   const derived = useMemo(() => derive(state, locale), [state, locale]);
 
@@ -152,6 +148,13 @@ export default function Page() {
 
   return (
     <SettingsProvider value={settings}>
+      {/* The tab, in the language the page is in. React hoists this into
+          the head and re-renders it when the language changes, which an
+          effect writing document.title cannot do reliably: Next's own title
+          element would overwrite it during hydration. That is why the
+          metadata export carries no `title`, only the social ones. */}
+      <title>{t.meta.title}</title>
+
       <a href="#results" className="sr-only">
         {t.a11y.skipToResults}
       </a>

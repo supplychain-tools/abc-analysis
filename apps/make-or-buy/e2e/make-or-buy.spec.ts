@@ -178,6 +178,21 @@ test('refuses the figures that describe nothing, and keeps answering', async ({ 
   await expect(page.locator('[data-testid="verdict-word"]')).toBeVisible();
 });
 
+test('names the browser tab in the language the page is in', async ({ page }) => {
+  // Metadata is rendered on the server, in French, before the language on
+  // the link is known. The tab has to end up English anyway, and stay that
+  // way: Next's own title element can arrive after the correction and put
+  // the French one back.
+  await page.goto(PAGE);
+  await ready(page);
+  await expect(page).toHaveTitle('Make or buy?');
+  await page.waitForTimeout(1_000);
+  await expect(page).toHaveTitle('Make or buy?');
+
+  await page.getByText('FR', { exact: true }).click();
+  await expect(page).toHaveTitle('Produire ou acheter ?');
+});
+
 test('says the same figures in French', async ({ page }) => {
   await page.goto('/?lang=fr');
   await ready(page);

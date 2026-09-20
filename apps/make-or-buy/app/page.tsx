@@ -22,6 +22,7 @@ import { Tabs } from '@/components/Tabs';
 import { Verdict } from '@/components/Verdict';
 import type { CurrencyCode, Locale } from '@sct/shared/lib/format';
 import { AppShell } from '@sct/shared/ui/AppShell';
+import { useDocumentLanguage } from '@sct/shared/ui/document';
 import { SETTINGS_STORAGE_KEY } from '@sct/shared/ui/settings';
 
 /**
@@ -91,12 +92,7 @@ export default function MakeOrBuyPage() {
 
   const t = useMemo(() => getMakeOrBuyDictionary(locale), [locale]);
 
-  // Language is chosen on the client, so these two are the server's guess
-  // until the stored or requested locale is known. Both are corrected here.
-  useEffect(() => {
-    document.documentElement.lang = locale;
-    document.title = t.meta.tab;
-  }, [locale, t]);
+  useDocumentLanguage(locale);
 
   // The whole computation, on every keystroke. It is a few dozen
   // multiplications, which is nothing next to the render it feeds, so there is
@@ -162,6 +158,13 @@ export default function MakeOrBuyPage() {
 
   return (
     <SettingsProvider value={{ locale, currency, t }}>
+      {/* The tab, in the language the page is in. React hoists this into
+          the head and re-renders it when the language changes, which an
+          effect writing document.title cannot do reliably: Next's own title
+          element would overwrite it during hydration. That is why the
+          metadata export carries no `title`, only the social ones. */}
+      <title>{t.meta.tab}</title>
+
       <a href="#inputs" className="sr-only">
         {t.a11y.skipToInputs}
       </a>

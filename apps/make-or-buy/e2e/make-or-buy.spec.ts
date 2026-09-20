@@ -26,15 +26,41 @@ async function fill(page: Page, id: string, value: string): Promise<void> {
   await field.blur();
 }
 
+/**
+ * Load the worked example.
+ *
+ * The page opens on a clear form, so anything that needs figures asks for
+ * them here rather than assuming the page arrives already answered. Waiting
+ * for the verdict rather than for the click is what makes the rest of a test
+ * safe: until something is computed there are no tabs and no panels to find.
+ */
+async function loadExample(page: Page): Promise<void> {
+  await page.locator('[data-testid="load-example"]').click();
+  await expect(page.locator('[data-testid="verdict-word"]')).toBeVisible();
+}
+
 /** Open one of the two output views. */
 async function openTab(page: Page, id: 'verdict' | 'volume'): Promise<void> {
   await page.locator(`[data-testid="tab-${id}"]`).click();
   await expect(page.locator(`[data-testid="tab-${id}"]`)).toHaveAttribute('aria-selected', 'true');
 }
 
-test('opens on the verdict, already calculated, on the reference case', async ({ page }) => {
+test('opens on a clear form, with nothing computed', async ({ page }) => {
   await page.goto(PAGE);
   await ready(page);
+
+  // Nothing is filled in and nothing is answered: the tool opens ready for the
+  // reader's own part, and says so rather than showing a blank panel.
+  await expect(page.locator('#f-annualVolume')).toHaveValue('');
+  await expect(page.locator('#f-supplierPrice')).toHaveValue('');
+  await expect(page.locator('[data-testid="empty-state"]')).toBeVisible();
+  await expect(page.locator('[data-testid="verdict-word"]')).toHaveCount(0);
+});
+
+test('computes the reference case once the example is loaded', async ({ page }) => {
+  await page.goto(PAGE);
+  await ready(page);
+  await loadExample(page);
 
   await expect(page.locator('[data-testid="empty-state"]')).toHaveCount(0);
   // The first tab is the one a reader lands on: the answer, not the workings.
@@ -56,6 +82,7 @@ test('opens on the verdict, already calculated, on the reference case', async ({
 test('totals both sides from the lines it shows', async ({ page }) => {
   await page.goto(PAGE);
   await ready(page);
+  await loadExample(page);
 
   // Variable 389,474 + fixed 60,000 + tooling 10,000.
   await expect(page.locator('[data-testid="breakdown-make-total"]')).toContainText('459,474');
@@ -76,6 +103,7 @@ test('carries no judgement scoring anywhere on the page', async ({ page }) => {
 test('moves between the two views, one at a time', async ({ page }) => {
   await page.goto(PAGE);
   await ready(page);
+  await loadExample(page);
 
   await expect(page.locator('[data-testid="panel-verdict"]')).toBeVisible();
   await expect(page.locator('[data-testid="panel-volume"]')).toBeHidden();
@@ -91,6 +119,7 @@ test('moves between the two views, one at a time', async ({ page }) => {
 test('moves between tabs with the arrow keys', async ({ page }) => {
   await page.goto(PAGE);
   await ready(page);
+  await loadExample(page);
 
   await page.locator('[data-testid="tab-verdict"]').focus();
   await page.keyboard.press('ArrowRight');
@@ -113,6 +142,7 @@ test('moves between tabs with the arrow keys', async ({ page }) => {
 test('recomputes as the figures are typed', async ({ page }) => {
   await page.goto(PAGE);
   await ready(page);
+  await loadExample(page);
 
   // Well above the 15,376 break-even, so the answer has to turn over.
   await fill(page, 'f-annualVolume', '30000');
@@ -125,6 +155,7 @@ test('recomputes as the figures are typed', async ({ page }) => {
 test('refuses the figures that describe nothing, and keeps answering', async ({ page }) => {
   await page.goto(PAGE);
   await ready(page);
+  await loadExample(page);
 
   await fill(page, 'f-yieldPercent', '0');
   await expect(page.locator('#f-yieldPercent')).toHaveAttribute('aria-invalid', 'true');
@@ -150,6 +181,7 @@ test('refuses the figures that describe nothing, and keeps answering', async ({ 
 test('says the same figures in French', async ({ page }) => {
   await page.goto('/?lang=fr');
   await ready(page);
+  await loadExample(page);
 
   await expect(page.locator('[data-testid="verdict-word"]')).toHaveText('ACHETER');
   // French groups with a narrow no-break space and marks decimals with a comma.
@@ -160,9 +192,10 @@ test('says the same figures in French', async ({ page }) => {
   );
 });
 
-test('empties to a state that says what to enter', async ({ page }) => {
+test('returns to the state it opened in when emptied', async ({ page }) => {
   await page.goto(PAGE);
   await ready(page);
+  await loadExample(page);
 
   await page.locator('[data-testid="clear-all"]').click();
   await expect(page.locator('[data-testid="empty-state"]')).toBeVisible();
@@ -175,6 +208,7 @@ test('empties to a state that says what to enter', async ({ page }) => {
 test('never scrolls the page sideways, and never overlaps a chart label', async ({ page }) => {
   await page.goto(PAGE);
   await ready(page);
+  await loadExample(page);
   await openTab(page, 'volume');
 
   const findings = await page.evaluate(() => {

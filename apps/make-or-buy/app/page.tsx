@@ -52,10 +52,11 @@ export default function MakeOrBuyPage() {
   const [locale, setLocale] = useState<Locale>('fr');
   const [currency, setCurrency] = useState<CurrencyCode>('MAD');
 
-  // The page opens already calculated, on the case the documentation is
-  // written around. A visitor who will spend ninety seconds here should spend
-  // none of them working out what to type into twenty empty boxes.
-  const [values, setValues] = useState<FormValues>(() => exampleValues('fr'));
+  // The page opens on a clear form, ready for the reader's own part, with the
+  // worked example one button away. Both siblings open the same way, so the
+  // family does not ask to be learned three times — and a page that opens
+  // already answered invites the answer to be read as the reader's own.
+  const [values, setValues] = useState<FormValues>(EMPTY_VALUES);
   const ready = useRef(false);
 
   useBeforePaint(() => {
@@ -72,7 +73,6 @@ export default function MakeOrBuyPage() {
 
     setLocale(resolved);
     if (stored.currency !== undefined) setCurrency(stored.currency);
-    setValues(exampleValues(resolved));
     ready.current = true;
 
     // A hook for the end-to-end suite: React attaches its handlers during
